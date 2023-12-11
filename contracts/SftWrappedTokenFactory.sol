@@ -16,7 +16,11 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
     event TransferBeaconOwnership(string indexed productType, address indexed beacon, address indexed newOwner);
     event NewBeaconProxy(string indexed productType, string indexed productName, address indexed beaconProxy);
     event RemoveBeaconProxy(string indexed productType, string indexed productName, address indexed beaconProxy);
-
+    event SftWrappedTokenCreated(
+        address indexed wrappedSft, uint256 indexed wrappedSftSlot, address indexed sftWrappedToken, 
+        string name, string symbol, address navOracle
+    );
+    
     struct ProductType {
         address implementation;
         address beacon;
@@ -38,12 +42,7 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
 
     // sft address => sft slot => sftWrappedToken address
     mapping(address => mapping(uint256 => address)) public sftWrappedTokens;
-
-    event SftWrappedTokenCreated(
-        address indexed wrappedSft, uint256 indexed wrappedSftSlot, address indexed sftWrappedToken, 
-        string name, string symbol, address navOracle
-    );
-
+    
     function initialize(address governor_) external virtual initializer {
         __AdminControl_init(msg.sender);
         __GovernorControl_init(governor_);
@@ -59,7 +58,7 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
         require(implementation != address(0), "SftWrappedTokenFactory: implementation not deployed");
         require(productTypes[productType_].beacon == address(0), "SftWrappedTokenFactory: beacon already deployed");
 
-        beacon = address(new UpgradeableBeacon(implementation, admin));
+        beacon = address(new UpgradeableBeacon(implementation, address(this)));
         productTypes[productType_].beacon = beacon;
         emit NewBeacon(productType_, beacon, implementation);
     }
