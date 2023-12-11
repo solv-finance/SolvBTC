@@ -67,7 +67,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
 
     function mint(uint256 sftId_, uint256 amount_) external virtual override nonReentrant {
         require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
-        require(_msgSender() == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: caller is not sft owner");
+        require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: caller is not sft owner");
         require(amount_ > 0, "SftWrappedToken: mint amount cannot be 0");
         require(amount_ <= IERC3525(wrappedSftAddress).balanceOf(sftId_), "SftWrappedToken: mint amount exceeds sft balance");
 
@@ -77,15 +77,15 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
             ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingSftId, amount_);
         }
 
-        _mint(_msgSender(), amount_);
+        _mint(msg.sender, amount_);
     }
 
     function burn(uint256 amount_, uint256 sftId_) external virtual override nonReentrant returns (uint256 toSftId_) {
         require(amount_ > 0, "SftWrappedToken: burn amount cannot be 0");
-        _burn(_msgSender(), amount_);
+        _burn(msg.sender, amount_);
 
         if (sftId_ == 0) {
-            toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingSftId, _msgSender(), amount_);
+            toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingSftId, msg.sender, amount_);
         } else {
             require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
             ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingSftId, sftId_, amount_);
