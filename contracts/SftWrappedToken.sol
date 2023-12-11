@@ -2,9 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@solvprotocol/erc-3525/ERC3525.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./ISftWrappedToken.sol";
 
@@ -16,6 +16,14 @@ struct SlotBaseInfo {
     uint64 createTime;
     bool transferable;
     bool isValid;
+}
+
+interface IERC3525 {
+    function valueDecimals() external view returns (uint8);
+    function balanceOf(address owner) external view returns (uint256);
+    function balanceOf(uint256 sftId) external view returns (uint256);
+    function ownerOf(uint256 sftId) external view returns (address);
+    function slotOf(uint256 sftId) external view returns (uint256);
 }
 
 interface IOpenFundSftDelegate {
@@ -30,36 +38,40 @@ interface INavOracle {
     function getSubscribeNav(bytes32 poolId, uint256 time) external view returns (uint256 nav, uint256 navTime);
 }
 
-contract SftWrappedToken is ISftWrappedToken, ERC20, ReentrancyGuard {
+contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardUpgradeable {
 
     address public wrappedSftAddress;
     uint256 public wrappedSftSlot;
     address public navOracle;
     uint256 public holdingSftId;
 
-    constructor(
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() { 
+        _disableInitializers();
+    }
+    
+    function initialize(
         string memory name_, string memory symbol_, 
         address wrappedSftAddress_, uint256 wrappedSftSlot_, address navOracle_
-    )
-        ERC20(name_, symbol_) 
-        ReentrancyGuard()
-    {
+    ) external virtual initializer {
+        ERC20Upgradeable.__ERC20_init(name_, symbol_);
+        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         wrappedSftAddress = wrappedSftAddress_;
         wrappedSftSlot = wrappedSftSlot_;
         navOracle = navOracle_;
     }
 
     function decimals() public view virtual override returns (uint8) {
-        return ERC3525(wrappedSftAddress).valueDecimals();
+        return IERC3525(wrappedSftAddress).valueDecimals();
     }
 
     function mint(uint256 sftId_, uint256 amount_) external virtual override nonReentrant {
-        require(wrappedSftSlot == ERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
-        require(_msgSender() == ERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: caller is not sft owner");
+        require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
+        require(_msgSender() == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: caller is not sft owner");
         require(amount_ > 0, "SftWrappedToken: mint amount cannot be 0");
-        require(amount_ <= ERC3525(wrappedSftAddress).balanceOf(sftId_), "SftWrappedToken: mint amount exceeds sft balance");
+        require(amount_ <= IERC3525(wrappedSftAddress).balanceOf(sftId_), "SftWrappedToken: mint amount exceeds sft balance");
 
-        if (ERC3525(wrappedSftAddress).balanceOf(address(this)) == 0) {
+        if (IERC3525(wrappedSftAddress).balanceOf(address(this)) == 0) {
             holdingSftId = ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);
         } else {
             ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingSftId, amount_);
@@ -75,7 +87,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20, ReentrancyGuard {
         if (sftId_ == 0) {
             toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingSftId, _msgSender(), amount_);
         } else {
-            require(wrappedSftSlot == ERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
+            require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
             ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingSftId, sftId_, amount_);
             toSftId_ = sftId_;
         }

@@ -2,7 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-abstract contract GovernorControl {
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
+abstract contract GovernorControl is Initializable {
 
 	event NewGovernor(address oldGovernor, address newGovernor);
 	event NewPendingGovernor(address oldPendingGovernor, address newPendingGovernor);
@@ -20,10 +22,14 @@ abstract contract GovernorControl {
 		_;
 	}
 
-	constructor(address governor_) {
-		governor = governor_;
-		emit NewGovernor(address(0), governor_);
-	}
+    function __GovernorControl_init(address governor_) internal onlyInitializing {
+        __GovernorControl_init_unchained(governor_);
+    }
+
+    function __GovernorControl_init_unchained(address governor_) internal onlyInitializing {
+        governor = governor_;
+        emit NewGovernor(address(0), governor_);
+    }
 
 	function transferGovernance(address newPendingGovernor_) external virtual onlyGovernor {
 		emit NewPendingGovernor(pendingGovernor, newPendingGovernor_);
@@ -35,5 +41,6 @@ abstract contract GovernorControl {
 		governor = pendingGovernor;
 		delete pendingGovernor;
 	}
-}
 
+	uint256[48] private __gap;
+}

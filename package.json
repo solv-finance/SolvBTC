@@ -28,7 +28,7 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.1",
-    "@solvprotocol/erc-3525": "^1.5.0"
+    "@openzeppelin/contracts": "5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1"
   }
 }
