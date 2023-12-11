@@ -35,6 +35,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20, ReentrancyGuard {
     address public wrappedSftAddress;
     uint256 public wrappedSftSlot;
     address public navOracle;
+    uint256 public holdingSftId;
 
     constructor(
         string memory name_, string memory symbol_, 
@@ -59,25 +60,24 @@ contract SftWrappedToken is ISftWrappedToken, ERC20, ReentrancyGuard {
         require(amount_ <= ERC3525(wrappedSftAddress).balanceOf(sftId_), "SftWrappedToken: mint amount exceeds sft balance");
 
         if (ERC3525(wrappedSftAddress).balanceOf(address(this)) == 0) {
-            ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);
+            holdingSftId = ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);
         } else {
-            uint256 wrappedSftId = ERC3525(wrappedSftAddress).tokenOfOwnerByIndex(address(this), 0);
-            ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, wrappedSftId, amount_);
+            ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingSftId, amount_);
         }
 
         _mint(_msgSender(), amount_);
     }
 
-    function burn(uint256 amount_, uint256 sftId_) external virtual override nonReentrant {
+    function burn(uint256 amount_, uint256 sftId_) external virtual override nonReentrant returns (uint256 toSftId_) {
         require(amount_ > 0, "SftWrappedToken: burn amount cannot be 0");
         _burn(_msgSender(), amount_);
 
-        uint256 wrappedSftId = ERC3525(wrappedSftAddress).tokenOfOwnerByIndex(address(this), 0);
         if (sftId_ == 0) {
-            ERC3525TransferHelper.doTransferOut(wrappedSftAddress, wrappedSftId, _msgSender(), amount_);
+            toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingSftId, _msgSender(), amount_);
         } else {
             require(wrappedSftSlot == ERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
-            ERC3525TransferHelper.doTransfer(wrappedSftAddress, wrappedSftId, sftId_, amount_);
+            ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingSftId, sftId_, amount_);
+            toSftId_ = sftId_;
         }
     }
 
