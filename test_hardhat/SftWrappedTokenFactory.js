@@ -3,9 +3,9 @@ const { expect } = require('chai');
 
 const UpgradeableBeaconBin = require('@openzeppelin/contracts/build/contracts/UpgradeableBeacon.json');
 
-async function deploySftWrappedTokenFactory(deployer) {
+async function deploySftWrappedTokenFactory(deployer, governorAddress) {
   const swtFactoryFactory = await ethers.getContractFactory('SftWrappedTokenFactory', deployer);
-  const swtFactory = await swtFactoryFactory.deploy();
+  const swtFactory = await swtFactoryFactory.deploy(governorAddress);
   await swtFactory.deployed();
   return swtFactory;
 }
@@ -30,8 +30,7 @@ async function loadSftWrapperToken(tokenAddress, deployer) {
 describe('SftWrappedTokenFactory Test', () => {
   beforeEach(async function () {
     [ this.admin, this.governor, this.others ] = await ethers.getSigners();
-    this.swtFactory = await deploySftWrappedTokenFactory(this.admin);
-    await this.swtFactory.connect(this.admin).initialize(this.governor.address);
+    this.swtFactory = await deploySftWrappedTokenFactory(this.admin, this.governor.address);
     this.swtImpl = await deploySftWrapperToken(this.admin);
 
     this.productType = 'Open-end Fund Share SFT Wrapped Token';
@@ -170,13 +169,13 @@ describe('SftWrappedTokenFactory Test', () => {
       await this.swtFactory.connect(this.admin).setImplementation(this.productType, this.swtImpl.address);
       await this.swtFactory.connect(this.admin).deployBeacon(this.productType);
       await this.swtFactory.connect(this.admin).setImplementation(this.productType, '0x0000000000000000000000000000000000000000');
-      await expect(this.swtFactory.connect(this.admin).upgradeBeacon(this.productType)).to.be.revertedWith('implementation not deployed');
+      await expect(this.swtFactory.connect(this.admin).upgradeBeacon(this.productType)).to.be.revertedWith('SftWrappedTokenFactory: implementation not deployed');
     });
 
     it('upgrading beacon when new implementation is not changed should fail', async function () {
       await this.swtFactory.connect(this.admin).setImplementation(this.productType, this.swtImpl.address);
       await this.swtFactory.connect(this.admin).deployBeacon(this.productType);
-      await expect(this.swtFactory.connect(this.admin).upgradeBeacon(this.productType)).to.be.revertedWith('same implementation');
+      await expect(this.swtFactory.connect(this.admin).upgradeBeacon(this.productType)).to.be.revertedWith('SftWrappedTokenFactory: same implementation');
     });
 
     it('deploying proxy with invalid params should fail', async function () {
@@ -190,7 +189,7 @@ describe('SftWrappedTokenFactory Test', () => {
       await this.swtFactory.connect(this.admin).setImplementation(this.productType, this.swtImpl.address);
       await this.swtFactory.connect(this.admin).deployBeacon(this.productType);
       await this.swtFactory.connect(this.governor).deployProductProxy(this.productType, this.productName, this.productInfo.tokenName, this.productInfo.tokenSymbol, this.productInfo.wrappedSft, this.productInfo.wrappedSlot, this.productInfo.navOracle);
-      await expect(this.swtFactory.connect(this.governor).deployProductProxy(this.productType, this.productName, this.productInfo.tokenName, this.productInfo.tokenSymbol, this.productInfo.wrappedSft, this.productInfo.wrappedSlot, this.productInfo.navOracle)).to.be.revertedWith('SftWrappedTokenFactory: product already deployed');
+      await expect(this.swtFactory.connect(this.governor).deployProductProxy(this.productType, this.productName, this.productInfo.tokenName, this.productInfo.tokenSymbol, this.productInfo.wrappedSft, this.productInfo.wrappedSlot, this.productInfo.navOracle)).to.be.revertedWith('SftWrappedTokenFactory: SftWrappedToken already deployed');
     });
 
     it('deploying proxy when beacon is not deployed should fail', async function () {

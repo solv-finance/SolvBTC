@@ -43,7 +43,9 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
     address public wrappedSftAddress;
     uint256 public wrappedSftSlot;
     address public navOracle;
-    uint256 public holdingSftId;
+    uint256 public holdingValueSftId;
+
+    uint256[] internal _holdingEmptySftIds;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() { 
@@ -69,12 +71,24 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
         require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: caller is not sft owner");
         require(amount_ > 0, "SftWrappedToken: mint amount cannot be 0");
-        require(amount_ <= IERC3525(wrappedSftAddress).balanceOf(sftId_), "SftWrappedToken: mint amount exceeds sft balance");
 
-        if (IERC3525(wrappedSftAddress).balanceOf(address(this)) == 0) {
-            holdingSftId = ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);
+        uint256 sftBalance = IERC3525(wrappedSftAddress).balanceOf(sftId_);
+        if (amount_ == sftBalance) {
+            ERC3525TransferHelper.doTransferIn(wrappedSftAddress, msg.sender, sftId_);
+            if (holdingValueSftId == 0) {
+                holdingValueSftId = sftId_;
+            } else {
+                ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingValueSftId, amount_);
+                _holdingEmptySftIds.push(sftId_);
+            }
+        } else if (amount_ < sftBalance) {
+            if (holdingValueSftId == 0) {
+                holdingValueSftId = ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);
+            } else {
+                ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingValueSftId, amount_);
+            }
         } else {
-            ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingSftId, amount_);
+            revert("SftWrappedToken: mint amount exceeds sft balance");
         }
 
         _mint(msg.sender, amount_);
@@ -85,10 +99,17 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         _burn(msg.sender, amount_);
 
         if (sftId_ == 0) {
-            toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingSftId, msg.sender, amount_);
+            if (_holdingEmptySftIds.length == 0) {
+                toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingValueSftId, msg.sender, amount_);
+            } else {
+                toSftId_ = _holdingEmptySftIds[_holdingEmptySftIds.length - 1];
+                _holdingEmptySftIds.pop();
+                ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingValueSftId, toSftId_, amount_);
+                ERC3525TransferHelper.doTransferOut(wrappedSftAddress, msg.sender, toSftId_);
+            }
         } else {
             require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
-            ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingSftId, sftId_, amount_);
+            ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingValueSftId, sftId_, amount_);
             toSftId_ = sftId_;
         }
     }

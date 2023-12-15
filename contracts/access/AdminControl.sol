@@ -2,9 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
-abstract contract AdminControl is Initializable {
+abstract contract AdminControl {
 
     event NewAdmin(address oldAdmin, address newAdmin);
     event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);
@@ -22,11 +20,7 @@ abstract contract AdminControl is Initializable {
         _;
     }
 
-    function __AdminControl_init(address admin_) internal onlyInitializing {
-        __AdminControl_init_unchained(admin_);
-    }
-
-    function __AdminControl_init_unchained(address admin_) internal onlyInitializing {
+    constructor(address admin_) {
         admin = admin_;
         emit NewAdmin(address(0), admin_);
     }
@@ -41,6 +35,4 @@ abstract contract AdminControl is Initializable {
         admin = pendingAdmin;
         delete pendingAdmin;
     }
-
-	uint256[48] private __gap;
 }

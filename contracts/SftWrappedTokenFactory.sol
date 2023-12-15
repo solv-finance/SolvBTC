@@ -42,12 +42,11 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
 
     // sft address => sft slot => sftWrappedToken address
     mapping(address => mapping(uint256 => address)) public sftWrappedTokens;
-    
-    function initialize(address governor_) external virtual initializer {
-        __AdminControl_init(msg.sender);
-        __GovernorControl_init(governor_);
-    }
 
+    bytes32 public constant GOVERNOR_ROLE = keccak256("GOVERNOR");
+
+    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {}
+    
     function setImplementation(string memory productType_, address implementation_) external virtual onlyAdmin {
         productTypes[productType_].implementation = implementation_;
         emit NewImplementation(productType_, implementation_);
@@ -67,8 +66,8 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
         address latestImplementation = productTypes[productType_].implementation;
         address beacon = productTypes[productType_].beacon;
         
-        require(latestImplementation != address(0), "implementation not deployed");
-        require(UpgradeableBeacon(beacon).implementation() != latestImplementation, "same implementation");
+        require(latestImplementation != address(0), "SftWrappedTokenFactory: implementation not deployed");
+        require(UpgradeableBeacon(beacon).implementation() != latestImplementation, "SftWrappedTokenFactory: same implementation");
         UpgradeableBeacon(beacon).upgradeTo(latestImplementation);
         emit UpgradeBeacon(productType_, beacon, latestImplementation);
     }
@@ -82,10 +81,12 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
     function deployProductProxy(
         string memory productType_, string memory productName_,
         string memory tokenName_, string memory tokenSymbol_, 
-        address wrappedSft_, uint256 wrappedSftSlot_, address navOracle_
+        address wrappedSft_, uint256 wrappedSftSlot_, 
+        address navOracle_
     ) external virtual onlyGovernor returns (address proxy_) {
         require(wrappedSft_ != address(0), "SftWrappedTokenFactory: invalid wrapped sft address");
         require(navOracle_ != address(0), "SftWrappedTokenFactory: invalid nav oracle address");
+        require(sftWrappedTokens[wrappedSft_][wrappedSftSlot_] == address(0), "SftWrappedTokenFactory: SftWrappedToken already deployed");
 
         ProductType storage productType = productTypes[productType_];
         require(productType.proxies[productName_] == address(0), "SftWrappedTokenFactory: product already deployed");

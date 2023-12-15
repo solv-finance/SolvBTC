@@ -10,7 +10,6 @@ module.exports = async ({ deployments }) => {
   const wrappedSlot = "94872245356118649870025069682337571253044538568877833354046341235689653624276";
   const navOracle = "0x18937025Dffe1b5e9523aa35dEa0EE55dae9D675";
 
-
   await factoryHelpers.deployProxy(productType, productName, tokenName, tokenSymbol, wrappedSft, wrappedSlot, navOracle);
 
 };

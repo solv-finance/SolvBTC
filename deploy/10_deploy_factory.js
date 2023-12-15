@@ -10,13 +10,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     contract: 'SftWrappedTokenFactory',
     from: deployer,
     log: true,
+    args: [ governor ]
   });
   console.log(`* INFO: ${colors.yellow(`SftWrappedTokenFactory`)} deployed at ${colors.green(instance.address)} on ${colors.red(network.name)}`);
-
-  const SWTFactoryFactory = await ethers.getContractFactory('SftWrappedTokenFactory');
-  const swtFactory = await SWTFactoryFactory.attach(instance.address);
-  const initTx = await swtFactory.initialize(governor);
-  console.log(`* INFO: SftWrappedTokenFactory initialized at tx ${initTx.hash}`);
+  
 };
 
 module.exports.tags = ['SftWrappedTokenFactory']
