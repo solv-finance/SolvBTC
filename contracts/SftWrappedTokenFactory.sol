@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import "./access/AdminControl.sol";
 import "./access/GovernorControl.sol";
-import "./SftWrappedToken.sol";
 
 contract SftWrappedTokenFactory is AdminControl, GovernorControl {
 
@@ -42,8 +41,6 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
 
     // sft address => sft slot => sftWrappedToken address
     mapping(address => mapping(uint256 => address)) public sftWrappedTokens;
-
-    bytes32 public constant GOVERNOR_ROLE = keccak256("GOVERNOR");
 
     constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {}
     

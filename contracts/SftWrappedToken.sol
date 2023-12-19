@@ -56,6 +56,10 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         string memory name_, string memory symbol_, 
         address wrappedSftAddress_, uint256 wrappedSftSlot_, address navOracle_
     ) external virtual initializer {
+        require(wrappedSftAddress_ != address(0), "SftWrappedToken: invalid sft address");
+        require(wrappedSftSlot_ != 0, "SftWrappedToken: invalid sft slot");
+        require(navOracle_ != address(0), "SftWrappedToken: invalid nav oracle address");
+
         ERC20Upgradeable.__ERC20_init(name_, symbol_);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         wrappedSftAddress = wrappedSftAddress_;
@@ -108,6 +112,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
                 ERC3525TransferHelper.doTransferOut(wrappedSftAddress, msg.sender, toSftId_);
             }
         } else {
+            require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not sft owner");
             require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
             ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingValueSftId, sftId_, amount_);
             toSftId_ = sftId_;
@@ -129,7 +134,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
     function getSharesByValue(uint256 value) external view virtual override returns (uint256 shares) {
         bytes32 poolId = keccak256(abi.encode(wrappedSftAddress, wrappedSftSlot));
         (uint256 latestNav, ) = INavOracle(navOracle).getSubscribeNav(poolId, block.timestamp);
-        return value * (10 ** decimals()) / latestNav;
+        return latestNav == 0 ? 0 : (value * (10 ** decimals()) / latestNav);
     }
 
     // underlying asset address

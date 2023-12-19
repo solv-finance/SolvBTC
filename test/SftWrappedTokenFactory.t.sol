@@ -165,7 +165,7 @@ contract SftWrappedTokenFactoryTest is Test {
         factory.setImplementation(PRODUCT_TYPE, swtImplAddress);
         factory.deployBeacon(PRODUCT_TYPE);
         vm.expectRevert("only governor");
-        address proxy = factory.deployProductProxy(PRODUCT_TYPE, PRODUCT_NAME, TOKEN_NAME, TOKEN_SYMBOL, WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT, NAV_ORACLE_ADDRESS);
+        factory.deployProductProxy(PRODUCT_TYPE, PRODUCT_NAME, TOKEN_NAME, TOKEN_SYMBOL, WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT, NAV_ORACLE_ADDRESS);
         vm.stopPrank();
     }
 
@@ -175,7 +175,7 @@ contract SftWrappedTokenFactoryTest is Test {
         factory.deployBeacon(PRODUCT_TYPE);
 
         vm.startPrank(governor);
-        address proxy = factory.deployProductProxy(PRODUCT_TYPE, PRODUCT_NAME, TOKEN_NAME, TOKEN_SYMBOL, WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT, NAV_ORACLE_ADDRESS);
+        factory.deployProductProxy(PRODUCT_TYPE, PRODUCT_NAME, TOKEN_NAME, TOKEN_SYMBOL, WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT, NAV_ORACLE_ADDRESS);
         vm.stopPrank();
 
         vm.startPrank(admin);

@@ -166,6 +166,15 @@ contract SftWrappedTokenTest is Test {
         vm.stopPrank();
     }
 
+    function test_RevertWhenBurnWithSftIdNotOwned() public virtual {
+        vm.startPrank(user);
+        uint256 sft1Balance = _getSftBalance(SFT_ID_1);
+        swt.mint(SFT_ID_1, sft1Balance);
+        vm.expectRevert("SftWrappedToken: not sft owner");
+        swt.burn(sft1Balance, SFT_ID_1);
+        vm.stopPrank();
+    }
+
     function _approveSftId(address _spender, uint256 _sftId) internal virtual {
         (bool success, ) = WRAPPED_SFT_ADDRESS.call(abi.encodeWithSignature("approve(address,uint256)", _spender, _sftId));
         require(success, "approve sft id failed");
