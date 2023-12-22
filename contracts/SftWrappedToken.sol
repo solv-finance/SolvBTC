@@ -67,8 +67,57 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         navOracle = navOracle_;
     }
 
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+        return
+            interfaceId == type(IERC3525Receiver).interfaceId || 
+            interfaceId == type(IERC721Receiver).interfaceId || 
+            interfaceId == type(IERC165).interfaceId;
+    }
+
     function decimals() public view virtual override returns (uint8) {
         return IERC3525(wrappedSftAddress).valueDecimals();
+    }
+
+    function onERC3525Received(address /* operator_ */, uint256 fromSftId_, uint256 sftId_, uint256 value_, bytes calldata /* data_ */) 
+        external 
+        virtual 
+        override 
+        returns (bytes4) 
+    {
+        address fromSftOwner = IERC3525(wrappedSftAddress).ownerOf(fromSftId_);
+        if (fromSftOwner != address(this)) {
+            require(value_ > 0, "SftWrappedToken: mint zero not allowed");
+            if (holdingValueSftId == 0) {
+                require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");
+                require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not owned sft id");
+                holdingValueSftId = sftId_;
+            } else {
+                require(holdingValueSftId == sftId_, "SftWrappedToken: not holding value sft id");
+            }
+
+            _mint(fromSftOwner, value_);
+        }
+        return IERC3525Receiver.onERC3525Received.selector;
+    }
+
+    function onERC721Received(address /* operator_ */, address from_, uint256 sftId_, bytes calldata /* data_ */) 
+        external 
+        virtual 
+        override 
+        returns (bytes4) 
+    {
+        require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");
+        uint256 sftValue = IERC3525(wrappedSftAddress).balanceOf(sftId_);
+        require(sftValue > 0, "SftWrappedToken: mint zero not allowed");
+
+        if (holdingValueSftId == 0) {
+            holdingValueSftId = sftId_;
+        } else {
+            ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingValueSftId, sftValue);
+            _holdingEmptySftIds.push(sftId_);
+        }
+        _mint(from_, sftValue);
+        return IERC721Receiver.onERC721Received.selector;
     }
 
     function mint(uint256 sftId_, uint256 amount_) external virtual override nonReentrant {
@@ -78,13 +127,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
 
         uint256 sftBalance = IERC3525(wrappedSftAddress).balanceOf(sftId_);
         if (amount_ == sftBalance) {
-            ERC3525TransferHelper.doTransferIn(wrappedSftAddress, msg.sender, sftId_);
-            if (holdingValueSftId == 0) {
-                holdingValueSftId = sftId_;
-            } else {
-                ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingValueSftId, amount_);
-                _holdingEmptySftIds.push(sftId_);
-            }
+            ERC3525TransferHelper.doSafeTransferIn(wrappedSftAddress, msg.sender, sftId_);
         } else if (amount_ < sftBalance) {
             if (holdingValueSftId == 0) {
                 holdingValueSftId = ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);
@@ -94,8 +137,6 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         } else {
             revert("SftWrappedToken: mint amount exceeds sft balance");
         }
-
-        _mint(msg.sender, amount_);
     }
 
     function burn(uint256 amount_, uint256 sftId_) external virtual override nonReentrant returns (uint256 toSftId_) {

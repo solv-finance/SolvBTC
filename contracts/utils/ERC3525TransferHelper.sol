@@ -8,6 +8,12 @@ interface ERC721Interface {
         address to,
         uint256 tokenId
     ) external;
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external;
 }
 
 interface ERC3525Interface {
@@ -32,6 +38,15 @@ library ERC3525TransferHelper {
     ) internal {
         ERC721Interface token = ERC721Interface(underlying);
         token.transferFrom(from, address(this), tokenId);
+    }
+    
+    function doSafeTransferIn(
+        address underlying,
+        address from,
+        uint256 tokenId
+    ) internal {
+        ERC721Interface token = ERC721Interface(underlying);
+        token.safeTransferFrom(from, address(this), tokenId);
     }
 
     function doTransferOut(
