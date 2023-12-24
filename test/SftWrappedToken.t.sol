@@ -13,26 +13,22 @@ contract SftWrappedTokenTest is Test {
     string internal constant PRODUCT_NAME = "SWT RWADemo";
     string internal constant TOKEN_NAME = "SftWrappedToken RWADemo";
     string internal constant TOKEN_SYMBOL = "SWT-RWADemo";
-    address internal constant WRAPPED_SFT_ADDRESS = 0x6089795791F539d664F403c4eFF099F48cE17C75;
-    uint256 internal constant WRAPPED_SFT_SLOT = 94872245356118649870025069682337571253044538568877833354046341235689653624276;
-    address internal constant NAV_ORACLE_ADDRESS = 0x18937025Dffe1b5e9523aa35dEa0EE55dae9D675;
+    address internal constant WRAPPED_SFT_ADDRESS = 0x22799DAA45209338B7f938edf251bdfD1E6dCB32; //for arbitrum
+    uint256 internal constant WRAPPED_SFT_SLOT = 5310353805259224968786693768403624884928279211848504288200646724372830798580;
+    address internal constant NAV_ORACLE_ADDRESS = 0x6ec1fEC6c6AF53624733F671B490B8250Ff251eD;
 
-    uint256 internal constant SFT_ID_1 = 272;
-    uint256 internal constant SFT_ID_2 = 273;
-    uint256 internal constant SFT_ID_OF_ANOTHER_SLOT = 263;
+    uint256 internal constant SFT_ID_1 = 2144;
+    uint256 internal constant SFT_ID_2 = 2145;
+    uint256 internal constant SFT_ID_OF_ANOTHER_SLOT = 2146;
 
-    address public admin;
-    address public governor;
-    address public user;
+    address public admin = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
+    address public governor = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
+    address public user = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
 
     SftWrappedTokenFactory public factory;
     SftWrappedToken public swt;
 
     function setUp() public virtual {
-        admin = vm.envAddress("ADMIN");
-        governor = vm.envAddress("GOVERNOR");
-        user = vm.envAddress("USER");
-
         vm.startPrank(admin);
         factory = new SftWrappedTokenFactory(governor);
         SftWrappedToken swtImpl = new SftWrappedToken();

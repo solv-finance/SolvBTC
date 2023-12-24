@@ -85,18 +85,22 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         returns (bytes4) 
     {
         address fromSftOwner = IERC3525(wrappedSftAddress).ownerOf(fromSftId_);
-        if (fromSftOwner != address(this)) {
-            require(value_ > 0, "SftWrappedToken: mint zero not allowed");
-            if (holdingValueSftId == 0) {
-                require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");
-                require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not owned sft id");
-                holdingValueSftId = sftId_;
-            } else {
-                require(holdingValueSftId == sftId_, "SftWrappedToken: not holding value sft id");
-            }
 
-            _mint(fromSftOwner, value_);
+        if (fromSftOwner == address(this)) {
+            return IERC3525Receiver.onERC3525Received.selector;
         }
+
+        require(value_ > 0, "SftWrappedToken: mint zero not allowed");
+        if (holdingValueSftId == 0) {
+            require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");
+            require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not owned sft id");
+            holdingValueSftId = sftId_;
+        } else {
+            require(holdingValueSftId == sftId_, "SftWrappedToken: not holding value sft id");
+        }
+
+        _mint(fromSftOwner, value_);
+
         return IERC3525Receiver.onERC3525Received.selector;
     }
 
@@ -107,6 +111,12 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         returns (bytes4) 
     {
         require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");
+       require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not owned sft id");
+
+        if (from_ == address(this)) {
+            return IERC721Receiver.onERC721Received.selector;
+        }
+
         uint256 sftValue = IERC3525(wrappedSftAddress).balanceOf(sftId_);
         require(sftValue > 0, "SftWrappedToken: mint zero not allowed");
 
@@ -153,8 +163,8 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
                 ERC3525TransferHelper.doTransferOut(wrappedSftAddress, msg.sender, toSftId_);
             }
         } else {
-            require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not sft owner");
             require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: slot does not match");
+            require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not sft owner");
             ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingValueSftId, sftId_, amount_);
             toSftId_ = sftId_;
         }
