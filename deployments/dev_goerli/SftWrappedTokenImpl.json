@@ -1,0 +1,844 @@
+{
+  "address": "0x73FfC7D01e1C8c2A13B84cEc35c5E352bddE6BBc",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "allowance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "needed",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC20InsufficientAllowance",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "needed",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC20InsufficientBalance",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC20InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC20InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC20InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC20InvalidSpender",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidInitialization",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotInitializing",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        }
+      ],
+      "name": "allowance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sftId_",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "toSftId_",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "decimals",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSharesByValue",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "shares",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "shares",
+          "type": "uint256"
+        }
+      ],
+      "name": "getValueByShares",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "holdingValueSftId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "name_",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "symbol_",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "wrappedSftAddress_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "wrappedSftSlot_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "navOracle_",
+          "type": "address"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "sftId_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount_",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "navOracle",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "fromSftId_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sftId_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "name": "onERC3525Received",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "from_",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "sftId_",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "name": "onERC721Received",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "transfer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "underlyingAsset",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "wrappedSftAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "wrappedSftSlot",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x46e043a3c885951f80428fb0efdd2ac903b3b85e967de3f2522174d7dfad6654",
+  "receipt": {
+    "to": null,
+    "from": "0x4b2e4cAc67786778c79beCcC8c800E325Ab3bDDa",
+    "contractAddress": "0x73FfC7D01e1C8c2A13B84cEc35c5E352bddE6BBc",
+    "transactionIndex": 58,
+    "gasUsed": "2188131",
+    "logsBloom": "0x00000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000080000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000020000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xc38a6d547f0d273111a59e0bc99baee676dff1e91277e16748a6170e918d9667",
+    "transactionHash": "0x46e043a3c885951f80428fb0efdd2ac903b3b85e967de3f2522174d7dfad6654",
+    "logs": [
+      {
+        "transactionIndex": 58,
+        "blockNumber": 10276916,
+        "transactionHash": "0x46e043a3c885951f80428fb0efdd2ac903b3b85e967de3f2522174d7dfad6654",
+        "address": "0x73FfC7D01e1C8c2A13B84cEc35c5E352bddE6BBc",
+        "topics": [
+          "0xc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2"
+        ],
+        "data": "0x000000000000000000000000000000000000000000000000ffffffffffffffff",
+        "logIndex": 22,
+        "blockHash": "0xc38a6d547f0d273111a59e0bc99baee676dff1e91277e16748a6170e918d9667"
+      }
+    ],
+    "blockNumber": 10276916,
+    "cumulativeGasUsed": "5049578",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "25dc3e5f156b2c0fcf5707fc4e15b206",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"allowance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientAllowance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"balance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"needed\",\"type\":\"uint256\"}],\"name\":\"ERC20InsufficientBalance\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"approver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidApprover\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"receiver\",\"type\":\"address\"}],\"name\":\"ERC20InvalidReceiver\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSender\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"ERC20InvalidSpender\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ReentrancyGuardReentrantCall\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"spender\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"sftId_\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"toSftId_\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"getSharesByValue\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"shares\",\"type\":\"uint256\"}],\"name\":\"getValueByShares\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"holdingValueSftId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name_\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol_\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"wrappedSftAddress_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"wrappedSftSlot_\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"navOracle_\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"sftId_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount_\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"navOracle\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"fromSftId_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"sftId_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"value_\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC3525Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"from_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"sftId_\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"name\":\"onERC721Received\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"underlyingAsset\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wrappedSftAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"wrappedSftSlot\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"errors\":{\"ERC20InsufficientAllowance(address,uint256,uint256)\":[{\"details\":\"Indicates a failure with the `spender`\\u2019s `allowance`. Used in transfers.\",\"params\":{\"allowance\":\"Amount of tokens a `spender` is allowed to operate with.\",\"needed\":\"Minimum amount required to perform a transfer.\",\"spender\":\"Address that may be allowed to operate on tokens without being their owner.\"}}],\"ERC20InsufficientBalance(address,uint256,uint256)\":[{\"details\":\"Indicates an error related to the current `balance` of a `sender`. Used in transfers.\",\"params\":{\"balance\":\"Current balance for the interacting account.\",\"needed\":\"Minimum amount required to perform a transfer.\",\"sender\":\"Address whose tokens are being transferred.\"}}],\"ERC20InvalidApprover(address)\":[{\"details\":\"Indicates a failure with the `approver` of a token to be approved. Used in approvals.\",\"params\":{\"approver\":\"Address initiating an approval operation.\"}}],\"ERC20InvalidReceiver(address)\":[{\"details\":\"Indicates a failure with the token `receiver`. Used in transfers.\",\"params\":{\"receiver\":\"Address to which tokens are being transferred.\"}}],\"ERC20InvalidSender(address)\":[{\"details\":\"Indicates a failure with the token `sender`. Used in transfers.\",\"params\":{\"sender\":\"Address whose tokens are being transferred.\"}}],\"ERC20InvalidSpender(address)\":[{\"details\":\"Indicates a failure with the `spender` to be approved. Used in approvals.\",\"params\":{\"spender\":\"Address that may be allowed to operate on tokens without being their owner.\"}}],\"InvalidInitialization()\":[{\"details\":\"The contract is already initialized.\"}],\"NotInitializing()\":[{\"details\":\"The contract is not initializing.\"}],\"ReentrancyGuardReentrantCall()\":[{\"details\":\"Unauthorized reentrant call.\"}]},\"events\":{\"Approval(address,address,uint256)\":{\"details\":\"Emitted when the allowance of a `spender` for an `owner` is set by a call to {approve}. `value` is the new allowance.\"},\"Initialized(uint64)\":{\"details\":\"Triggered when the contract has been initialized or reinitialized.\"},\"Transfer(address,address,uint256)\":{\"details\":\"Emitted when `value` tokens are moved from one account (`from`) to another (`to`). Note that `value` may be zero.\"}},\"kind\":\"dev\",\"methods\":{\"allowance(address,address)\":{\"details\":\"See {IERC20-allowance}.\"},\"approve(address,uint256)\":{\"details\":\"See {IERC20-approve}. NOTE: If `value` is the maximum `uint256`, the allowance is not updated on `transferFrom`. This is semantically equivalent to an infinite approval. Requirements: - `spender` cannot be the zero address.\"},\"balanceOf(address)\":{\"details\":\"See {IERC20-balanceOf}.\"},\"constructor\":{\"custom:oz-upgrades-unsafe-allow\":\"constructor\"},\"decimals()\":{\"details\":\"Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the default value returned by this function, unless it's overridden. NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}.\"},\"name()\":{\"details\":\"Returns the name of the token.\"},\"supportsInterface(bytes4)\":{\"details\":\"Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas.\"},\"symbol()\":{\"details\":\"Returns the symbol of the token, usually a shorter version of the name.\"},\"totalSupply()\":{\"details\":\"See {IERC20-totalSupply}.\"},\"transfer(address,uint256)\":{\"details\":\"See {IERC20-transfer}. Requirements: - `to` cannot be the zero address. - the caller must have a balance of at least `value`.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. NOTE: Does not update the allowance if the current allowance is the maximum `uint256`. Requirements: - `from` and `to` cannot be the zero address. - `from` must have a balance of at least `value`. - the caller must have allowance for ``from``'s tokens of at least `value`.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getSharesByValue(uint256)\":{\"notice\":\"Get amount of shares for a given amount of underlying asset.\"},\"getValueByShares(uint256)\":{\"notice\":\"Get amount of underlying asset for a given amount of shares.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/SftWrappedToken.sol\":\"SftWrappedToken\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (proxy/utils/Initializable.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed\\n * behind a proxy. Since proxied contracts do not make use of a constructor, it's common to move constructor logic to an\\n * external initializer function, usually called `initialize`. It then becomes necessary to protect this initializer\\n * function so it can only be called once. The {initializer} modifier provided by this contract will have this effect.\\n *\\n * The initialization functions use a version number. Once a version number is used, it is consumed and cannot be\\n * reused. This mechanism prevents re-execution of each \\\"step\\\" but allows the creation of new initialization steps in\\n * case an upgrade adds a module that needs to be initialized.\\n *\\n * For example:\\n *\\n * [.hljs-theme-light.nopadding]\\n * ```solidity\\n * contract MyToken is ERC20Upgradeable {\\n *     function initialize() initializer public {\\n *         __ERC20_init(\\\"MyToken\\\", \\\"MTK\\\");\\n *     }\\n * }\\n *\\n * contract MyTokenV2 is MyToken, ERC20PermitUpgradeable {\\n *     function initializeV2() reinitializer(2) public {\\n *         __ERC20Permit_init(\\\"MyToken\\\");\\n *     }\\n * }\\n * ```\\n *\\n * TIP: To avoid leaving the proxy in an uninitialized state, the initializer function should be called as early as\\n * possible by providing the encoded function call as the `_data` argument to {ERC1967Proxy-constructor}.\\n *\\n * CAUTION: When used with inheritance, manual care must be taken to not invoke a parent initializer twice, or to ensure\\n * that all initializers are idempotent. This is not verified automatically as constructors are by Solidity.\\n *\\n * [CAUTION]\\n * ====\\n * Avoid leaving a contract uninitialized.\\n *\\n * An uninitialized contract can be taken over by an attacker. This applies to both a proxy and its implementation\\n * contract, which may impact the proxy. To prevent the implementation contract from being used, you should invoke\\n * the {_disableInitializers} function in the constructor to automatically lock it when it is deployed:\\n *\\n * [.hljs-theme-light.nopadding]\\n * ```\\n * /// @custom:oz-upgrades-unsafe-allow constructor\\n * constructor() {\\n *     _disableInitializers();\\n * }\\n * ```\\n * ====\\n */\\nabstract contract Initializable {\\n    /**\\n     * @dev Storage of the initializable contract.\\n     *\\n     * It's implemented on a custom ERC-7201 namespace to reduce the risk of storage collisions\\n     * when using with upgradeable contracts.\\n     *\\n     * @custom:storage-location erc7201:openzeppelin.storage.Initializable\\n     */\\n    struct InitializableStorage {\\n        /**\\n         * @dev Indicates that the contract has been initialized.\\n         */\\n        uint64 _initialized;\\n        /**\\n         * @dev Indicates that the contract is in the process of being initialized.\\n         */\\n        bool _initializing;\\n    }\\n\\n    // keccak256(abi.encode(uint256(keccak256(\\\"openzeppelin.storage.Initializable\\\")) - 1)) & ~bytes32(uint256(0xff))\\n    bytes32 private constant INITIALIZABLE_STORAGE = 0xf0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00;\\n\\n    /**\\n     * @dev The contract is already initialized.\\n     */\\n    error InvalidInitialization();\\n\\n    /**\\n     * @dev The contract is not initializing.\\n     */\\n    error NotInitializing();\\n\\n    /**\\n     * @dev Triggered when the contract has been initialized or reinitialized.\\n     */\\n    event Initialized(uint64 version);\\n\\n    /**\\n     * @dev A modifier that defines a protected initializer function that can be invoked at most once. In its scope,\\n     * `onlyInitializing` functions can be used to initialize parent contracts.\\n     *\\n     * Similar to `reinitializer(1)`, except that in the context of a constructor an `initializer` may be invoked any\\n     * number of times. This behavior in the constructor can be useful during testing and is not expected to be used in\\n     * production.\\n     *\\n     * Emits an {Initialized} event.\\n     */\\n    modifier initializer() {\\n        // solhint-disable-next-line var-name-mixedcase\\n        InitializableStorage storage $ = _getInitializableStorage();\\n\\n        // Cache values to avoid duplicated sloads\\n        bool isTopLevelCall = !$._initializing;\\n        uint64 initialized = $._initialized;\\n\\n        // Allowed calls:\\n        // - initialSetup: the contract is not in the initializing state and no previous version was\\n        //                 initialized\\n        // - construction: the contract is initialized at version 1 (no reininitialization) and the\\n        //                 current contract is just being deployed\\n        bool initialSetup = initialized == 0 && isTopLevelCall;\\n        bool construction = initialized == 1 && address(this).code.length == 0;\\n\\n        if (!initialSetup && !construction) {\\n            revert InvalidInitialization();\\n        }\\n        $._initialized = 1;\\n        if (isTopLevelCall) {\\n            $._initializing = true;\\n        }\\n        _;\\n        if (isTopLevelCall) {\\n            $._initializing = false;\\n            emit Initialized(1);\\n        }\\n    }\\n\\n    /**\\n     * @dev A modifier that defines a protected reinitializer function that can be invoked at most once, and only if the\\n     * contract hasn't been initialized to a greater version before. In its scope, `onlyInitializing` functions can be\\n     * used to initialize parent contracts.\\n     *\\n     * A reinitializer may be used after the original initialization step. This is essential to configure modules that\\n     * are added through upgrades and that require initialization.\\n     *\\n     * When `version` is 1, this modifier is similar to `initializer`, except that functions marked with `reinitializer`\\n     * cannot be nested. If one is invoked in the context of another, execution will revert.\\n     *\\n     * Note that versions can jump in increments greater than 1; this implies that if multiple reinitializers coexist in\\n     * a contract, executing them in the right order is up to the developer or operator.\\n     *\\n     * WARNING: Setting the version to 2**64 - 1 will prevent any future reinitialization.\\n     *\\n     * Emits an {Initialized} event.\\n     */\\n    modifier reinitializer(uint64 version) {\\n        // solhint-disable-next-line var-name-mixedcase\\n        InitializableStorage storage $ = _getInitializableStorage();\\n\\n        if ($._initializing || $._initialized >= version) {\\n            revert InvalidInitialization();\\n        }\\n        $._initialized = version;\\n        $._initializing = true;\\n        _;\\n        $._initializing = false;\\n        emit Initialized(version);\\n    }\\n\\n    /**\\n     * @dev Modifier to protect an initialization function so that it can only be invoked by functions with the\\n     * {initializer} and {reinitializer} modifiers, directly or indirectly.\\n     */\\n    modifier onlyInitializing() {\\n        _checkInitializing();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Reverts if the contract is not in an initializing state. See {onlyInitializing}.\\n     */\\n    function _checkInitializing() internal view virtual {\\n        if (!_isInitializing()) {\\n            revert NotInitializing();\\n        }\\n    }\\n\\n    /**\\n     * @dev Locks the contract, preventing any future reinitialization. This cannot be part of an initializer call.\\n     * Calling this in the constructor of a contract will prevent that contract from being initialized or reinitialized\\n     * to any version. It is recommended to use this to lock implementation contracts that are designed to be called\\n     * through proxies.\\n     *\\n     * Emits an {Initialized} event the first time it is successfully executed.\\n     */\\n    function _disableInitializers() internal virtual {\\n        // solhint-disable-next-line var-name-mixedcase\\n        InitializableStorage storage $ = _getInitializableStorage();\\n\\n        if ($._initializing) {\\n            revert InvalidInitialization();\\n        }\\n        if ($._initialized != type(uint64).max) {\\n            $._initialized = type(uint64).max;\\n            emit Initialized(type(uint64).max);\\n        }\\n    }\\n\\n    /**\\n     * @dev Returns the highest version that has been initialized. See {reinitializer}.\\n     */\\n    function _getInitializedVersion() internal view returns (uint64) {\\n        return _getInitializableStorage()._initialized;\\n    }\\n\\n    /**\\n     * @dev Returns `true` if the contract is currently initializing. See {onlyInitializing}.\\n     */\\n    function _isInitializing() internal view returns (bool) {\\n        return _getInitializableStorage()._initializing;\\n    }\\n\\n    /**\\n     * @dev Returns a pointer to the storage namespace.\\n     */\\n    // solhint-disable-next-line var-name-mixedcase\\n    function _getInitializableStorage() private pure returns (InitializableStorage storage $) {\\n        assembly {\\n            $.slot := INITIALIZABLE_STORAGE\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x631188737069917d2f909d29ce62c4d48611d326686ba6683e26b72a23bfac0b\",\"license\":\"MIT\"},\"@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/ERC20.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {IERC20} from \\\"@openzeppelin/contracts/token/ERC20/IERC20.sol\\\";\\nimport {IERC20Metadata} from \\\"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol\\\";\\nimport {ContextUpgradeable} from \\\"../../utils/ContextUpgradeable.sol\\\";\\nimport {IERC20Errors} from \\\"@openzeppelin/contracts/interfaces/draft-IERC6093.sol\\\";\\nimport {Initializable} from \\\"../../proxy/utils/Initializable.sol\\\";\\n\\n/**\\n * @dev Implementation of the {IERC20} interface.\\n *\\n * This implementation is agnostic to the way tokens are created. This means\\n * that a supply mechanism has to be added in a derived contract using {_mint}.\\n *\\n * TIP: For a detailed writeup see our guide\\n * https://forum.openzeppelin.com/t/how-to-implement-erc20-supply-mechanisms/226[How\\n * to implement supply mechanisms].\\n *\\n * The default value of {decimals} is 18. To change this, you should override\\n * this function so it returns a different value.\\n *\\n * We have followed general OpenZeppelin Contracts guidelines: functions revert\\n * instead returning `false` on failure. This behavior is nonetheless\\n * conventional and does not conflict with the expectations of ERC20\\n * applications.\\n *\\n * Additionally, an {Approval} event is emitted on calls to {transferFrom}.\\n * This allows applications to reconstruct the allowance for all accounts just\\n * by listening to said events. Other implementations of the EIP may not emit\\n * these events, as it isn't required by the specification.\\n */\\nabstract contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20, IERC20Metadata, IERC20Errors {\\n    /// @custom:storage-location erc7201:openzeppelin.storage.ERC20\\n    struct ERC20Storage {\\n        mapping(address account => uint256) _balances;\\n\\n        mapping(address account => mapping(address spender => uint256)) _allowances;\\n\\n        uint256 _totalSupply;\\n\\n        string _name;\\n        string _symbol;\\n    }\\n\\n    // keccak256(abi.encode(uint256(keccak256(\\\"openzeppelin.storage.ERC20\\\")) - 1)) & ~bytes32(uint256(0xff))\\n    bytes32 private constant ERC20StorageLocation = 0x52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace00;\\n\\n    function _getERC20Storage() private pure returns (ERC20Storage storage $) {\\n        assembly {\\n            $.slot := ERC20StorageLocation\\n        }\\n    }\\n\\n    /**\\n     * @dev Sets the values for {name} and {symbol}.\\n     *\\n     * All two of these values are immutable: they can only be set once during\\n     * construction.\\n     */\\n    function __ERC20_init(string memory name_, string memory symbol_) internal onlyInitializing {\\n        __ERC20_init_unchained(name_, symbol_);\\n    }\\n\\n    function __ERC20_init_unchained(string memory name_, string memory symbol_) internal onlyInitializing {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        $._name = name_;\\n        $._symbol = symbol_;\\n    }\\n\\n    /**\\n     * @dev Returns the name of the token.\\n     */\\n    function name() public view virtual returns (string memory) {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        return $._name;\\n    }\\n\\n    /**\\n     * @dev Returns the symbol of the token, usually a shorter version of the\\n     * name.\\n     */\\n    function symbol() public view virtual returns (string memory) {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        return $._symbol;\\n    }\\n\\n    /**\\n     * @dev Returns the number of decimals used to get its user representation.\\n     * For example, if `decimals` equals `2`, a balance of `505` tokens should\\n     * be displayed to a user as `5.05` (`505 / 10 ** 2`).\\n     *\\n     * Tokens usually opt for a value of 18, imitating the relationship between\\n     * Ether and Wei. This is the default value returned by this function, unless\\n     * it's overridden.\\n     *\\n     * NOTE: This information is only used for _display_ purposes: it in\\n     * no way affects any of the arithmetic of the contract, including\\n     * {IERC20-balanceOf} and {IERC20-transfer}.\\n     */\\n    function decimals() public view virtual returns (uint8) {\\n        return 18;\\n    }\\n\\n    /**\\n     * @dev See {IERC20-totalSupply}.\\n     */\\n    function totalSupply() public view virtual returns (uint256) {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        return $._totalSupply;\\n    }\\n\\n    /**\\n     * @dev See {IERC20-balanceOf}.\\n     */\\n    function balanceOf(address account) public view virtual returns (uint256) {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        return $._balances[account];\\n    }\\n\\n    /**\\n     * @dev See {IERC20-transfer}.\\n     *\\n     * Requirements:\\n     *\\n     * - `to` cannot be the zero address.\\n     * - the caller must have a balance of at least `value`.\\n     */\\n    function transfer(address to, uint256 value) public virtual returns (bool) {\\n        address owner = _msgSender();\\n        _transfer(owner, to, value);\\n        return true;\\n    }\\n\\n    /**\\n     * @dev See {IERC20-allowance}.\\n     */\\n    function allowance(address owner, address spender) public view virtual returns (uint256) {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        return $._allowances[owner][spender];\\n    }\\n\\n    /**\\n     * @dev See {IERC20-approve}.\\n     *\\n     * NOTE: If `value` is the maximum `uint256`, the allowance is not updated on\\n     * `transferFrom`. This is semantically equivalent to an infinite approval.\\n     *\\n     * Requirements:\\n     *\\n     * - `spender` cannot be the zero address.\\n     */\\n    function approve(address spender, uint256 value) public virtual returns (bool) {\\n        address owner = _msgSender();\\n        _approve(owner, spender, value);\\n        return true;\\n    }\\n\\n    /**\\n     * @dev See {IERC20-transferFrom}.\\n     *\\n     * Emits an {Approval} event indicating the updated allowance. This is not\\n     * required by the EIP. See the note at the beginning of {ERC20}.\\n     *\\n     * NOTE: Does not update the allowance if the current allowance\\n     * is the maximum `uint256`.\\n     *\\n     * Requirements:\\n     *\\n     * - `from` and `to` cannot be the zero address.\\n     * - `from` must have a balance of at least `value`.\\n     * - the caller must have allowance for ``from``'s tokens of at least\\n     * `value`.\\n     */\\n    function transferFrom(address from, address to, uint256 value) public virtual returns (bool) {\\n        address spender = _msgSender();\\n        _spendAllowance(from, spender, value);\\n        _transfer(from, to, value);\\n        return true;\\n    }\\n\\n    /**\\n     * @dev Moves a `value` amount of tokens from `from` to `to`.\\n     *\\n     * This internal function is equivalent to {transfer}, and can be used to\\n     * e.g. implement automatic token fees, slashing mechanisms, etc.\\n     *\\n     * Emits a {Transfer} event.\\n     *\\n     * NOTE: This function is not virtual, {_update} should be overridden instead.\\n     */\\n    function _transfer(address from, address to, uint256 value) internal {\\n        if (from == address(0)) {\\n            revert ERC20InvalidSender(address(0));\\n        }\\n        if (to == address(0)) {\\n            revert ERC20InvalidReceiver(address(0));\\n        }\\n        _update(from, to, value);\\n    }\\n\\n    /**\\n     * @dev Transfers a `value` amount of tokens from `from` to `to`, or alternatively mints (or burns) if `from`\\n     * (or `to`) is the zero address. All customizations to transfers, mints, and burns should be done by overriding\\n     * this function.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function _update(address from, address to, uint256 value) internal virtual {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        if (from == address(0)) {\\n            // Overflow check required: The rest of the code assumes that totalSupply never overflows\\n            $._totalSupply += value;\\n        } else {\\n            uint256 fromBalance = $._balances[from];\\n            if (fromBalance < value) {\\n                revert ERC20InsufficientBalance(from, fromBalance, value);\\n            }\\n            unchecked {\\n                // Overflow not possible: value <= fromBalance <= totalSupply.\\n                $._balances[from] = fromBalance - value;\\n            }\\n        }\\n\\n        if (to == address(0)) {\\n            unchecked {\\n                // Overflow not possible: value <= totalSupply or value <= fromBalance <= totalSupply.\\n                $._totalSupply -= value;\\n            }\\n        } else {\\n            unchecked {\\n                // Overflow not possible: balance + value is at most totalSupply, which we know fits into a uint256.\\n                $._balances[to] += value;\\n            }\\n        }\\n\\n        emit Transfer(from, to, value);\\n    }\\n\\n    /**\\n     * @dev Creates a `value` amount of tokens and assigns them to `account`, by transferring it from address(0).\\n     * Relies on the `_update` mechanism\\n     *\\n     * Emits a {Transfer} event with `from` set to the zero address.\\n     *\\n     * NOTE: This function is not virtual, {_update} should be overridden instead.\\n     */\\n    function _mint(address account, uint256 value) internal {\\n        if (account == address(0)) {\\n            revert ERC20InvalidReceiver(address(0));\\n        }\\n        _update(address(0), account, value);\\n    }\\n\\n    /**\\n     * @dev Destroys a `value` amount of tokens from `account`, lowering the total supply.\\n     * Relies on the `_update` mechanism.\\n     *\\n     * Emits a {Transfer} event with `to` set to the zero address.\\n     *\\n     * NOTE: This function is not virtual, {_update} should be overridden instead\\n     */\\n    function _burn(address account, uint256 value) internal {\\n        if (account == address(0)) {\\n            revert ERC20InvalidSender(address(0));\\n        }\\n        _update(account, address(0), value);\\n    }\\n\\n    /**\\n     * @dev Sets `value` as the allowance of `spender` over the `owner` s tokens.\\n     *\\n     * This internal function is equivalent to `approve`, and can be used to\\n     * e.g. set automatic allowances for certain subsystems, etc.\\n     *\\n     * Emits an {Approval} event.\\n     *\\n     * Requirements:\\n     *\\n     * - `owner` cannot be the zero address.\\n     * - `spender` cannot be the zero address.\\n     *\\n     * Overrides to this logic should be done to the variant with an additional `bool emitEvent` argument.\\n     */\\n    function _approve(address owner, address spender, uint256 value) internal {\\n        _approve(owner, spender, value, true);\\n    }\\n\\n    /**\\n     * @dev Variant of {_approve} with an optional flag to enable or disable the {Approval} event.\\n     *\\n     * By default (when calling {_approve}) the flag is set to true. On the other hand, approval changes made by\\n     * `_spendAllowance` during the `transferFrom` operation set the flag to false. This saves gas by not emitting any\\n     * `Approval` event during `transferFrom` operations.\\n     *\\n     * Anyone who wishes to continue emitting `Approval` events on the`transferFrom` operation can force the flag to\\n     * true using the following override:\\n     * ```\\n     * function _approve(address owner, address spender, uint256 value, bool) internal virtual override {\\n     *     super._approve(owner, spender, value, true);\\n     * }\\n     * ```\\n     *\\n     * Requirements are the same as {_approve}.\\n     */\\n    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal virtual {\\n        ERC20Storage storage $ = _getERC20Storage();\\n        if (owner == address(0)) {\\n            revert ERC20InvalidApprover(address(0));\\n        }\\n        if (spender == address(0)) {\\n            revert ERC20InvalidSpender(address(0));\\n        }\\n        $._allowances[owner][spender] = value;\\n        if (emitEvent) {\\n            emit Approval(owner, spender, value);\\n        }\\n    }\\n\\n    /**\\n     * @dev Updates `owner` s allowance for `spender` based on spent `value`.\\n     *\\n     * Does not update the allowance value in case of infinite allowance.\\n     * Revert if not enough allowance is available.\\n     *\\n     * Does not emit an {Approval} event.\\n     */\\n    function _spendAllowance(address owner, address spender, uint256 value) internal virtual {\\n        uint256 currentAllowance = allowance(owner, spender);\\n        if (currentAllowance != type(uint256).max) {\\n            if (currentAllowance < value) {\\n                revert ERC20InsufficientAllowance(spender, currentAllowance, value);\\n            }\\n            unchecked {\\n                _approve(owner, spender, currentAllowance - value, false);\\n            }\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x9a1766b1921bf91b3e61eb53c7a6e70725254befd4bdcbbcd3af40bd9f66856f\",\"license\":\"MIT\"},\"@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\\n\\npragma solidity ^0.8.20;\\nimport {Initializable} from \\\"../proxy/utils/Initializable.sol\\\";\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract ContextUpgradeable is Initializable {\\n    function __Context_init() internal onlyInitializing {\\n    }\\n\\n    function __Context_init_unchained() internal onlyInitializing {\\n    }\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n\\n    function _contextSuffixLength() internal view virtual returns (uint256) {\\n        return 0;\\n    }\\n}\\n\",\"keccak256\":\"0xdbef5f0c787055227243a7318ef74c8a5a1108ca3a07f2b3a00ef67769e1e397\",\"license\":\"MIT\"},\"@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (utils/ReentrancyGuard.sol)\\n\\npragma solidity ^0.8.20;\\nimport {Initializable} from \\\"../proxy/utils/Initializable.sol\\\";\\n\\n/**\\n * @dev Contract module that helps prevent reentrant calls to a function.\\n *\\n * Inheriting from `ReentrancyGuard` will make the {nonReentrant} modifier\\n * available, which can be applied to functions to make sure there are no nested\\n * (reentrant) calls to them.\\n *\\n * Note that because there is a single `nonReentrant` guard, functions marked as\\n * `nonReentrant` may not call one another. This can be worked around by making\\n * those functions `private`, and then adding `external` `nonReentrant` entry\\n * points to them.\\n *\\n * TIP: If you would like to learn more about reentrancy and alternative ways\\n * to protect against it, check out our blog post\\n * https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul].\\n */\\nabstract contract ReentrancyGuardUpgradeable is Initializable {\\n    // Booleans are more expensive than uint256 or any type that takes up a full\\n    // word because each write operation emits an extra SLOAD to first read the\\n    // slot's contents, replace the bits taken up by the boolean, and then write\\n    // back. This is the compiler's defense against contract upgrades and\\n    // pointer aliasing, and it cannot be disabled.\\n\\n    // The values being non-zero value makes deployment a bit more expensive,\\n    // but in exchange the refund on every call to nonReentrant will be lower in\\n    // amount. Since refunds are capped to a percentage of the total\\n    // transaction's gas, it is best to keep them low in cases like this one, to\\n    // increase the likelihood of the full refund coming into effect.\\n    uint256 private constant NOT_ENTERED = 1;\\n    uint256 private constant ENTERED = 2;\\n\\n    /// @custom:storage-location erc7201:openzeppelin.storage.ReentrancyGuard\\n    struct ReentrancyGuardStorage {\\n        uint256 _status;\\n    }\\n\\n    // keccak256(abi.encode(uint256(keccak256(\\\"openzeppelin.storage.ReentrancyGuard\\\")) - 1)) & ~bytes32(uint256(0xff))\\n    bytes32 private constant ReentrancyGuardStorageLocation = 0x9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f00;\\n\\n    function _getReentrancyGuardStorage() private pure returns (ReentrancyGuardStorage storage $) {\\n        assembly {\\n            $.slot := ReentrancyGuardStorageLocation\\n        }\\n    }\\n\\n    /**\\n     * @dev Unauthorized reentrant call.\\n     */\\n    error ReentrancyGuardReentrantCall();\\n\\n    function __ReentrancyGuard_init() internal onlyInitializing {\\n        __ReentrancyGuard_init_unchained();\\n    }\\n\\n    function __ReentrancyGuard_init_unchained() internal onlyInitializing {\\n        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();\\n        $._status = NOT_ENTERED;\\n    }\\n\\n    /**\\n     * @dev Prevents a contract from calling itself, directly or indirectly.\\n     * Calling a `nonReentrant` function from another `nonReentrant`\\n     * function is not supported. It is possible to prevent this from happening\\n     * by making the `nonReentrant` function external, and making it call a\\n     * `private` function that does the actual work.\\n     */\\n    modifier nonReentrant() {\\n        _nonReentrantBefore();\\n        _;\\n        _nonReentrantAfter();\\n    }\\n\\n    function _nonReentrantBefore() private {\\n        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();\\n        // On the first call to nonReentrant, _status will be NOT_ENTERED\\n        if ($._status == ENTERED) {\\n            revert ReentrancyGuardReentrantCall();\\n        }\\n\\n        // Any calls to nonReentrant after this point will fail\\n        $._status = ENTERED;\\n    }\\n\\n    function _nonReentrantAfter() private {\\n        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();\\n        // By storing the original value once again, a refund is triggered (see\\n        // https://eips.ethereum.org/EIPS/eip-2200)\\n        $._status = NOT_ENTERED;\\n    }\\n\\n    /**\\n     * @dev Returns true if the reentrancy guard is currently set to \\\"entered\\\", which indicates there is a\\n     * `nonReentrant` function in the call stack.\\n     */\\n    function _reentrancyGuardEntered() internal view returns (bool) {\\n        ReentrancyGuardStorage storage $ = _getReentrancyGuardStorage();\\n        return $._status == ENTERED;\\n    }\\n}\\n\",\"keccak256\":\"0xb44e086e941292cdc7f440de51478493894ef0b1aeccb0c4047445919f667f74\",\"license\":\"MIT\"},\"@openzeppelin/contracts/interfaces/draft-IERC6093.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (interfaces/draft-IERC6093.sol)\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Standard ERC20 Errors\\n * Interface of the https://eips.ethereum.org/EIPS/eip-6093[ERC-6093] custom errors for ERC20 tokens.\\n */\\ninterface IERC20Errors {\\n    /**\\n     * @dev Indicates an error related to the current `balance` of a `sender`. Used in transfers.\\n     * @param sender Address whose tokens are being transferred.\\n     * @param balance Current balance for the interacting account.\\n     * @param needed Minimum amount required to perform a transfer.\\n     */\\n    error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed);\\n\\n    /**\\n     * @dev Indicates a failure with the token `sender`. Used in transfers.\\n     * @param sender Address whose tokens are being transferred.\\n     */\\n    error ERC20InvalidSender(address sender);\\n\\n    /**\\n     * @dev Indicates a failure with the token `receiver`. Used in transfers.\\n     * @param receiver Address to which tokens are being transferred.\\n     */\\n    error ERC20InvalidReceiver(address receiver);\\n\\n    /**\\n     * @dev Indicates a failure with the `spender`\\u2019s `allowance`. Used in transfers.\\n     * @param spender Address that may be allowed to operate on tokens without being their owner.\\n     * @param allowance Amount of tokens a `spender` is allowed to operate with.\\n     * @param needed Minimum amount required to perform a transfer.\\n     */\\n    error ERC20InsufficientAllowance(address spender, uint256 allowance, uint256 needed);\\n\\n    /**\\n     * @dev Indicates a failure with the `approver` of a token to be approved. Used in approvals.\\n     * @param approver Address initiating an approval operation.\\n     */\\n    error ERC20InvalidApprover(address approver);\\n\\n    /**\\n     * @dev Indicates a failure with the `spender` to be approved. Used in approvals.\\n     * @param spender Address that may be allowed to operate on tokens without being their owner.\\n     */\\n    error ERC20InvalidSpender(address spender);\\n}\\n\\n/**\\n * @dev Standard ERC721 Errors\\n * Interface of the https://eips.ethereum.org/EIPS/eip-6093[ERC-6093] custom errors for ERC721 tokens.\\n */\\ninterface IERC721Errors {\\n    /**\\n     * @dev Indicates that an address can't be an owner. For example, `address(0)` is a forbidden owner in EIP-20.\\n     * Used in balance queries.\\n     * @param owner Address of the current owner of a token.\\n     */\\n    error ERC721InvalidOwner(address owner);\\n\\n    /**\\n     * @dev Indicates a `tokenId` whose `owner` is the zero address.\\n     * @param tokenId Identifier number of a token.\\n     */\\n    error ERC721NonexistentToken(uint256 tokenId);\\n\\n    /**\\n     * @dev Indicates an error related to the ownership over a particular token. Used in transfers.\\n     * @param sender Address whose tokens are being transferred.\\n     * @param tokenId Identifier number of a token.\\n     * @param owner Address of the current owner of a token.\\n     */\\n    error ERC721IncorrectOwner(address sender, uint256 tokenId, address owner);\\n\\n    /**\\n     * @dev Indicates a failure with the token `sender`. Used in transfers.\\n     * @param sender Address whose tokens are being transferred.\\n     */\\n    error ERC721InvalidSender(address sender);\\n\\n    /**\\n     * @dev Indicates a failure with the token `receiver`. Used in transfers.\\n     * @param receiver Address to which tokens are being transferred.\\n     */\\n    error ERC721InvalidReceiver(address receiver);\\n\\n    /**\\n     * @dev Indicates a failure with the `operator`\\u2019s approval. Used in transfers.\\n     * @param operator Address that may be allowed to operate on tokens without being their owner.\\n     * @param tokenId Identifier number of a token.\\n     */\\n    error ERC721InsufficientApproval(address operator, uint256 tokenId);\\n\\n    /**\\n     * @dev Indicates a failure with the `approver` of a token to be approved. Used in approvals.\\n     * @param approver Address initiating an approval operation.\\n     */\\n    error ERC721InvalidApprover(address approver);\\n\\n    /**\\n     * @dev Indicates a failure with the `operator` to be approved. Used in approvals.\\n     * @param operator Address that may be allowed to operate on tokens without being their owner.\\n     */\\n    error ERC721InvalidOperator(address operator);\\n}\\n\\n/**\\n * @dev Standard ERC1155 Errors\\n * Interface of the https://eips.ethereum.org/EIPS/eip-6093[ERC-6093] custom errors for ERC1155 tokens.\\n */\\ninterface IERC1155Errors {\\n    /**\\n     * @dev Indicates an error related to the current `balance` of a `sender`. Used in transfers.\\n     * @param sender Address whose tokens are being transferred.\\n     * @param balance Current balance for the interacting account.\\n     * @param needed Minimum amount required to perform a transfer.\\n     * @param tokenId Identifier number of a token.\\n     */\\n    error ERC1155InsufficientBalance(address sender, uint256 balance, uint256 needed, uint256 tokenId);\\n\\n    /**\\n     * @dev Indicates a failure with the token `sender`. Used in transfers.\\n     * @param sender Address whose tokens are being transferred.\\n     */\\n    error ERC1155InvalidSender(address sender);\\n\\n    /**\\n     * @dev Indicates a failure with the token `receiver`. Used in transfers.\\n     * @param receiver Address to which tokens are being transferred.\\n     */\\n    error ERC1155InvalidReceiver(address receiver);\\n\\n    /**\\n     * @dev Indicates a failure with the `operator`\\u2019s approval. Used in transfers.\\n     * @param operator Address that may be allowed to operate on tokens without being their owner.\\n     * @param owner Address of the current owner of a token.\\n     */\\n    error ERC1155MissingApprovalForAll(address operator, address owner);\\n\\n    /**\\n     * @dev Indicates a failure with the `approver` of a token to be approved. Used in approvals.\\n     * @param approver Address initiating an approval operation.\\n     */\\n    error ERC1155InvalidApprover(address approver);\\n\\n    /**\\n     * @dev Indicates a failure with the `operator` to be approved. Used in approvals.\\n     * @param operator Address that may be allowed to operate on tokens without being their owner.\\n     */\\n    error ERC1155InvalidOperator(address operator);\\n\\n    /**\\n     * @dev Indicates an array length mismatch between ids and values in a safeBatchTransferFrom operation.\\n     * Used in batch transfers.\\n     * @param idsLength Length of the array of token identifiers\\n     * @param valuesLength Length of the array of token amounts\\n     */\\n    error ERC1155InvalidArrayLength(uint256 idsLength, uint256 valuesLength);\\n}\\n\",\"keccak256\":\"0x60c65f701957fdd6faea1acb0bb45825791d473693ed9ecb34726fdfaa849dd7\",\"license\":\"MIT\"},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/IERC20.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n\\n    /**\\n     * @dev Returns the value of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the value of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves a `value` amount of tokens from the caller's account to `to`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address to, uint256 value) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets a `value` amount of tokens as the allowance of `spender` over the\\n     * caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 value) external returns (bool);\\n\\n    /**\\n     * @dev Moves a `value` amount of tokens from `from` to `to` using the\\n     * allowance mechanism. `value` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(address from, address to, uint256 value) external returns (bool);\\n}\\n\",\"keccak256\":\"0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70\",\"license\":\"MIT\"},\"@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/extensions/IERC20Metadata.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {IERC20} from \\\"../IERC20.sol\\\";\\n\\n/**\\n * @dev Interface for the optional metadata functions from the ERC20 standard.\\n */\\ninterface IERC20Metadata is IERC20 {\\n    /**\\n     * @dev Returns the name of the token.\\n     */\\n    function name() external view returns (string memory);\\n\\n    /**\\n     * @dev Returns the symbol of the token.\\n     */\\n    function symbol() external view returns (string memory);\\n\\n    /**\\n     * @dev Returns the decimals places of the token.\\n     */\\n    function decimals() external view returns (uint8);\\n}\\n\",\"keccak256\":\"0xaa761817f6cd7892fcf158b3c776b34551cde36f48ff9703d53898bc45a94ea2\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/introspection/IERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (utils/introspection/IERC165.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Interface of the ERC165 standard, as defined in the\\n * https://eips.ethereum.org/EIPS/eip-165[EIP].\\n *\\n * Implementers can declare support of contract interfaces, which can then be\\n * queried by others ({ERC165Checker}).\\n *\\n * For an implementation, see {ERC165}.\\n */\\ninterface IERC165 {\\n    /**\\n     * @dev Returns true if this contract implements the interface defined by\\n     * `interfaceId`. See the corresponding\\n     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]\\n     * to learn more about how these ids are created.\\n     *\\n     * This function call must use less than 30 000 gas.\\n     */\\n    function supportsInterface(bytes4 interfaceId) external view returns (bool);\\n}\\n\",\"keccak256\":\"0x4296879f55019b23e135000eb36896057e7101fb7fb859c5ef690cf14643757b\",\"license\":\"MIT\"},\"contracts/ISftWrappedToken.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\nimport \\\"@openzeppelin/contracts/token/ERC20/IERC20.sol\\\";\\nimport \\\"@openzeppelin/contracts/utils/introspection/IERC165.sol\\\";\\n\\ninterface IERC3525Receiver {\\n    function onERC3525Received(address operator, uint256 fromTokenId, uint256 toTokenId, uint256 value, bytes calldata data) external returns (bytes4);\\n}\\n\\ninterface IERC721Receiver {\\n    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external returns (bytes4);\\n}\\n\\ninterface ISftWrappedToken is IERC20, IERC721Receiver, IERC3525Receiver, IERC165 {\\n\\tfunction mint(uint256 sftId_, uint256 amount_) external;\\n    function burn(uint256 amount_, uint256 sftId_) external returns (uint256 toSftId_);\\n    function getValueByShares(uint256 shares) external view returns (uint256 value);\\n    function getSharesByValue(uint256 value) external view returns (uint256 shares);\\n    function underlyingAsset() external view returns (address underlyingAsset);\\n}\",\"keccak256\":\"0xfea2741a391c83c9df88c7e0bead00cf29ee520f8ff2b822b3a2f499ed333fa4\",\"license\":\"MIT\"},\"contracts/SftWrappedToken.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\nimport \\\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\\\";\\nimport \\\"@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol\\\";\\nimport \\\"@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol\\\";\\nimport \\\"./utils/ERC3525TransferHelper.sol\\\";\\nimport \\\"./ISftWrappedToken.sol\\\";\\n\\nstruct SlotBaseInfo {\\n    address issuer;\\n    address currency;\\n    uint64 valueDate;\\n    uint64 maturity;\\n    uint64 createTime;\\n    bool transferable;\\n    bool isValid;\\n}\\n\\ninterface IERC3525 {\\n    function valueDecimals() external view returns (uint8);\\n    function balanceOf(address owner) external view returns (uint256);\\n    function balanceOf(uint256 sftId) external view returns (uint256);\\n    function ownerOf(uint256 sftId) external view returns (address);\\n    function slotOf(uint256 sftId) external view returns (uint256);\\n}\\n\\ninterface IOpenFundSftDelegate {\\n\\tfunction concrete() external view returns (address);\\n}\\n\\ninterface IOpenFundSftConcrete {\\n\\tfunction slotBaseInfo(uint256 slot) external view returns (SlotBaseInfo memory);\\n}\\n\\ninterface INavOracle {\\n    function getSubscribeNav(bytes32 poolId, uint256 time) external view returns (uint256 nav, uint256 navTime);\\n}\\n\\ncontract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardUpgradeable {\\n\\n    address public wrappedSftAddress;\\n    uint256 public wrappedSftSlot;\\n    address public navOracle;\\n    uint256 public holdingValueSftId;\\n\\n    uint256[] internal _holdingEmptySftIds;\\n\\n    modifier onlyWrappedSft {\\n        require(msg.sender == wrappedSftAddress, \\\"SftWrappedToken: only wrapped sft\\\");\\n        _;\\n    }\\n\\n    /// @custom:oz-upgrades-unsafe-allow constructor\\n    constructor() { \\n        _disableInitializers();\\n    }\\n    \\n    function initialize(\\n        string memory name_, string memory symbol_, \\n        address wrappedSftAddress_, uint256 wrappedSftSlot_, address navOracle_\\n    ) external virtual initializer {\\n        require(wrappedSftAddress_ != address(0), \\\"SftWrappedToken: invalid sft address\\\");\\n        require(wrappedSftSlot_ != 0, \\\"SftWrappedToken: invalid sft slot\\\");\\n        require(navOracle_ != address(0), \\\"SftWrappedToken: invalid nav oracle address\\\");\\n\\n        ERC20Upgradeable.__ERC20_init(name_, symbol_);\\n        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();\\n        wrappedSftAddress = wrappedSftAddress_;\\n        wrappedSftSlot = wrappedSftSlot_;\\n        navOracle = navOracle_;\\n    }\\n\\n    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {\\n        return\\n            interfaceId == type(IERC3525Receiver).interfaceId || \\n            interfaceId == type(IERC721Receiver).interfaceId || \\n            interfaceId == type(IERC165).interfaceId;\\n    }\\n\\n    function decimals() public view virtual override returns (uint8) {\\n        return IERC3525(wrappedSftAddress).valueDecimals();\\n    }\\n\\n    function onERC3525Received(address /* operator_ */, uint256 fromSftId_, uint256 sftId_, uint256 value_, bytes calldata /* data_ */) \\n        external \\n        virtual \\n        override \\n        onlyWrappedSft \\n        returns (bytes4) \\n    {\\n        address fromSftOwner = IERC3525(wrappedSftAddress).ownerOf(fromSftId_);\\n\\n        if (fromSftOwner == address(this)) {\\n            return IERC3525Receiver.onERC3525Received.selector;\\n        }\\n\\n        require(value_ > 0, \\\"SftWrappedToken: mint zero not allowed\\\");\\n        if (holdingValueSftId == 0) {\\n            require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), \\\"SftWrappedToken: unreceivable slot\\\");\\n            require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), \\\"SftWrappedToken: not owned sft id\\\");\\n            holdingValueSftId = sftId_;\\n        } else {\\n            require(holdingValueSftId == sftId_, \\\"SftWrappedToken: not holding value sft id\\\");\\n        }\\n\\n        _mint(fromSftOwner, value_);\\n\\n        return IERC3525Receiver.onERC3525Received.selector;\\n    }\\n\\n    function onERC721Received(address /* operator_ */, address from_, uint256 sftId_, bytes calldata /* data_ */) \\n        external \\n        virtual \\n        override \\n        onlyWrappedSft \\n        returns (bytes4) \\n    {\\n        require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), \\\"SftWrappedToken: unreceivable slot\\\");\\n       require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), \\\"SftWrappedToken: not owned sft id\\\");\\n\\n        if (from_ == address(this)) {\\n            return IERC721Receiver.onERC721Received.selector;\\n        }\\n\\n        uint256 sftValue = IERC3525(wrappedSftAddress).balanceOf(sftId_);\\n        require(sftValue > 0, \\\"SftWrappedToken: mint zero not allowed\\\");\\n\\n        if (holdingValueSftId == 0) {\\n            holdingValueSftId = sftId_;\\n        } else {\\n            ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingValueSftId, sftValue);\\n            _holdingEmptySftIds.push(sftId_);\\n        }\\n        _mint(from_, sftValue);\\n        return IERC721Receiver.onERC721Received.selector;\\n    }\\n\\n    function mint(uint256 sftId_, uint256 amount_) external virtual override nonReentrant {\\n        require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), \\\"SftWrappedToken: slot does not match\\\");\\n        require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), \\\"SftWrappedToken: caller is not sft owner\\\");\\n        require(amount_ > 0, \\\"SftWrappedToken: mint amount cannot be 0\\\");\\n\\n        uint256 sftBalance = IERC3525(wrappedSftAddress).balanceOf(sftId_);\\n        if (amount_ == sftBalance) {\\n            ERC3525TransferHelper.doSafeTransferIn(wrappedSftAddress, msg.sender, sftId_);\\n        } else if (amount_ < sftBalance) {\\n            if (holdingValueSftId == 0) {\\n                holdingValueSftId = ERC3525TransferHelper.doTransferIn(wrappedSftAddress, sftId_, amount_);\\n            } else {\\n                ERC3525TransferHelper.doTransfer(wrappedSftAddress, sftId_, holdingValueSftId, amount_);\\n            }\\n        } else {\\n            revert(\\\"SftWrappedToken: mint amount exceeds sft balance\\\");\\n        }\\n    }\\n\\n    function burn(uint256 amount_, uint256 sftId_) external virtual override nonReentrant returns (uint256 toSftId_) {\\n        require(amount_ > 0, \\\"SftWrappedToken: burn amount cannot be 0\\\");\\n        _burn(msg.sender, amount_);\\n\\n        if (sftId_ == 0) {\\n            if (_holdingEmptySftIds.length == 0) {\\n                toSftId_ = ERC3525TransferHelper.doTransferOut(wrappedSftAddress, holdingValueSftId, msg.sender, amount_);\\n            } else {\\n                toSftId_ = _holdingEmptySftIds[_holdingEmptySftIds.length - 1];\\n                _holdingEmptySftIds.pop();\\n                ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingValueSftId, toSftId_, amount_);\\n                ERC3525TransferHelper.doTransferOut(wrappedSftAddress, msg.sender, toSftId_);\\n            }\\n        } else {\\n            require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), \\\"SftWrappedToken: slot does not match\\\");\\n            require(msg.sender == IERC3525(wrappedSftAddress).ownerOf(sftId_), \\\"SftWrappedToken: not sft owner\\\");\\n            ERC3525TransferHelper.doTransfer(wrappedSftAddress, holdingValueSftId, sftId_, amount_);\\n            toSftId_ = sftId_;\\n        }\\n    }\\n\\n    /**\\n     * @notice Get amount of underlying asset for a given amount of shares.\\n     */\\n    function getValueByShares(uint256 shares) external view virtual override returns (uint256 value) {\\n        bytes32 poolId = keccak256(abi.encode(wrappedSftAddress, wrappedSftSlot));\\n        (uint256 latestNav, ) = INavOracle(navOracle).getSubscribeNav(poolId, block.timestamp);\\n        return shares * latestNav / (10 ** decimals());\\n    }\\n\\n    /**\\n     * @notice Get amount of shares for a given amount of underlying asset.\\n     */\\n    function getSharesByValue(uint256 value) external view virtual override returns (uint256 shares) {\\n        bytes32 poolId = keccak256(abi.encode(wrappedSftAddress, wrappedSftSlot));\\n        (uint256 latestNav, ) = INavOracle(navOracle).getSubscribeNav(poolId, block.timestamp);\\n        return latestNav == 0 ? 0 : (value * (10 ** decimals()) / latestNav);\\n    }\\n\\n    // underlying asset address\\n    function underlyingAsset() external view virtual override returns (address) {\\n        address sftConcreteAddress = IOpenFundSftDelegate(wrappedSftAddress).concrete();\\n        SlotBaseInfo memory slotBaseInfo = IOpenFundSftConcrete(sftConcreteAddress).slotBaseInfo(wrappedSftSlot);\\n        return slotBaseInfo.currency;\\n    }\\n}\",\"keccak256\":\"0x9ff05a7cdc83f8bc25b69b6005f4b08e1ce7c7f1dfd07f7b1db5d80112062e43\",\"license\":\"MIT\"},\"contracts/utils/ERC3525TransferHelper.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\ninterface ERC721Interface {\\n    function transferFrom(\\n        address from,\\n        address to,\\n        uint256 tokenId\\n    ) external;\\n\\n    function safeTransferFrom(\\n        address from,\\n        address to,\\n        uint256 tokenId\\n    ) external;\\n}\\n\\ninterface ERC3525Interface {\\n    function transferFrom(\\n        uint256 _fromTokenId,\\n        uint256 _toTokenId,\\n        uint256 _value\\n    ) external payable;\\n\\n    function transferFrom(\\n        uint256 _fromTokenId,\\n        address _to,\\n        uint256 _value\\n    ) external payable returns (uint256); \\n}\\n\\nlibrary ERC3525TransferHelper {\\n    function doTransferIn(\\n        address underlying,\\n        address from,\\n        uint256 tokenId\\n    ) internal {\\n        ERC721Interface token = ERC721Interface(underlying);\\n        token.transferFrom(from, address(this), tokenId);\\n    }\\n    \\n    function doSafeTransferIn(\\n        address underlying,\\n        address from,\\n        uint256 tokenId\\n    ) internal {\\n        ERC721Interface token = ERC721Interface(underlying);\\n        token.safeTransferFrom(from, address(this), tokenId);\\n    }\\n\\n    function doTransferOut(\\n        address underlying,\\n        address to,\\n        uint256 tokenId\\n    ) internal {\\n        ERC721Interface token = ERC721Interface(underlying);\\n        token.transferFrom(address(this), to, tokenId);\\n    }\\n\\n    function doTransferIn(\\n        address underlying,\\n        uint256 fromTokenId,\\n        uint256 value\\n    ) internal returns (uint256 newTokenId) {\\n        ERC3525Interface token = ERC3525Interface(underlying);\\n        return token.transferFrom(fromTokenId, address(this), value);\\n    }\\n\\n    function doTransferOut(\\n        address underlying,\\n        uint256 fromTokenId,\\n        address to,\\n        uint256 value\\n    ) internal returns (uint256 newTokenId) {\\n        ERC3525Interface token = ERC3525Interface(underlying);\\n        newTokenId = token.transferFrom(fromTokenId, to, value);\\n    }\\n\\n    function doTransfer(\\n        address underlying,\\n        uint256 fromTokenId,\\n        uint256 toTokenId,\\n        uint256 value\\n    ) internal {\\n        ERC3525Interface token = ERC3525Interface(underlying);\\n        token.transferFrom(fromTokenId, toTokenId, value);\\n    }\\n\\n}\\n\",\"keccak256\":\"0x2bce8370acafb728457b403415e3010a136967e83b96792014c62c13c313ad9b\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60806040523480156200001157600080fd5b506200001c62000022565b620000d6565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00805468010000000000000000900460ff1615620000735760405163f92ee8a960e01b815260040160405180910390fd5b80546001600160401b0390811614620000d35780546001600160401b0319166001600160401b0390811782556040519081527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b50565b61262180620000e66000396000f3fe608060405234801561001057600080fd5b50600436106101115760003560e01c80629ce20b1461011657806301ffc9a71461014757806306fdde031461016a578063095ea7b31461017f578063150b7a021461019257806318160ddd146101a55780631b2ef1ca146101bb57806323b872dd146101d0578063313ce567146101e357806344b32bd1146101fd57806349d4640d146102065780634eb079811461022657806370a082311461022f5780637158da7c1461024257806371e26e001461024a57806395d89b411461025d578063a1dd6a2e14610265578063a9059cbb14610278578063b390c0ab1461028b578063baecd3261461029e578063dd62ed3e146102b1578063e31c3a90146102c4575b600080fd5b610129610124366004611c3e565b6102d7565b6040516001600160e01b031990911681526020015b60405180910390f35b61015a610155366004611cb0565b61057a565b604051901515815260200161013e565b6101726105cb565b60405161013e9190611ce1565b61015a61018d366004611d2f565b61066c565b6101296101a0366004611d5b565b610684565b6101ad61090c565b60405190815260200161013e565b6101ce6101c9366004611dcd565b610921565b005b61015a6101de366004611def565b610c43565b6101eb610c67565b60405160ff909116815260200161013e565b6101ad60035481565b600254610219906001600160a01b031681565b60405161013e9190611e30565b6101ad60015481565b6101ad61023d366004611e44565b610ce4565b610219610d0f565b6101ad610258366004611e61565b610dfd565b610172610ee1565b6101ce610273366004611f1c565b610efe565b61015a610286366004611d2f565b61115f565b6101ad610299366004611dcd565b61116d565b600054610219906001600160a01b031681565b6101ad6102bf366004611fb0565b611427565b6101ad6102d2366004611e61565b611463565b600080546001600160a01b0316331461030b5760405162461bcd60e51b815260040161030290611fe9565b60405180910390fd5b600080546040516331a9108f60e11b8152600481018990526001600160a01b0390911690636352211e90602401602060405180830381865afa158015610355573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610379919061202a565b9050306001600160a01b0382160361039a5750629ce20b60e01b9050610570565b600085116103ba5760405162461bcd60e51b815260040161030290612047565b6003546000036104f85760005460405163131f9f3f60e11b8152600481018890526001600160a01b039091169063263f3e7e90602401602060405180830381865afa15801561040d573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610431919061208d565b600154146104515760405162461bcd60e51b8152600401610302906120a6565b6000546040516331a9108f60e11b8152600481018890526001600160a01b0390911690636352211e90602401602060405180830381865afa15801561049a573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104be919061202a565b6001600160a01b0316306001600160a01b0316146104ee5760405162461bcd60e51b8152600401610302906120e8565b600386905561055b565b856003541461055b5760405162461bcd60e51b815260206004820152602960248201527f53667457726170706564546f6b656e3a206e6f7420686f6c64696e672076616c6044820152681d59481cd99d081a5960ba1b6064820152608401610302565b6105658186611555565b50629ce20b60e01b90505b9695505050505050565b60006001600160e01b03198216629ce20b60e01b14806105aa57506001600160e01b03198216630a85bd0160e11b145b806105c557506001600160e01b031982166301ffc9a760e01b145b92915050565b606060006105d761158b565b90508060030180546105e890612129565b80601f016020809104026020016040519081016040528092919081815260200182805461061490612129565b80156106615780601f1061063657610100808354040283529160200191610661565b820191906000526020600020905b81548152906001019060200180831161064457829003601f168201915b505050505091505090565b60003361067a8185856115af565b5060019392505050565b600080546001600160a01b031633146106af5760405162461bcd60e51b815260040161030290611fe9565b60005460405163131f9f3f60e11b8152600481018690526001600160a01b039091169063263f3e7e90602401602060405180830381865afa1580156106f8573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061071c919061208d565b6001541461073c5760405162461bcd60e51b8152600401610302906120a6565b6000546040516331a9108f60e11b8152600481018690526001600160a01b0390911690636352211e90602401602060405180830381865afa158015610785573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107a9919061202a565b6001600160a01b0316306001600160a01b0316146107d95760405162461bcd60e51b8152600401610302906120e8565b306001600160a01b038616036107f75750630a85bd0160e11b610903565b60008054604051631398fee160e31b8152600481018790526001600160a01b0390911690639cc7f70890602401602060405180830381865afa158015610841573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610865919061208d565b9050600081116108875760405162461bcd60e51b815260040161030290612047565b60035460000361089b5760038590556108ed565b6000546003546108b7916001600160a01b0316908790846115c1565b600480546001810182556000919091527f8a35acfbc15ff81a39ae7d344fd709f28e8600b4aa8c65c6b64bfe7fe36bd19b018590555b6108f78682611555565b50630a85bd0160e11b90505b95945050505050565b60008061091761158b565b6002015492915050565b610929611632565b60005460405163131f9f3f60e11b8152600481018490526001600160a01b039091169063263f3e7e90602401602060405180830381865afa158015610972573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610996919061208d565b600154146109b65760405162461bcd60e51b815260040161030290612163565b6000546040516331a9108f60e11b8152600481018490526001600160a01b0390911690636352211e90602401602060405180830381865afa1580156109ff573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610a23919061202a565b6001600160a01b0316336001600160a01b031614610a945760405162461bcd60e51b815260206004820152602860248201527f53667457726170706564546f6b656e3a2063616c6c6572206973206e6f742073604482015267333a1037bbb732b960c11b6064820152608401610302565b60008111610af55760405162461bcd60e51b815260206004820152602860248201527f53667457726170706564546f6b656e3a206d696e7420616d6f756e742063616e60448201526706e6f7420626520360c41b6064820152608401610302565b60008054604051631398fee160e31b8152600481018590526001600160a01b0390911690639cc7f70890602401602060405180830381865afa158015610b3f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610b63919061208d565b9050808203610b8857600054610b83906001600160a01b03163385611668565b610c36565b80821015610bd557600354600003610bb957600054610bb1906001600160a01b031684846116d2565b600355610c36565b600054600354610b83916001600160a01b0316908590856115c1565b60405162461bcd60e51b815260206004820152603060248201527f53667457726170706564546f6b656e3a206d696e7420616d6f756e742065786360448201526f65656473207366742062616c616e636560801b6064820152608401610302565b50610c3f61174a565b5050565b600033610c5185828561175b565b610c5c8585856117ae565b506001949350505050565b60008060009054906101000a90046001600160a01b03166001600160a01b0316633e7e86696040518163ffffffff1660e01b8152600401602060405180830381865afa158015610cbb573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610cdf91906121a7565b905090565b600080610cef61158b565b6001600160a01b0390931660009081526020939093525050604090205490565b60008054604080516308ba344760e41b8152905183926001600160a01b031691638ba344709160048083019260209291908290030181865afa158015610d59573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610d7d919061202a565b90506000816001600160a01b03166394f7e23e6001546040518263ffffffff1660e01b8152600401610db191815260200190565b60e060405180830381865afa158015610dce573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610df291906121f6565b602001519392505050565b600080546001546040518392610e21926001600160a01b03909116916020016122a9565b60408051808303601f190181529082905280516020909101206002546395b4c46760e01b8352600483018290524260248401529092506000916001600160a01b03909116906395b4c467906044016040805180830381865afa158015610e8b573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610eaf91906122c2565b509050610eba610c67565b610ec590600a6123e0565b610ecf82866123ef565b610ed99190612406565b949350505050565b60606000610eed61158b565b90508060040180546105e890612129565b6000610f0861180d565b805490915060ff600160401b82041615906001600160401b0316600081158015610f2f5750825b90506000826001600160401b03166001148015610f4b5750303b155b905081158015610f59575080155b15610f775760405163f92ee8a960e01b815260040160405180910390fd5b84546001600160401b03191660011785558315610fa057845460ff60401b1916600160401b1785555b6001600160a01b0388166110025760405162461bcd60e51b8152602060048201526024808201527f53667457726170706564546f6b656e3a20696e76616c696420736674206164646044820152637265737360e01b6064820152608401610302565b8660000361105c5760405162461bcd60e51b815260206004820152602160248201527f53667457726170706564546f6b656e3a20696e76616c69642073667420736c6f6044820152601d60fa1b6064820152608401610302565b6001600160a01b0386166110c65760405162461bcd60e51b815260206004820152602b60248201527f53667457726170706564546f6b656e3a20696e76616c6964206e6176206f726160448201526a636c65206164647265737360a81b6064820152608401610302565b6110d08a8a611831565b6110d8611843565b600080546001600160a01b03808b166001600160a01b03199283161790925560018990556002805492891692909116919091179055831561115357845460ff60401b19168555604051600181527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b50505050505050505050565b60003361067a8185856117ae565b6000611177611632565b600083116111d85760405162461bcd60e51b815260206004820152602860248201527f53667457726170706564546f6b656e3a206275726e20616d6f756e742063616e60448201526706e6f7420626520360c41b6064820152608401610302565b6111e23384611855565b816000036112a7576004546000036112165760005460035461120f916001600160a01b031690338661188b565b905061141f565b6004805461122690600190612428565b815481106112365761123661243b565b90600052602060002001549050600480548061125457611254612451565b6001900381819060005260206000200160009055905561128b60008054906101000a90046001600160a01b031660035483866115c1565b6000546112a2906001600160a01b03163383611903565b61141f565b60005460405163131f9f3f60e11b8152600481018490526001600160a01b039091169063263f3e7e90602401602060405180830381865afa1580156112f0573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190611314919061208d565b600154146113345760405162461bcd60e51b815260040161030290612163565b6000546040516331a9108f60e11b8152600481018490526001600160a01b0390911690636352211e90602401602060405180830381865afa15801561137d573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906113a1919061202a565b6001600160a01b0316336001600160a01b0316146114015760405162461bcd60e51b815260206004820152601e60248201527f53667457726170706564546f6b656e3a206e6f7420736674206f776e657200006044820152606401610302565b60005460035461141c916001600160a01b03169084866115c1565b50805b6105c561174a565b60008061143261158b565b6001600160a01b03948516600090815260019190910160209081526040808320959096168252939093525050205490565b600080546001546040518392611487926001600160a01b03909116916020016122a9565b60408051808303601f190181529082905280516020909101206002546395b4c46760e01b8352600483018290524260248401529092506000916001600160a01b03909116906395b4c467906044016040805180830381865afa1580156114f1573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061151591906122c2565b509050801561154b5780611527610c67565b61153290600a6123e0565b61153c90866123ef565b6115469190612406565b610ed9565b6000949350505050565b6001600160a01b03821661157f57600060405163ec442f0560e01b81526004016103029190611e30565b610c3f60008383611935565b7f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace0090565b6115bc8383836001611a5d565b505050565b604051630310ed7f60e41b815260048101849052602481018390526044810182905284906001600160a01b0382169063310ed7f090606401600060405180830381600087803b15801561161357600080fd5b505af1158015611627573d6000803e3d6000fd5b505050505050505050565b600061163c611b42565b80549091506001190161166257604051633ee5aeb560e01b815260040160405180910390fd5b60029055565b604051632142170760e11b815283906001600160a01b038216906342842e0e9061169a90869030908790600401612467565b600060405180830381600087803b1580156116b457600080fd5b505af11580156116c8573d6000803e3d6000fd5b5050505050505050565b6040516307a42e0160e11b815260009084906001600160a01b03821690630f485c02906117079087903090889060040161248b565b6020604051808303816000875af1158015611726573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610903919061208d565b6000611754611b42565b6001905550565b60006117678484611427565b905060001981146117a8578181101561179957828183604051637dc7a0d960e11b8152600401610302939291906124aa565b6117a884848484036000611a5d565b50505050565b6001600160a01b0383166117d8576000604051634b637e8f60e11b81526004016103029190611e30565b6001600160a01b03821661180257600060405163ec442f0560e01b81526004016103029190611e30565b6115bc838383611935565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a0090565b611839611b66565b610c3f8282611b8b565b61184b611b66565b611853611bbc565b565b6001600160a01b03821661187f576000604051634b637e8f60e11b81526004016103029190611e30565b610c3f82600083611935565b6040516307a42e0160e11b815260009085906001600160a01b03821690630f485c02906118c09088908890889060040161248b565b6020604051808303816000875af11580156118df573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610570919061208d565b6040516323b872dd60e01b815283906001600160a01b038216906323b872dd9061169a90309087908790600401612467565b600061193f61158b565b90506001600160a01b03841661196e578181600201600082825461196391906124cb565b909155506119cd9050565b6001600160a01b038416600090815260208290526040902054828110156119ae5784818460405163391434e360e21b8152600401610302939291906124aa565b6001600160a01b03851660009081526020839052604090209083900390555b6001600160a01b0383166119eb576002810180548390039055611a0a565b6001600160a01b03831660009081526020829052604090208054830190555b826001600160a01b0316846001600160a01b03167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef84604051611a4f91815260200190565b60405180910390a350505050565b6000611a6761158b565b90506001600160a01b038516611a9357600060405163e602df0560e01b81526004016103029190611e30565b6001600160a01b038416611abd576000604051634a1406b160e11b81526004016103029190611e30565b6001600160a01b03808616600090815260018301602090815260408083209388168352929052208390558115611b3b57836001600160a01b0316856001600160a01b03167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b92585604051611b3291815260200190565b60405180910390a35b5050505050565b7f9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f0090565b611b6e611bc4565b61185357604051631afcd79f60e31b815260040160405180910390fd5b611b93611b66565b6000611b9d61158b565b905060038101611bad848261252c565b50600481016117a8838261252c565b61174a611b66565b6000611bce61180d565b54600160401b900460ff16919050565b6001600160a01b0381168114611bf357600080fd5b50565b60008083601f840112611c0857600080fd5b5081356001600160401b03811115611c1f57600080fd5b602083019150836020828501011115611c3757600080fd5b9250929050565b60008060008060008060a08789031215611c5757600080fd5b8635611c6281611bde565b955060208701359450604087013593506060870135925060808701356001600160401b03811115611c9257600080fd5b611c9e89828a01611bf6565b979a9699509497509295939492505050565b600060208284031215611cc257600080fd5b81356001600160e01b031981168114611cda57600080fd5b9392505050565b600060208083528351808285015260005b81811015611d0e57858101830151858201604001528201611cf2565b506000604082860101526040601f19601f8301168501019250505092915050565b60008060408385031215611d4257600080fd5b8235611d4d81611bde565b946020939093013593505050565b600080600080600060808688031215611d7357600080fd5b8535611d7e81611bde565b94506020860135611d8e81611bde565b93506040860135925060608601356001600160401b03811115611db057600080fd5b611dbc88828901611bf6565b969995985093965092949392505050565b60008060408385031215611de057600080fd5b50508035926020909101359150565b600080600060608486031215611e0457600080fd5b8335611e0f81611bde565b92506020840135611e1f81611bde565b929592945050506040919091013590565b6001600160a01b0391909116815260200190565b600060208284031215611e5657600080fd5b8135611cda81611bde565b600060208284031215611e7357600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b600082601f830112611ea157600080fd5b81356001600160401b0380821115611ebb57611ebb611e7a565b604051601f8301601f19908116603f01168101908282118183101715611ee357611ee3611e7a565b81604052838152866020858801011115611efc57600080fd5b836020870160208301376000602085830101528094505050505092915050565b600080600080600060a08688031215611f3457600080fd5b85356001600160401b0380821115611f4b57600080fd5b611f5789838a01611e90565b96506020880135915080821115611f6d57600080fd5b50611f7a88828901611e90565b9450506040860135611f8b81611bde565b9250606086013591506080860135611fa281611bde565b809150509295509295909350565b60008060408385031215611fc357600080fd5b8235611fce81611bde565b91506020830135611fde81611bde565b809150509250929050565b60208082526021908201527f53667457726170706564546f6b656e3a206f6e6c7920777261707065642073666040820152601d60fa1b606082015260800190565b60006020828403121561203c57600080fd5b8151611cda81611bde565b60208082526026908201527f53667457726170706564546f6b656e3a206d696e74207a65726f206e6f7420616040820152651b1b1bddd95960d21b606082015260800190565b60006020828403121561209f57600080fd5b5051919050565b60208082526022908201527f53667457726170706564546f6b656e3a20756e72656365697661626c6520736c6040820152611bdd60f21b606082015260800190565b60208082526021908201527f53667457726170706564546f6b656e3a206e6f74206f776e65642073667420696040820152601960fa1b606082015260800190565b600181811c9082168061213d57607f821691505b60208210810361215d57634e487b7160e01b600052602260045260246000fd5b50919050565b60208082526024908201527f53667457726170706564546f6b656e3a20736c6f7420646f6573206e6f74206d6040820152630c2e8c6d60e31b606082015260800190565b6000602082840312156121b957600080fd5b815160ff81168114611cda57600080fd5b80516001600160401b03811681146121e157600080fd5b919050565b805180151581146121e157600080fd5b600060e0828403121561220857600080fd5b60405160e081016001600160401b038111828210171561222a5761222a611e7a565b604052825161223881611bde565b8152602083015161224881611bde565b6020820152612259604084016121ca565b604082015261226a606084016121ca565b606082015261227b608084016121ca565b608082015261228c60a084016121e6565b60a082015261229d60c084016121e6565b60c08201529392505050565b6001600160a01b03929092168252602082015260400190565b600080604083850312156122d557600080fd5b505080516020909101519092909150565b634e487b7160e01b600052601160045260246000fd5b600181815b8085111561233757816000190482111561231d5761231d6122e6565b8085161561232a57918102915b93841c9390800290612301565b509250929050565b60008261234e575060016105c5565b8161235b575060006105c5565b8160018114612371576002811461237b57612397565b60019150506105c5565b60ff84111561238c5761238c6122e6565b50506001821b6105c5565b5060208310610133831016604e8410600b84101617156123ba575081810a6105c5565b6123c483836122fc565b80600019048211156123d8576123d86122e6565b029392505050565b6000611cda60ff84168361233f565b80820281158282048414176105c5576105c56122e6565b60008261242357634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156105c5576105c56122e6565b634e487b7160e01b600052603260045260246000fd5b634e487b7160e01b600052603160045260246000fd5b6001600160a01b039384168152919092166020820152604081019190915260600190565b9283526001600160a01b03919091166020830152604082015260600190565b6001600160a01b039390931683526020830191909152604082015260600190565b808201808211156105c5576105c56122e6565b601f8211156115bc57600081815260208120601f850160051c810160208610156125055750805b601f850160051c820191505b8181101561252457828155600101612511565b505050505050565b81516001600160401b0381111561254557612545611e7a565b612559816125538454612129565b846124de565b602080601f83116001811461258e57600084156125765750858301515b600019600386901b1c1916600185901b178555612524565b600085815260208120601f198616915b828110156125bd5788860151825594840194600190910190840161259e565b50858210156125db5787850151600019600388901b60f8161c191681555b5050505050600190811b0190555056fea2646970667358221220244d71e8dfe24ae8a6c85a8ca8acc5a9de2ecdd34d30c98674fec0d658b6d74a64736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101115760003560e01c80629ce20b1461011657806301ffc9a71461014757806306fdde031461016a578063095ea7b31461017f578063150b7a021461019257806318160ddd146101a55780631b2ef1ca146101bb57806323b872dd146101d0578063313ce567146101e357806344b32bd1146101fd57806349d4640d146102065780634eb079811461022657806370a082311461022f5780637158da7c1461024257806371e26e001461024a57806395d89b411461025d578063a1dd6a2e14610265578063a9059cbb14610278578063b390c0ab1461028b578063baecd3261461029e578063dd62ed3e146102b1578063e31c3a90146102c4575b600080fd5b610129610124366004611c3e565b6102d7565b6040516001600160e01b031990911681526020015b60405180910390f35b61015a610155366004611cb0565b61057a565b604051901515815260200161013e565b6101726105cb565b60405161013e9190611ce1565b61015a61018d366004611d2f565b61066c565b6101296101a0366004611d5b565b610684565b6101ad61090c565b60405190815260200161013e565b6101ce6101c9366004611dcd565b610921565b005b61015a6101de366004611def565b610c43565b6101eb610c67565b60405160ff909116815260200161013e565b6101ad60035481565b600254610219906001600160a01b031681565b60405161013e9190611e30565b6101ad60015481565b6101ad61023d366004611e44565b610ce4565b610219610d0f565b6101ad610258366004611e61565b610dfd565b610172610ee1565b6101ce610273366004611f1c565b610efe565b61015a610286366004611d2f565b61115f565b6101ad610299366004611dcd565b61116d565b600054610219906001600160a01b031681565b6101ad6102bf366004611fb0565b611427565b6101ad6102d2366004611e61565b611463565b600080546001600160a01b0316331461030b5760405162461bcd60e51b815260040161030290611fe9565b60405180910390fd5b600080546040516331a9108f60e11b8152600481018990526001600160a01b0390911690636352211e90602401602060405180830381865afa158015610355573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610379919061202a565b9050306001600160a01b0382160361039a5750629ce20b60e01b9050610570565b600085116103ba5760405162461bcd60e51b815260040161030290612047565b6003546000036104f85760005460405163131f9f3f60e11b8152600481018890526001600160a01b039091169063263f3e7e90602401602060405180830381865afa15801561040d573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610431919061208d565b600154146104515760405162461bcd60e51b8152600401610302906120a6565b6000546040516331a9108f60e11b8152600481018890526001600160a01b0390911690636352211e90602401602060405180830381865afa15801561049a573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104be919061202a565b6001600160a01b0316306001600160a01b0316146104ee5760405162461bcd60e51b8152600401610302906120e8565b600386905561055b565b856003541461055b5760405162461bcd60e51b815260206004820152602960248201527f53667457726170706564546f6b656e3a206e6f7420686f6c64696e672076616c6044820152681d59481cd99d081a5960ba1b6064820152608401610302565b6105658186611555565b50629ce20b60e01b90505b9695505050505050565b60006001600160e01b03198216629ce20b60e01b14806105aa57506001600160e01b03198216630a85bd0160e11b145b806105c557506001600160e01b031982166301ffc9a760e01b145b92915050565b606060006105d761158b565b90508060030180546105e890612129565b80601f016020809104026020016040519081016040528092919081815260200182805461061490612129565b80156106615780601f1061063657610100808354040283529160200191610661565b820191906000526020600020905b81548152906001019060200180831161064457829003601f168201915b505050505091505090565b60003361067a8185856115af565b5060019392505050565b600080546001600160a01b031633146106af5760405162461bcd60e51b815260040161030290611fe9565b60005460405163131f9f3f60e11b8152600481018690526001600160a01b039091169063263f3e7e90602401602060405180830381865afa1580156106f8573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061071c919061208d565b6001541461073c5760405162461bcd60e51b8152600401610302906120a6565b6000546040516331a9108f60e11b8152600481018690526001600160a01b0390911690636352211e90602401602060405180830381865afa158015610785573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906107a9919061202a565b6001600160a01b0316306001600160a01b0316146107d95760405162461bcd60e51b8152600401610302906120e8565b306001600160a01b038616036107f75750630a85bd0160e11b610903565b60008054604051631398fee160e31b8152600481018790526001600160a01b0390911690639cc7f70890602401602060405180830381865afa158015610841573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610865919061208d565b9050600081116108875760405162461bcd60e51b815260040161030290612047565b60035460000361089b5760038590556108ed565b6000546003546108b7916001600160a01b0316908790846115c1565b600480546001810182556000919091527f8a35acfbc15ff81a39ae7d344fd709f28e8600b4aa8c65c6b64bfe7fe36bd19b018590555b6108f78682611555565b50630a85bd0160e11b90505b95945050505050565b60008061091761158b565b6002015492915050565b610929611632565b60005460405163131f9f3f60e11b8152600481018490526001600160a01b039091169063263f3e7e90602401602060405180830381865afa158015610972573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610996919061208d565b600154146109b65760405162461bcd60e51b815260040161030290612163565b6000546040516331a9108f60e11b8152600481018490526001600160a01b0390911690636352211e90602401602060405180830381865afa1580156109ff573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610a23919061202a565b6001600160a01b0316336001600160a01b031614610a945760405162461bcd60e51b815260206004820152602860248201527f53667457726170706564546f6b656e3a2063616c6c6572206973206e6f742073604482015267333a1037bbb732b960c11b6064820152608401610302565b60008111610af55760405162461bcd60e51b815260206004820152602860248201527f53667457726170706564546f6b656e3a206d696e7420616d6f756e742063616e60448201526706e6f7420626520360c41b6064820152608401610302565b60008054604051631398fee160e31b8152600481018590526001600160a01b0390911690639cc7f70890602401602060405180830381865afa158015610b3f573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610b63919061208d565b9050808203610b8857600054610b83906001600160a01b03163385611668565b610c36565b80821015610bd557600354600003610bb957600054610bb1906001600160a01b031684846116d2565b600355610c36565b600054600354610b83916001600160a01b0316908590856115c1565b60405162461bcd60e51b815260206004820152603060248201527f53667457726170706564546f6b656e3a206d696e7420616d6f756e742065786360448201526f65656473207366742062616c616e636560801b6064820152608401610302565b50610c3f61174a565b5050565b600033610c5185828561175b565b610c5c8585856117ae565b506001949350505050565b60008060009054906101000a90046001600160a01b03166001600160a01b0316633e7e86696040518163ffffffff1660e01b8152600401602060405180830381865afa158015610cbb573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610cdf91906121a7565b905090565b600080610cef61158b565b6001600160a01b0390931660009081526020939093525050604090205490565b60008054604080516308ba344760e41b8152905183926001600160a01b031691638ba344709160048083019260209291908290030181865afa158015610d59573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610d7d919061202a565b90506000816001600160a01b03166394f7e23e6001546040518263ffffffff1660e01b8152600401610db191815260200190565b60e060405180830381865afa158015610dce573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610df291906121f6565b602001519392505050565b600080546001546040518392610e21926001600160a01b03909116916020016122a9565b60408051808303601f190181529082905280516020909101206002546395b4c46760e01b8352600483018290524260248401529092506000916001600160a01b03909116906395b4c467906044016040805180830381865afa158015610e8b573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610eaf91906122c2565b509050610eba610c67565b610ec590600a6123e0565b610ecf82866123ef565b610ed99190612406565b949350505050565b60606000610eed61158b565b90508060040180546105e890612129565b6000610f0861180d565b805490915060ff600160401b82041615906001600160401b0316600081158015610f2f5750825b90506000826001600160401b03166001148015610f4b5750303b155b905081158015610f59575080155b15610f775760405163f92ee8a960e01b815260040160405180910390fd5b84546001600160401b03191660011785558315610fa057845460ff60401b1916600160401b1785555b6001600160a01b0388166110025760405162461bcd60e51b8152602060048201526024808201527f53667457726170706564546f6b656e3a20696e76616c696420736674206164646044820152637265737360e01b6064820152608401610302565b8660000361105c5760405162461bcd60e51b815260206004820152602160248201527f53667457726170706564546f6b656e3a20696e76616c69642073667420736c6f6044820152601d60fa1b6064820152608401610302565b6001600160a01b0386166110c65760405162461bcd60e51b815260206004820152602b60248201527f53667457726170706564546f6b656e3a20696e76616c6964206e6176206f726160448201526a636c65206164647265737360a81b6064820152608401610302565b6110d08a8a611831565b6110d8611843565b600080546001600160a01b03808b166001600160a01b03199283161790925560018990556002805492891692909116919091179055831561115357845460ff60401b19168555604051600181527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b50505050505050505050565b60003361067a8185856117ae565b6000611177611632565b600083116111d85760405162461bcd60e51b815260206004820152602860248201527f53667457726170706564546f6b656e3a206275726e20616d6f756e742063616e60448201526706e6f7420626520360c41b6064820152608401610302565b6111e23384611855565b816000036112a7576004546000036112165760005460035461120f916001600160a01b031690338661188b565b905061141f565b6004805461122690600190612428565b815481106112365761123661243b565b90600052602060002001549050600480548061125457611254612451565b6001900381819060005260206000200160009055905561128b60008054906101000a90046001600160a01b031660035483866115c1565b6000546112a2906001600160a01b03163383611903565b61141f565b60005460405163131f9f3f60e11b8152600481018490526001600160a01b039091169063263f3e7e90602401602060405180830381865afa1580156112f0573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190611314919061208d565b600154146113345760405162461bcd60e51b815260040161030290612163565b6000546040516331a9108f60e11b8152600481018490526001600160a01b0390911690636352211e90602401602060405180830381865afa15801561137d573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906113a1919061202a565b6001600160a01b0316336001600160a01b0316146114015760405162461bcd60e51b815260206004820152601e60248201527f53667457726170706564546f6b656e3a206e6f7420736674206f776e657200006044820152606401610302565b60005460035461141c916001600160a01b03169084866115c1565b50805b6105c561174a565b60008061143261158b565b6001600160a01b03948516600090815260019190910160209081526040808320959096168252939093525050205490565b600080546001546040518392611487926001600160a01b03909116916020016122a9565b60408051808303601f190181529082905280516020909101206002546395b4c46760e01b8352600483018290524260248401529092506000916001600160a01b03909116906395b4c467906044016040805180830381865afa1580156114f1573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061151591906122c2565b509050801561154b5780611527610c67565b61153290600a6123e0565b61153c90866123ef565b6115469190612406565b610ed9565b6000949350505050565b6001600160a01b03821661157f57600060405163ec442f0560e01b81526004016103029190611e30565b610c3f60008383611935565b7f52c63247e1f47db19d5ce0460030c497f067ca4cebf71ba98eeadabe20bace0090565b6115bc8383836001611a5d565b505050565b604051630310ed7f60e41b815260048101849052602481018390526044810182905284906001600160a01b0382169063310ed7f090606401600060405180830381600087803b15801561161357600080fd5b505af1158015611627573d6000803e3d6000fd5b505050505050505050565b600061163c611b42565b80549091506001190161166257604051633ee5aeb560e01b815260040160405180910390fd5b60029055565b604051632142170760e11b815283906001600160a01b038216906342842e0e9061169a90869030908790600401612467565b600060405180830381600087803b1580156116b457600080fd5b505af11580156116c8573d6000803e3d6000fd5b5050505050505050565b6040516307a42e0160e11b815260009084906001600160a01b03821690630f485c02906117079087903090889060040161248b565b6020604051808303816000875af1158015611726573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610903919061208d565b6000611754611b42565b6001905550565b60006117678484611427565b905060001981146117a8578181101561179957828183604051637dc7a0d960e11b8152600401610302939291906124aa565b6117a884848484036000611a5d565b50505050565b6001600160a01b0383166117d8576000604051634b637e8f60e11b81526004016103029190611e30565b6001600160a01b03821661180257600060405163ec442f0560e01b81526004016103029190611e30565b6115bc838383611935565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a0090565b611839611b66565b610c3f8282611b8b565b61184b611b66565b611853611bbc565b565b6001600160a01b03821661187f576000604051634b637e8f60e11b81526004016103029190611e30565b610c3f82600083611935565b6040516307a42e0160e11b815260009085906001600160a01b03821690630f485c02906118c09088908890889060040161248b565b6020604051808303816000875af11580156118df573d6000803e3d6000fd5b505050506040513d601f19601f82011682018060405250810190610570919061208d565b6040516323b872dd60e01b815283906001600160a01b038216906323b872dd9061169a90309087908790600401612467565b600061193f61158b565b90506001600160a01b03841661196e578181600201600082825461196391906124cb565b909155506119cd9050565b6001600160a01b038416600090815260208290526040902054828110156119ae5784818460405163391434e360e21b8152600401610302939291906124aa565b6001600160a01b03851660009081526020839052604090209083900390555b6001600160a01b0383166119eb576002810180548390039055611a0a565b6001600160a01b03831660009081526020829052604090208054830190555b826001600160a01b0316846001600160a01b03167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef84604051611a4f91815260200190565b60405180910390a350505050565b6000611a6761158b565b90506001600160a01b038516611a9357600060405163e602df0560e01b81526004016103029190611e30565b6001600160a01b038416611abd576000604051634a1406b160e11b81526004016103029190611e30565b6001600160a01b03808616600090815260018301602090815260408083209388168352929052208390558115611b3b57836001600160a01b0316856001600160a01b03167f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b92585604051611b3291815260200190565b60405180910390a35b5050505050565b7f9b779b17422d0df92223018b32b4d1fa46e071723d6817e2486d003becc55f0090565b611b6e611bc4565b61185357604051631afcd79f60e31b815260040160405180910390fd5b611b93611b66565b6000611b9d61158b565b905060038101611bad848261252c565b50600481016117a8838261252c565b61174a611b66565b6000611bce61180d565b54600160401b900460ff16919050565b6001600160a01b0381168114611bf357600080fd5b50565b60008083601f840112611c0857600080fd5b5081356001600160401b03811115611c1f57600080fd5b602083019150836020828501011115611c3757600080fd5b9250929050565b60008060008060008060a08789031215611c5757600080fd5b8635611c6281611bde565b955060208701359450604087013593506060870135925060808701356001600160401b03811115611c9257600080fd5b611c9e89828a01611bf6565b979a9699509497509295939492505050565b600060208284031215611cc257600080fd5b81356001600160e01b031981168114611cda57600080fd5b9392505050565b600060208083528351808285015260005b81811015611d0e57858101830151858201604001528201611cf2565b506000604082860101526040601f19601f8301168501019250505092915050565b60008060408385031215611d4257600080fd5b8235611d4d81611bde565b946020939093013593505050565b600080600080600060808688031215611d7357600080fd5b8535611d7e81611bde565b94506020860135611d8e81611bde565b93506040860135925060608601356001600160401b03811115611db057600080fd5b611dbc88828901611bf6565b969995985093965092949392505050565b60008060408385031215611de057600080fd5b50508035926020909101359150565b600080600060608486031215611e0457600080fd5b8335611e0f81611bde565b92506020840135611e1f81611bde565b929592945050506040919091013590565b6001600160a01b0391909116815260200190565b600060208284031215611e5657600080fd5b8135611cda81611bde565b600060208284031215611e7357600080fd5b5035919050565b634e487b7160e01b600052604160045260246000fd5b600082601f830112611ea157600080fd5b81356001600160401b0380821115611ebb57611ebb611e7a565b604051601f8301601f19908116603f01168101908282118183101715611ee357611ee3611e7a565b81604052838152866020858801011115611efc57600080fd5b836020870160208301376000602085830101528094505050505092915050565b600080600080600060a08688031215611f3457600080fd5b85356001600160401b0380821115611f4b57600080fd5b611f5789838a01611e90565b96506020880135915080821115611f6d57600080fd5b50611f7a88828901611e90565b9450506040860135611f8b81611bde565b9250606086013591506080860135611fa281611bde565b809150509295509295909350565b60008060408385031215611fc357600080fd5b8235611fce81611bde565b91506020830135611fde81611bde565b809150509250929050565b60208082526021908201527f53667457726170706564546f6b656e3a206f6e6c7920777261707065642073666040820152601d60fa1b606082015260800190565b60006020828403121561203c57600080fd5b8151611cda81611bde565b60208082526026908201527f53667457726170706564546f6b656e3a206d696e74207a65726f206e6f7420616040820152651b1b1bddd95960d21b606082015260800190565b60006020828403121561209f57600080fd5b5051919050565b60208082526022908201527f53667457726170706564546f6b656e3a20756e72656365697661626c6520736c6040820152611bdd60f21b606082015260800190565b60208082526021908201527f53667457726170706564546f6b656e3a206e6f74206f776e65642073667420696040820152601960fa1b606082015260800190565b600181811c9082168061213d57607f821691505b60208210810361215d57634e487b7160e01b600052602260045260246000fd5b50919050565b60208082526024908201527f53667457726170706564546f6b656e3a20736c6f7420646f6573206e6f74206d6040820152630c2e8c6d60e31b606082015260800190565b6000602082840312156121b957600080fd5b815160ff81168114611cda57600080fd5b80516001600160401b03811681146121e157600080fd5b919050565b805180151581146121e157600080fd5b600060e0828403121561220857600080fd5b60405160e081016001600160401b038111828210171561222a5761222a611e7a565b604052825161223881611bde565b8152602083015161224881611bde565b6020820152612259604084016121ca565b604082015261226a606084016121ca565b606082015261227b608084016121ca565b608082015261228c60a084016121e6565b60a082015261229d60c084016121e6565b60c08201529392505050565b6001600160a01b03929092168252602082015260400190565b600080604083850312156122d557600080fd5b505080516020909101519092909150565b634e487b7160e01b600052601160045260246000fd5b600181815b8085111561233757816000190482111561231d5761231d6122e6565b8085161561232a57918102915b93841c9390800290612301565b509250929050565b60008261234e575060016105c5565b8161235b575060006105c5565b8160018114612371576002811461237b57612397565b60019150506105c5565b60ff84111561238c5761238c6122e6565b50506001821b6105c5565b5060208310610133831016604e8410600b84101617156123ba575081810a6105c5565b6123c483836122fc565b80600019048211156123d8576123d86122e6565b029392505050565b6000611cda60ff84168361233f565b80820281158282048414176105c5576105c56122e6565b60008261242357634e487b7160e01b600052601260045260246000fd5b500490565b818103818111156105c5576105c56122e6565b634e487b7160e01b600052603260045260246000fd5b634e487b7160e01b600052603160045260246000fd5b6001600160a01b039384168152919092166020820152604081019190915260600190565b9283526001600160a01b03919091166020830152604082015260600190565b6001600160a01b039390931683526020830191909152604082015260600190565b808201808211156105c5576105c56122e6565b601f8211156115bc57600081815260208120601f850160051c810160208610156125055750805b601f850160051c820191505b8181101561252457828155600101612511565b505050505050565b81516001600160401b0381111561254557612545611e7a565b612559816125538454612129565b846124de565b602080601f83116001811461258e57600084156125765750858301515b600019600386901b1c1916600185901b178555612524565b600085815260208120601f198616915b828110156125bd5788860151825594840194600190910190840161259e565b50858210156125db5787850151600019600388901b60f8161c191681555b5050505050600190811b0190555056fea2646970667358221220244d71e8dfe24ae8a6c85a8ca8acc5a9de2ecdd34d30c98674fec0d658b6d74a64736f6c63430008140033",
+  "devdoc": {
+    "errors": {
+      "ERC20InsufficientAllowance(address,uint256,uint256)": [
+        {
+          "details": "Indicates a failure with the `spender`’s `allowance`. Used in transfers.",
+          "params": {
+            "allowance": "Amount of tokens a `spender` is allowed to operate with.",
+            "needed": "Minimum amount required to perform a transfer.",
+            "spender": "Address that may be allowed to operate on tokens without being their owner."
+          }
+        }
+      ],
+      "ERC20InsufficientBalance(address,uint256,uint256)": [
+        {
+          "details": "Indicates an error related to the current `balance` of a `sender`. Used in transfers.",
+          "params": {
+            "balance": "Current balance for the interacting account.",
+            "needed": "Minimum amount required to perform a transfer.",
+            "sender": "Address whose tokens are being transferred."
+          }
+        }
+      ],
+      "ERC20InvalidApprover(address)": [
+        {
+          "details": "Indicates a failure with the `approver` of a token to be approved. Used in approvals.",
+          "params": {
+            "approver": "Address initiating an approval operation."
+          }
+        }
+      ],
+      "ERC20InvalidReceiver(address)": [
+        {
+          "details": "Indicates a failure with the token `receiver`. Used in transfers.",
+          "params": {
+            "receiver": "Address to which tokens are being transferred."
+          }
+        }
+      ],
+      "ERC20InvalidSender(address)": [
+        {
+          "details": "Indicates a failure with the token `sender`. Used in transfers.",
+          "params": {
+            "sender": "Address whose tokens are being transferred."
+          }
+        }
+      ],
+      "ERC20InvalidSpender(address)": [
+        {
+          "details": "Indicates a failure with the `spender` to be approved. Used in approvals.",
+          "params": {
+            "spender": "Address that may be allowed to operate on tokens without being their owner."
+          }
+        }
+      ],
+      "InvalidInitialization()": [
+        {
+          "details": "The contract is already initialized."
+        }
+      ],
+      "NotInitializing()": [
+        {
+          "details": "The contract is not initializing."
+        }
+      ],
+      "ReentrancyGuardReentrantCall()": [
+        {
+          "details": "Unauthorized reentrant call."
+        }
+      ]
+    },
+    "events": {
+      "Approval(address,address,uint256)": {
+        "details": "Emitted when the allowance of a `spender` for an `owner` is set by a call to {approve}. `value` is the new allowance."
+      },
+      "Initialized(uint64)": {
+        "details": "Triggered when the contract has been initialized or reinitialized."
+      },
+      "Transfer(address,address,uint256)": {
+        "details": "Emitted when `value` tokens are moved from one account (`from`) to another (`to`). Note that `value` may be zero."
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "allowance(address,address)": {
+        "details": "See {IERC20-allowance}."
+      },
+      "approve(address,uint256)": {
+        "details": "See {IERC20-approve}. NOTE: If `value` is the maximum `uint256`, the allowance is not updated on `transferFrom`. This is semantically equivalent to an infinite approval. Requirements: - `spender` cannot be the zero address."
+      },
+      "balanceOf(address)": {
+        "details": "See {IERC20-balanceOf}."
+      },
+      "constructor": {
+        "custom:oz-upgrades-unsafe-allow": "constructor"
+      },
+      "decimals()": {
+        "details": "Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the default value returned by this function, unless it's overridden. NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}."
+      },
+      "name()": {
+        "details": "Returns the name of the token."
+      },
+      "supportsInterface(bytes4)": {
+        "details": "Returns true if this contract implements the interface defined by `interfaceId`. See the corresponding https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section] to learn more about how these ids are created. This function call must use less than 30 000 gas."
+      },
+      "symbol()": {
+        "details": "Returns the symbol of the token, usually a shorter version of the name."
+      },
+      "totalSupply()": {
+        "details": "See {IERC20-totalSupply}."
+      },
+      "transfer(address,uint256)": {
+        "details": "See {IERC20-transfer}. Requirements: - `to` cannot be the zero address. - the caller must have a balance of at least `value`."
+      },
+      "transferFrom(address,address,uint256)": {
+        "details": "See {IERC20-transferFrom}. Emits an {Approval} event indicating the updated allowance. This is not required by the EIP. See the note at the beginning of {ERC20}. NOTE: Does not update the allowance if the current allowance is the maximum `uint256`. Requirements: - `from` and `to` cannot be the zero address. - `from` must have a balance of at least `value`. - the caller must have allowance for ``from``'s tokens of at least `value`."
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getSharesByValue(uint256)": {
+        "notice": "Get amount of shares for a given amount of underlying asset."
+      },
+      "getValueByShares(uint256)": {
+        "notice": "Get amount of underlying asset for a given amount of shares."
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 1467,
+        "contract": "contracts/SftWrappedToken.sol:SftWrappedToken",
+        "label": "wrappedSftAddress",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 1469,
+        "contract": "contracts/SftWrappedToken.sol:SftWrappedToken",
+        "label": "wrappedSftSlot",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1471,
+        "contract": "contracts/SftWrappedToken.sol:SftWrappedToken",
+        "label": "navOracle",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_address"
+      },
+      {
+        "astId": 1473,
+        "contract": "contracts/SftWrappedToken.sol:SftWrappedToken",
+        "label": "holdingValueSftId",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 1476,
+        "contract": "contracts/SftWrappedToken.sol:SftWrappedToken",
+        "label": "_holdingEmptySftIds",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_array(t_uint256)dyn_storage"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_uint256)dyn_storage": {
+        "base": "t_uint256",
+        "encoding": "dynamic_array",
+        "label": "uint256[]",
+        "numberOfBytes": "32"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

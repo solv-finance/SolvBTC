@@ -47,6 +47,11 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
 
     uint256[] internal _holdingEmptySftIds;
 
+    modifier onlyWrappedSft {
+        require(msg.sender == wrappedSftAddress, "SftWrappedToken: only wrapped sft");
+        _;
+    }
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() { 
         _disableInitializers();
@@ -82,6 +87,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         external 
         virtual 
         override 
+        onlyWrappedSft 
         returns (bytes4) 
     {
         address fromSftOwner = IERC3525(wrappedSftAddress).ownerOf(fromSftId_);
@@ -108,6 +114,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         external 
         virtual 
         override 
+        onlyWrappedSft 
         returns (bytes4) 
     {
         require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");

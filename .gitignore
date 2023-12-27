@@ -5,3 +5,5 @@ typechain-types/
 
 cache_forge/
 out/
+
+solcInputs/

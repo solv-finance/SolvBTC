@@ -275,6 +275,21 @@ contract SftWrappedTokenTest is Test {
         vm.stopPrank();
     }
 
+    function test_RevertWhenDirectlyCallOnERC3525ReceivedFunction() public virtual {
+        vm.startPrank(user);
+        uint256 sft1Balance = _getSftBalance(SFT_ID_1);
+        vm.expectRevert("SftWrappedToken: only wrapped sft");
+        swt.onERC3525Received(user, SFT_ID_1, SFT_ID_2, sft1Balance, "");
+        vm.stopPrank();
+    }
+
+    function test_RevertWhenDirectlyCallOnERC721ReceivedFunction() public virtual {
+        vm.startPrank(user);
+        vm.expectRevert("SftWrappedToken: only wrapped sft");
+        swt.onERC721Received(user, user, SFT_ID_1, "");
+        vm.stopPrank();
+    }
+
     function test_RevertWhenBurnWithZeroAmount() public virtual {
         vm.startPrank(user);
         _safeTransferSftId(user, address(swt), SFT_ID_1);
