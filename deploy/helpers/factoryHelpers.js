@@ -26,6 +26,13 @@ const deployBeacon = async (productType) => {
   return beaconAddress;
 }
  
+const upgradeBeacon = async (productType) => {
+  const swtFactory = await getSftWrappedTokenFactory();
+  const upgradeBeaconTx = await swtFactory.upgradeBeacon(productType);
+  console.log(`* INFO: SftWrappedTokenFactory upgrade beacon for productType "${productType}" at tx ${upgradeBeaconTx.hash}`);
+  await txWait(upgradeBeaconTx);
+}
+
 const deployProxy = async (productType, productName, tokenName, tokenSymbol, wrappedSft, wrappedSlot, navOracle) => {
   const swtFactory = await getSftWrappedTokenFactory();
   const deployProxyTx  = await swtFactory.deployProductProxy(productType, productName, tokenName, tokenSymbol, wrappedSft, wrappedSlot, navOracle);
@@ -41,5 +48,6 @@ module.exports = {
   getSftWrappedTokenFactory,
   setImplementation,
   deployBeacon,
+  upgradeBeacon,
   deployProxy,
 }
