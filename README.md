@@ -1,5 +1,9 @@
 # stUSD
 
+## Description of Business
+
+[stUSD - Cash Management Solution in Crypto](https://www.notion.so/stUSD-Cash-Management-Solution-in-Crypto-edb9b95cc4aa4c90bf5e62f255081b2b?pvs=21)
+
 
 ## Test
 
