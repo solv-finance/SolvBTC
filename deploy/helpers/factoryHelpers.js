@@ -1,5 +1,5 @@
 const colors = require('colors');
-const { txWait } = require('./deployUtils');
+const { txWait } = require('../utils/deployUtils');
 
 const getSftWrappedTokenFactory = async () => {
   const { deployer } = await getNamedAccounts();
