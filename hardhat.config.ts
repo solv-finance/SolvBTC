@@ -94,6 +94,16 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    merlin: {
+      url: process.env.MERLIN_URL || ` https://rpc.merlinchain.io`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    merlin_test: {
+      url: process.env.MERLIN_TEST_URL || `https://testnet-rpc.merlinchain.io`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {
