@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "./utils/ERC3525TransferHelper.sol";
+import "./external/IERC3525.sol";
 import "./ISftWrappedToken.sol";
 
 struct SlotBaseInfo {
@@ -16,14 +17,6 @@ struct SlotBaseInfo {
     uint64 createTime;
     bool transferable;
     bool isValid;
-}
-
-interface IERC3525 {
-    function valueDecimals() external view returns (uint8);
-    function balanceOf(address owner) external view returns (uint256);
-    function balanceOf(uint256 sftId) external view returns (uint256);
-    function ownerOf(uint256 sftId) external view returns (address);
-    function slotOf(uint256 sftId) external view returns (uint256);
 }
 
 interface IOpenFundSftDelegate {
@@ -118,7 +111,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         returns (bytes4) 
     {
         require(wrappedSftSlot == IERC3525(wrappedSftAddress).slotOf(sftId_), "SftWrappedToken: unreceivable slot");
-       require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not owned sft id");
+        require(address(this) == IERC3525(wrappedSftAddress).ownerOf(sftId_), "SftWrappedToken: not owned sft id");
 
         if (from_ == address(this)) {
             return IERC721Receiver.onERC721Received.selector;
