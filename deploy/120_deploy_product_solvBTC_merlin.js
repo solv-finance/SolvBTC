@@ -14,4 +14,4 @@ module.exports = async ({ deployments }) => {
 
 };
 
-module.exports.tags = ['solvBTC_bnb']
+module.exports.tags = ['solvBTC_merlin']
