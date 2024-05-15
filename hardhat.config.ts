@@ -4,8 +4,8 @@ import "@nomicfoundation/hardhat-foundry";
 import "hardhat-deploy";
 import "hardhat-tracer";
 
-import * as dotenv from 'dotenv';
-dotenv.config()
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -19,23 +19,27 @@ const config: HardhatUserConfig = {
           },
         },
       },
-    ]
+    ],
   },
 
   namedAccounts: {
-    deployer: 0
+    deployer: 0,
   },
 
   networks: {
     hardhat: {},
     localhost: {},
     dev_goerli: {
-      url: process.env.GOERLI_URL || `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
+      url:
+        process.env.GOERLI_URL ||
+        `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     dev_sepolia: {
-      url: process.env.SEPOLIA_URL || `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
+      url:
+        process.env.SEPOLIA_URL ||
+        `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -45,22 +49,30 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     goerli: {
-      url: process.env.GOERLI_URL || `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
+      url:
+        process.env.GOERLI_URL ||
+        `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     sepolia: {
-      url: process.env.SEPOLIA_URL || `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
+      url:
+        process.env.SEPOLIA_URL ||
+        `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     bsctest: {
-      url: process.env.BSC_TESTNET_URL || `https://rpc.ankr.com/bsc_testnet_chapel`,
+      url:
+        process.env.BSC_TESTNET_URL ||
+        `https://rpc.ankr.com/bsc_testnet_chapel`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     arb_goerli: {
-      url: process.env.ARB_GOERLI_URL || `https://arb-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
+      url:
+        process.env.ARB_GOERLI_URL ||
+        `https://arb-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -75,23 +87,27 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     mainnet: {
-      url: process.env.GOERLI_URL || `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      url:
+        process.env.GOERLI_URL ||
+        `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     polygon: {
       url: "https://polygon-rpc.com/",
-      accounts: 
+      accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     bsc: {
       url: process.env.BSC_URL || `https://bsc-dataseed.binance.org/`,
-      accounts: 
+      accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     arb: {
-      url: process.env.ARB_URL || `https://arb.getblock.io/${process.env.GETBLOCK_KEY}/mainnet/`,
-      accounts: 
+      url:
+        process.env.ARB_URL ||
+        `https://arb.getblock.io/${process.env.GETBLOCK_KEY}/mainnet/`,
+      accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     mantle: {
@@ -109,12 +125,17 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    botanix_test: {
+      url: process.env.BOTANIX_TEST_URL || `https://node.botanixlabs.dev`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {
     apiKey: {
-      mantle: 'mantle',
-      goerli: process.env.ETHERSCAN_API_KEY || '',
+      mantle: "mantle",
+      goerli: process.env.ETHERSCAN_API_KEY || "",
     },
     customChains: [
       {
@@ -122,8 +143,8 @@ const config: HardhatUserConfig = {
         chainId: 5000,
         urls: {
           apiURL: "https://explorer.mantle.xyz/api",
-          browserURL: "https://explorer.mantle.xyz/"
-        }
+          browserURL: "https://explorer.mantle.xyz/",
+        },
       },
       {
         network: "merlin",
@@ -133,9 +154,8 @@ const config: HardhatUserConfig = {
           browserURL: "https://explorer.mantle.xyz/",
         },
       },
-    ]
+    ],
   },
-
 };
 
 export default config;
