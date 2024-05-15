@@ -80,7 +80,7 @@ contract SolvBTCUpgrade is ERC20Upgradeable, ReentrancyGuardUpgradeable {
     /**
      * @param amount_ the amount of underlying asset
      */
-    function mint(uint256 amount_) external virtual nonReentrant {
+    function deposit(uint256 amount_) external virtual nonReentrant {
         require(amount_ > 0, "SolvBTC: invalid amount");
         require(underlyingAsset != address(0), "SolvBTC: invalid underlying asset");
 
@@ -101,7 +101,7 @@ contract SolvBTCUpgrade is ERC20Upgradeable, ReentrancyGuardUpgradeable {
     /**
      * @param amount_ the amount of SolvBTC to burn
      */
-    function burn(uint256 amount_) external virtual nonReentrant {
+    function withdraw(uint256 amount_) external virtual nonReentrant {
         require(amount_ > 0, "SolvBTC: invalid amount");
         require(underlyingAsset != address(0), "SolvBTC: invalid underlying asset");
 
