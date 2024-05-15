@@ -34,6 +34,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    dev_sepolia: {
+      url: process.env.SEPOLIA_URL || `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     dev_mumbai: {
       url: process.env.MUMBAI_URL || `https://rpc-mumbai.maticvigil.com/`,
       accounts:
@@ -119,9 +124,18 @@ const config: HardhatUserConfig = {
           apiURL: "https://explorer.mantle.xyz/api",
           browserURL: "https://explorer.mantle.xyz/"
         }
-      }
+      },
+      {
+        network: "merlin",
+        chainId: 4200,
+        urls: {
+          apiURL: "https://explorer.mantle.xyz/api",
+          browserURL: "https://explorer.mantle.xyz/",
+        },
+      },
     ]
   },
+
 };
 
 export default config;
