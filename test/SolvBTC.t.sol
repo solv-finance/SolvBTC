@@ -65,7 +65,7 @@ contract SolvBTCTest is Test {
         uint256 solvBtcTotalSupplyBefore = solvBTC.totalSupply();
 
         xbtc.approve(address(solvBTC), 1e8);
-        solvBTC.mint(1e8);
+        solvBTC.deposit(1e8);
 
         uint256 userXbtcBalanceAfter = xbtc.balanceOf(address(user));
         uint256 userSolvBtcBalanceAfter = solvBTC.balanceOf(address(user));
@@ -82,14 +82,14 @@ contract SolvBTCTest is Test {
     function test_BurnSolvBTC() public {
         vm.startPrank(user);        
         xbtc.approve(address(solvBTC), 1e8);
-        solvBTC.mint(1e8);
+        solvBTC.deposit(1e8);
 
         uint256 userXbtcBalanceBefore = xbtc.balanceOf(address(user));
         uint256 userSolvBtcBalanceBefore = solvBTC.balanceOf(address(user));
         uint256 vaultXbtcBalanceBefore = xbtc.balanceOf(address(solvBTC));
         uint256 solvBtcTotalSupplyBefore = solvBTC.totalSupply();
 
-        solvBTC.burn(1e18);
+        solvBTC.withdraw(1e18);
         uint256 userXbtcBalanceAfter = xbtc.balanceOf(address(user));
         uint256 userSolvBtcBalanceAfter = solvBTC.balanceOf(address(user));
         uint256 vaultXbtcBalanceAfter = xbtc.balanceOf(address(solvBTC));
@@ -106,38 +106,38 @@ contract SolvBTCTest is Test {
         vm.startPrank(user);        
         xbtc.approve(address(solvBTC), 1e8);
         vm.expectRevert("SolvBTC: invalid amount");
-        solvBTC.mint(0);
+        solvBTC.deposit(0);
         vm.stopPrank();
     }
 
     function test_RevertWhenMintNotPassBalanceCheck() public {
         vm.startPrank(user);
         xbtc.approve(address(solvBTC), 2e8);
-        solvBTC.mint(1e8);
+        solvBTC.deposit(1e8);
 
         vm.mockCall(address(xbtc), abi.encodeWithSignature("balanceOf(address)", address(solvBTC)), abi.encode(1e8 - 1));
         vm.expectRevert("SolvBTC: balance check error");
-        solvBTC.mint(1e8);
+        solvBTC.deposit(1e8);
         vm.stopPrank();
     }
 
     function test_RevertWhenBurnZeroAmount() public {
         vm.startPrank(user);        
         xbtc.approve(address(solvBTC), 1e8);
-        solvBTC.mint(1e8);
+        solvBTC.deposit(1e8);
         vm.expectRevert("SolvBTC: invalid amount");
-        solvBTC.burn(0);
+        solvBTC.withdraw(0);
         vm.stopPrank();
     }
 
     function test_RevertWhenBurnNotPassBalanceCheck() public {
         vm.startPrank(user);
         xbtc.approve(address(solvBTC), 2e8);
-        solvBTC.mint(2e8);
+        solvBTC.deposit(2e8);
 
         vm.mockCall(address(xbtc), abi.encodeWithSignature("balanceOf(address)", address(solvBTC)), abi.encode(1e8 - 1));
         vm.expectRevert("SolvBTC: balance check error");
-        solvBTC.burn(1e8);
+        solvBTC.withdraw(1e8);
         vm.stopPrank();
     }
 

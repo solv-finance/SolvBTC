@@ -99,7 +99,7 @@ contract SolvBTCUpgradeTest is Test {
         uint256 solvBtcTotalSupplyBefore = ERC20(solvBtcProxy).totalSupply();
 
         ERC20(WBTC_ADDRESS).approve(solvBtcProxy, 1e8);
-        SolvBTCUpgrade(solvBtcProxy).mint(1e8);
+        SolvBTCUpgrade(solvBtcProxy).deposit(1e8);
 
         uint256 userWbtcBalanceAfter = ERC20(WBTC_ADDRESS).balanceOf(user);
         uint256 userSolvBtcBalanceAfter = ERC20(solvBtcProxy).balanceOf(user);
@@ -124,7 +124,7 @@ contract SolvBTCUpgradeTest is Test {
 
         uint256 burnSolvBtcAmount = userSolvBtcBalanceBefore / 3;
         uint256 burnWtcAmount = burnSolvBtcAmount * (10 ** ERC20(WBTC_ADDRESS).decimals()) / (10 ** ERC20(solvBtcProxy).decimals());
-        SolvBTCUpgrade(solvBtcProxy).burn(burnSolvBtcAmount);
+        SolvBTCUpgrade(solvBtcProxy).withdraw(burnSolvBtcAmount);
 
         uint256 userWbtcBalanceAfter = ERC20(WBTC_ADDRESS).balanceOf(user);
         uint256 userSolvBtcBalanceAfter = ERC20(solvBtcProxy).balanceOf(user);
@@ -145,7 +145,7 @@ contract SolvBTCUpgradeTest is Test {
         vm.startPrank(user);        
         ERC20(WBTC_ADDRESS).approve(solvBtcProxy, 1e8);
         vm.expectRevert("SolvBTC: invalid amount");
-        SolvBTCUpgrade(solvBtcProxy).mint(0);
+        SolvBTCUpgrade(solvBtcProxy).deposit(0);
         vm.stopPrank();
     }
 
@@ -158,7 +158,7 @@ contract SolvBTCUpgradeTest is Test {
         vm.mockCall(WBTC_ADDRESS, abi.encodeWithSignature("balanceOf(address)", solvBtcProxy), abi.encode(vaultWbtcBalance - 1));
         ERC20(WBTC_ADDRESS).approve(solvBtcProxy, 1e8);
         vm.expectRevert("SolvBTC: balance check error");
-        SolvBTCUpgrade(solvBtcProxy).mint(1e8);
+        SolvBTCUpgrade(solvBtcProxy).deposit(1e8);
         vm.stopPrank();
     }
 
@@ -169,7 +169,7 @@ contract SolvBTCUpgradeTest is Test {
         vm.startPrank(user);
         ERC20(WBTC_ADDRESS).approve(solvBtcProxy, 1e8);
         vm.expectRevert("SolvBTC: balance check error");
-        SolvBTCUpgrade(solvBtcProxy).mint(1e8);
+        SolvBTCUpgrade(solvBtcProxy).deposit(1e8);
         vm.stopPrank();
     }
 
@@ -179,9 +179,9 @@ contract SolvBTCUpgradeTest is Test {
 
         vm.startPrank(user);        
         ERC20(WBTC_ADDRESS).approve(solvBtcProxy, 1e8);
-        SolvBTCUpgrade(solvBtcProxy).mint(1e8);
+        SolvBTCUpgrade(solvBtcProxy).deposit(1e8);
         vm.expectRevert("SolvBTC: invalid amount");
-        SolvBTCUpgrade(solvBtcProxy).burn(0);
+        SolvBTCUpgrade(solvBtcProxy).withdraw(0);
         vm.stopPrank();
     }
 
@@ -191,12 +191,12 @@ contract SolvBTCUpgradeTest is Test {
 
         vm.startPrank(user);
         ERC20(WBTC_ADDRESS).approve(solvBtcProxy, 1e8);
-        SolvBTCUpgrade(solvBtcProxy).mint(1e8);
+        SolvBTCUpgrade(solvBtcProxy).deposit(1e8);
 
         uint256 vaultWbtcBalance = ERC20(WBTC_ADDRESS).balanceOf(solvBtcProxy);
         vm.mockCall(WBTC_ADDRESS, abi.encodeWithSignature("balanceOf(address)", solvBtcProxy), abi.encode(vaultWbtcBalance - 1));
         vm.expectRevert("SolvBTC: balance check error");
-        SolvBTCUpgrade(solvBtcProxy).burn(1e8);
+        SolvBTCUpgrade(solvBtcProxy).withdraw(1e8);
         vm.stopPrank();
     }
 
@@ -207,7 +207,7 @@ contract SolvBTCUpgradeTest is Test {
         uint256 userSolvBtcBalance = ERC20(solvBtcProxy).balanceOf(user);
         deal(WBTC_ADDRESS, solvBtcProxy, userSolvBtcBalance * (10 ** ERC20(WBTC_ADDRESS).decimals()) / (10 ** ERC20(solvBtcProxy).decimals()));
         vm.expectRevert("SolvBTC: balance check error");
-        SolvBTCUpgrade(solvBtcProxy).burn(userSolvBtcBalance);
+        SolvBTCUpgrade(solvBtcProxy).withdraw(userSolvBtcBalance);
         vm.stopPrank();
     }
 
