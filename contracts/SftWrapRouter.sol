@@ -13,13 +13,50 @@ import "./SftWrappedTokenFactory.sol";
 import "./SftWrappedToken.sol";
 import "./ISftWrapRouter.sol";
 
-contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminControlUpgradeable, GovernorControlUpgradeable {
-
-    event CreateSubscription(bytes32 indexed poolId, address indexed subscriber, address sftWrappedToken, uint256 swtTokenAmount, address currency, uint256 currencyAmount);
-    event CreateRedemption(bytes32 indexed poolId, address indexed redeemer, address indexed sftWrappedToken, uint256 redeemAmount, uint256 redemptionId);
-    event CancelRedemption(bytes32 indexed poolId, address indexed owner, address indexed sftWrappedToken, uint256 redemptionId, uint256 cancelAmount);
-    event Stake(address indexed sftWrappedToken, address indexed staker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount);
-    event Unstake(address indexed sftWrappedToken, address indexed unstaker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount);
+contract SftWrapRouter is
+    ISftWrapRouter,
+    ReentrancyGuardUpgradeable,
+    AdminControlUpgradeable,
+    GovernorControlUpgradeable
+{
+    event CreateSubscription(
+        bytes32 indexed poolId,
+        address indexed subscriber,
+        address sftWrappedToken,
+        uint256 swtTokenAmount,
+        address currency,
+        uint256 currencyAmount
+    );
+    event CreateRedemption(
+        bytes32 indexed poolId,
+        address indexed redeemer,
+        address indexed sftWrappedToken,
+        uint256 redeemAmount,
+        uint256 redemptionId
+    );
+    event CancelRedemption(
+        bytes32 indexed poolId,
+        address indexed owner,
+        address indexed sftWrappedToken,
+        uint256 redemptionId,
+        uint256 cancelAmount
+    );
+    event Stake(
+        address indexed sftWrappedToken,
+        address indexed staker,
+        address sft,
+        uint256 sftSlot,
+        uint256 sftId,
+        uint256 amount
+    );
+    event Unstake(
+        address indexed sftWrappedToken,
+        address indexed unstaker,
+        address sft,
+        uint256 sftSlot,
+        uint256 sftId,
+        uint256 amount
+    );
 
     address public openFundMarket;
     address public sftWrappedTokenFactory;
@@ -28,11 +65,14 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
     mapping(address => mapping(uint256 => uint256)) public holdingSftIds;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() { 
+    constructor() {
         _disableInitializers();
     }
 
-    function initialize(address governor_, address openFundMarket_, address sftWrappedTokenFactory_) external initializer {
+    function initialize(address governor_, address openFundMarket_, address sftWrappedTokenFactory_)
+        external
+        initializer
+    {
         AdminControlUpgradeable.__AdminControl_init(msg.sender);
         GovernorControlUpgradeable.__GovernorControl_init(governor_);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
@@ -41,21 +81,21 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return
-            interfaceId == type(IERC3525Receiver).interfaceId || 
-            interfaceId == type(IERC721Receiver).interfaceId || 
-            interfaceId == type(IERC165).interfaceId;
+        return interfaceId == type(IERC3525Receiver).interfaceId || interfaceId == type(IERC721Receiver).interfaceId
+            || interfaceId == type(IERC165).interfaceId;
     }
 
-    function onERC3525Received(address /* operator_ */, uint256 fromSftId_, uint256 toSftId_, uint256 value_, bytes calldata /* data_ */) 
-        external 
-        virtual 
-        override 
-        returns (bytes4) 
-    {
+    function onERC3525Received(
+        address, /* operator_ */
+        uint256 fromSftId_,
+        uint256 toSftId_,
+        uint256 value_,
+        bytes calldata /* data_ */
+    ) external virtual override returns (bytes4) {
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
-        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
         require(value_ > 0, "SftWrapRouter: stake amount cannot be 0");
 
@@ -70,7 +110,10 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         if (holdingSftIds[address(openFundShare)][openFundShareSlot] == 0) {
             holdingSftIds[address(openFundShare)][openFundShareSlot] = toSftId_;
         } else {
-            require(toSftId_ == holdingSftIds[address(openFundShare)][openFundShareSlot], "SftWrapRouter: not holding sft id");
+            require(
+                toSftId_ == holdingSftIds[address(openFundShare)][openFundShareSlot],
+                "SftWrapRouter: not holding sft id"
+            );
         }
 
         {
@@ -87,15 +130,16 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         return IERC3525Receiver.onERC3525Received.selector;
     }
 
-    function onERC721Received(address /* operator_ */, address from_, uint256 sftId_, bytes calldata /* data_ */) 
-        external 
-        virtual 
-        override 
-        returns (bytes4) 
+    function onERC721Received(address, /* operator_ */ address from_, uint256 sftId_, bytes calldata /* data_ */ )
+        external
+        virtual
+        override
+        returns (bytes4)
     {
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
-        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
 
         if (from_ == sftWrappedToken || from_ == openFundMarket) {
@@ -139,12 +183,20 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         }
     }
 
-    function unstake(address swtAddress_, uint256 amount_, uint256 sftId_) external virtual nonReentrant returns (uint256 toSftId_) {
+    function unstake(address swtAddress_, uint256 amount_, uint256 sftId_)
+        external
+        virtual
+        nonReentrant
+        returns (uint256 toSftId_)
+    {
         require(swtAddress_ != address(0), "SftWrapRouter: invalid swt address");
         SftWrappedToken swt = SftWrappedToken(swtAddress_);
         address sftAddress = swt.wrappedSftAddress();
         uint256 slot = swt.wrappedSftSlot();
-        require(swtAddress_ == SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(sftAddress, slot), "SftWrapRouter: invalid swt address");
+        require(
+            swtAddress_ == SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(sftAddress, slot),
+            "SftWrapRouter: invalid swt address"
+        );
 
         require(amount_ > 0, "SftWrapRouter: unstake amount cannot be 0");
         ERC20TransferHelper.doTransferIn(swtAddress_, msg.sender, amount_);
@@ -156,7 +208,8 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         }
 
         if (sftId_ == 0) {
-            toSftId_ = ERC3525TransferHelper.doTransferOut(sftAddress, holdingSftIds[sftAddress][slot], msg.sender, amount_);
+            toSftId_ =
+                ERC3525TransferHelper.doTransferOut(sftAddress, holdingSftIds[sftAddress][slot], msg.sender, amount_);
         } else {
             require(slot == IERC3525(sftAddress).slotOf(sftId_), "SftWrapRouter: slot does not match");
             require(msg.sender == IERC3525(sftAddress).ownerOf(sftId_), "SftWrapRouter: not sft owner");
@@ -167,21 +220,29 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         emit Unstake(swtAddress_, msg.sender, sftAddress, slot, toSftId_, amount_);
     }
 
-    function createSubscription(bytes32 poolId_, uint256 currencyAmount_) external virtual nonReentrant returns (uint256 shareValue_) {
+    function createSubscription(bytes32 poolId_, uint256 currencyAmount_)
+        external
+        virtual
+        nonReentrant
+        returns (uint256 shareValue_)
+    {
+        require(checkPoolPermission(poolId_), "SftWrapRouter: pool permission denied");
         PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
         IERC3525 openFundShare = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
         ERC20TransferHelper.doTransferIn(poolInfo.currency, msg.sender, currencyAmount_);
 
         ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmount_);
-        shareValue_ = IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmount_, 0, uint64(block.timestamp + 300));
+        shareValue_ =
+            IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmount_, 0, uint64(block.timestamp + 300));
 
         uint256 shareCount = openFundShare.balanceOf(address(this));
         uint256 shareId = openFundShare.tokenOfOwnerByIndex(address(this), shareCount - 1);
         require(openFundShare.slotOf(shareId) == openFundShareSlot, "SftWrapRouter: incorrect share slot");
         require(openFundShare.balanceOf(shareId) == shareValue_, "SftWrapRouter: incorrect share value");
 
-        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
 
         ERC3525TransferHelper.doSafeTransferOut(address(openFundShare), sftWrappedToken, shareId);
@@ -190,13 +251,19 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         emit CreateSubscription(poolId_, msg.sender, sftWrappedToken, shareValue_, poolInfo.currency, currencyAmount_);
     }
 
-    function createRedemption(bytes32 poolId_, uint256 redeemAmount_) external virtual nonReentrant returns (uint256 redemptionId_) {
+    function createRedemption(bytes32 poolId_, uint256 redeemAmount_)
+        external
+        virtual
+        nonReentrant
+        returns (uint256 redemptionId_)
+    {
         PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
         IERC3525 openFundShare = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         IERC3525 openFundRedemption = IERC3525(poolInfo.poolSFTInfo.openFundRedemption);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
         ERC20TransferHelper.doTransferIn(sftWrappedToken, msg.sender, redeemAmount_);
 
@@ -206,9 +273,11 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
 
         uint256 redemptionBalance = openFundRedemption.balanceOf(address(this));
         redemptionId_ = openFundRedemption.tokenOfOwnerByIndex(address(this), redemptionBalance - 1);
-        require(openFundRedemption.balanceOf(redemptionId_) == redeemAmount_, "SftWrapRouter: incorrect redemption value");
+        require(
+            openFundRedemption.balanceOf(redemptionId_) == redeemAmount_, "SftWrapRouter: incorrect redemption value"
+        );
         ERC3525TransferHelper.doTransferOut(address(openFundRedemption), payable(msg.sender), redemptionId_);
-        
+
         emit CreateRedemption(poolId_, msg.sender, sftWrappedToken, redeemAmount_, redemptionId_);
     }
 
@@ -225,7 +294,8 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         uint256 shareId = openFundShare.tokenOfOwnerByIndex(address(this), shareBalance - 1);
         uint256 shareValue = openFundShare.balanceOf(shareId);
 
-        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
 
         ERC3525TransferHelper.doSafeTransferOut(address(openFundShare), sftWrappedToken, shareId);
@@ -234,4 +304,12 @@ contract SftWrapRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         emit CancelRedemption(poolId_, msg.sender, sftWrappedToken, openFundRedemptionId_, shareValue);
     }
 
+    function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
+        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
+        if (poolInfo.permissionless) {
+            return true;
+        }
+        address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
+        return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender);
+    }
 }
