@@ -113,10 +113,20 @@ const config: HardhatUserConfig = {
 
   etherscan: {
     apiKey: {
-      mantle: 'mantle',
+      bsc: process.env.BSCSCAN_API_KEY || '',
+      arb: process.env.ARBISCAN_API_KEY || '',
       goerli: process.env.ETHERSCAN_API_KEY || '',
+      mantle: 'mantle',
     },
     customChains: [
+      {
+        network: "arb",
+        chainId: 42161,
+        urls: {
+          apiURL: "https://api.arbiscan.io/api",
+          browserURL: "https://explorer.arbitrum.io"
+        }
+      },
       {
         network: "mantle",
         chainId: 5000,
