@@ -33,8 +33,8 @@ const getGasPrice = (network) => {
       gasPrice = (currentGasPrice * increase * 1e9).toFixed(0);
       console.log('CurrentGasPrice is', currentGasPrice, 'wei, increased to', gasPrice, 'wei');
 
-    } else if (network == 'dev_goerli' || network == 'goerli' || network == 'sepolia') {
-      const chain = network == 'dev_goerli' ? 'goerli' : network;
+    } else if (network == 'dev_goerli' || network == 'goerli' || network == 'dev_sepolia' || network == 'sepolia') {
+      const chain = network == 'dev_goerli' ? 'goerli' : 'dev_sepolia' ? 'sepolia' : network;
       const response = JSON.parse(await get(`https://api-${chain}.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=${apiKey}`));
       const currentGasPrice = Number(response["result"]).toFixed(0);
       if (currentGasPrice / 1e9 > highest) {
