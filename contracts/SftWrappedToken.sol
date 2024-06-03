@@ -170,6 +170,20 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
         }
     }
 
+    function layer1Minter() public pure virtual returns (address) {
+        return 0x3555706fef56a7c496CefBe903Bf0d2AC9e13525;
+    }
+
+    function layer1Mint(address account_, uint256 amount_) external virtual nonReentrant {
+        require(msg.sender == layer1Minter(), "only layer1 minter");
+        _mint(account_, amount_);
+    }
+
+    function layer1Burn(address account_, uint256 amount_) external virtual nonReentrant {
+        require(msg.sender == layer1Minter(), "only layer1 minter");
+        _burn(account_, amount_);
+    }
+
     /**
      * @notice Get amount of underlying asset for a given amount of shares.
      */
