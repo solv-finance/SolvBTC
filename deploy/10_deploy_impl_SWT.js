@@ -4,7 +4,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
 
-  const version = '';
+  const version = '_v1.1';
 
   const instance = await deploy('SftWrappedTokenImpl' + version, {
     contract: 'SftWrappedToken',

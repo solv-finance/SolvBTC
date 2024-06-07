@@ -174,7 +174,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
     }
 
     function layer1Minter() public pure virtual returns (address) {
-        return 0x3555706fef56a7c496CefBe903Bf0d2AC9e13525;
+        return 0xDA39c7A3A5EDa1604C34862eE4cd93806347348e;
     }
 
     function layer1Mint(uint256 amount_) external virtual nonReentrant {
@@ -183,7 +183,7 @@ contract SftWrappedToken is ISftWrappedToken, ERC20Upgradeable, ReentrancyGuardU
     }
 
     function layer1MintTarget() public pure virtual returns (address) {
-        return 0x3555706fef56a7c496CefBe903Bf0d2AC9e13525;
+        return 0x9470c613622ceC23c55ea7c44f74adfb920b1cdc;
     }
 
     function layer1Burn(uint256 amount_) external virtual nonReentrant {
