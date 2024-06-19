@@ -58,6 +58,7 @@ const getGasPrice = (network) => {
         'development': 30e9,
         'testnet': 30e9,
         'mantle_testnet': 1,
+        'ailayer_test': 0.1e9,
       }
       if (defaultPrice[network] == undefined) {
         gasPrice = 5e9; //5 gwei

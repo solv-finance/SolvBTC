@@ -109,6 +109,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    ailayer_test: {
+      url: process.env.AILAYER_TEST_URL || `https://testnet-rpc.ailayer.xyz/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    }
   },
 
   etherscan: {
