@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./ISolvBTC.sol";
-import "./SolvBTCMinter.sol";
+import "./SolvBTCMultiAssetPool.sol";
 
 contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable {
 
@@ -16,10 +16,8 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable {
     uint256 public holdingValueSftId;
     uint256[] internal _holdingEmptySftIds;
 
-    address public solvBTCMinter;
-
-    modifier onlySolvBTCMinter() {
-        require(msg.sender == solvBTCMinter, "SolvBTC: only SolvBTC minter");
+    modifier onlySolvBTCMultiAssetPool() {
+        require(msg.sender == solvBTCMultiAssetPool(), "SolvBTC: only SolvBTCMultiAssetPool");
         _;
     }
 
@@ -33,13 +31,9 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable {
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
     }
 
-    function initializeV2(address solvBTCMinter_) external virtual reinitializer(2) {
+    function initializeV2() external virtual reinitializer(2) {
         if (holdingValueSftId != 0) {
-            require(
-                address(this) == SolvBTCMinter(solvBTCMinter_).solvBTC(), 
-                "SolvBTC: invalid SolvBTCMinter"
-            );
-            ERC3525TransferHelper.doTransferOut(wrappedSftAddress, solvBTCMinter_, holdingValueSftId);
+            ERC3525TransferHelper.doTransferOut(wrappedSftAddress, solvBTCMultiAssetPool(), holdingValueSftId);
         }
 
         wrappedSftAddress = address(0);
@@ -47,8 +41,6 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable {
         navOracle = address(0);
         holdingValueSftId = 0;
         delete _holdingEmptySftIds;
-
-        solvBTCMinter = solvBTCMinter_;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
@@ -56,6 +48,10 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable {
             interfaceId == type(IERC3525Receiver).interfaceId || 
             interfaceId == type(IERC721Receiver).interfaceId || 
             interfaceId == type(IERC165).interfaceId;
+    }
+
+    function solvBTCMultiAssetPool() public view virtual override returns (address) {
+        return address(0);  // TODO: set address after SolvBTCMultiAssetPool is deployed
     }
 
     function onERC3525Received(
@@ -77,12 +73,12 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable {
         revert ERC721NotReceivable(msg.sender);
     }
 
-    function mint(address account_, uint256 value_) external virtual nonReentrant onlySolvBTCMinter {
+    function mint(address account_, uint256 value_) external virtual nonReentrant onlySolvBTCMultiAssetPool {
         require(value_ > 0, "SolvBTC: mint value cannot be 0");
         _mint(account_, value_);
     }
 
-    function burn(address account_, uint256 value_) external virtual nonReentrant onlySolvBTCMinter {
+    function burn(address account_, uint256 value_) external virtual nonReentrant onlySolvBTCMultiAssetPool {
         require(value_ > 0, "SolvBTC: burn value cannot be 0");
         _burn(account_, value_);
     }

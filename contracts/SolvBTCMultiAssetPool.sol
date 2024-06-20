@@ -6,15 +6,14 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 import "./access/AdminControlUpgradeable.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./external/IERC3525.sol";
-import "./ISolvBTCMinter.sol";
+import "./ISolvBTCMultiAssetPool.sol";
 import "./ISolvBTC.sol";
 
-contract SolvBTCMinter is ISolvBTCMinter, ReentrancyGuardUpgradeable, AdminControlUpgradeable {
+contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgradeable, AdminControlUpgradeable {
 
     struct SftSlotInfo {
         uint256 holdingValueSftId;
         uint256[] holdingEmptySftIds;
-        address oracle;
         bool allowed;
     }
 
@@ -23,7 +22,8 @@ contract SolvBTCMinter is ISolvBTCMinter, ReentrancyGuardUpgradeable, AdminContr
     address public solvBTC;
 
     event SetSolvBTC(address indexed solvBTC);
-    event SetSftSlot(address indexed sft, uint256 indexed slot, address oracle, uint256 holdingValueSftId, bool allowed);
+    event AddSftSlot(address indexed sft, uint256 indexed slot, uint256 holdingValueSftId);
+    event RemoveSftSlot(address indexed sft, uint256 indexed slot);
     event MintSolvBTC(address indexed owner, address sft, uint256 sftId, uint256 slot, uint256 value);
     event BurnSolvBTC(address indexed owner, address sft, uint256 sftId, uint256 slot, uint256 value);
 
@@ -37,13 +37,13 @@ contract SolvBTCMinter is ISolvBTCMinter, ReentrancyGuardUpgradeable, AdminContr
         AdminControlUpgradeable.__AdminControl_init(admin_);
     }
 
-    function mint(address sft_, uint256 sftId_, uint256 value_) external virtual override nonReentrant {
-        require(solvBTC != address(0), "SolvBTCMinter: SolvBTC not set");
-        require(value_ > 0, "SolvBTCMinter: mint amount cannot be 0");
+    function deposit(address sft_, uint256 sftId_, uint256 value_) external virtual override nonReentrant {
+        require(solvBTC != address(0), "SolvBTCMultiAssetPool: SolvBTC not set");
+        require(value_ > 0, "SolvBTCMultiAssetPool: mint amount cannot be 0");
 
         uint256 slot = IERC3525(sft_).slotOf(sftId_);
-        require(isSftSlotAllowed(sft_, slot), "SolvBTCMinter: sft and slot not allowed");
-        require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SolvBTCMinter: caller is not sft owner");
+        require(isSftSlotAllowed(sft_, slot), "SolvBTCMultiAssetPool: sft and slot not allowed");
+        require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SolvBTCMultiAssetPool: caller is not sft owner");
 
         SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot];
 
@@ -63,30 +63,35 @@ contract SolvBTCMinter is ISolvBTCMinter, ReentrancyGuardUpgradeable, AdminContr
                 ERC3525TransferHelper.doTransfer(sft_, sftId_, sftSlotInfo.holdingValueSftId, value_);
             }
         } else {
-            revert("SolvBTCMinter: mint amount exceeds sft balance");
+            revert("SolvBTCMultiAssetPool: mint amount exceeds sft balance");
         }
+        // if (sftSlotInfo.holdingValueSftId == 0) {
+        //     sftSlotInfo.holdingValueSftId = ERC3525TransferHelper.doTransferIn(sft_, sftId_, value_);
+        // } else {
+        //     ERC3525TransferHelper.doTransfer(sft_, sftId_, sftSlotInfo.holdingValueSftId, value_);
+        // }
 
         ISolvBTC(solvBTC).mint(msg.sender, value_);
         emit MintSolvBTC(msg.sender, sft_, sftId_, slot, value_);
     }
 
-    function burn(
+    function withdraw(
         address sft_, 
-        uint256 sftId_, 
         uint256 slot_, 
+        uint256 sftId_, 
         uint256 value_
     ) 
         external virtual override nonReentrant returns (uint256 toSftId_) 
     {
-        require(solvBTC != address(0), "SolvBTCMinter: SolvBTC not set");
-        require(value_ > 0, "SolvBTCMinter: burn amount cannot be 0");
+        require(solvBTC != address(0), "SolvBTCMultiAssetPool: SolvBTC not set");
+        require(value_ > 0, "SolvBTCMultiAssetPool: burn amount cannot be 0");
 
         SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
-        require(sftSlotInfo.allowed, "SolvBTCMinter: sft slot not allowed");
+        require(sftSlotInfo.allowed, "SolvBTCMultiAssetPool: sft slot not allowed");
 
         uint256 sftSlotBalance = sftSlotInfo.holdingValueSftId == 0 ? 0 : 
             IERC3525(sft_).balanceOf(sftSlotInfo.holdingValueSftId);
-        require(value_ <= sftSlotBalance, "SolvBTCMinter: insufficient balance");
+        require(value_ <= sftSlotBalance, "SolvBTCMultiAssetPool: insufficient balance");
 
         ISolvBTC(solvBTC).burn(msg.sender, value_);
 
@@ -103,9 +108,9 @@ contract SolvBTCMinter is ISolvBTCMinter, ReentrancyGuardUpgradeable, AdminContr
             }
         } else {
             require(
-                slot_ == IERC3525(sft_).slotOf(sftId_), "SolvBTCMinter: slot does not match"
+                slot_ == IERC3525(sft_).slotOf(sftId_), "SolvBTCMultiAssetPool: slot does not match"
             );
-            require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SolvBTCMinter: caller is not sft owner");
+            require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SolvBTCMultiAssetPool: caller is not sft owner");
             ERC3525TransferHelper.doTransfer(sft_, sftSlotInfo.holdingValueSftId, sftId_, value_);
             toSftId_ = sftId_;
         }
@@ -114,28 +119,29 @@ contract SolvBTCMinter is ISolvBTCMinter, ReentrancyGuardUpgradeable, AdminContr
     }
 
     function setSolvBTCOnlyAdmin(address solvBTC_) external virtual onlyAdmin {
-        require(solvBTC == address(0), "SolvBTCMinter: SolvBTC already set");
+        require(solvBTC == address(0), "SolvBTCMultiAssetPool: SolvBTC already set");
         solvBTC = solvBTC_;
         emit SetSolvBTC(solvBTC);
     }
 
-    function setSftSlotOnlyAdmin(
-        address sft_, 
-        uint256 slot_, 
-        address oracle_, 
-        uint256 holdingValueSftId_,
-        bool allowed_
-    ) external virtual onlyAdmin {
+    function addSftSlotOnlyAdmin(address sft_, uint256 slot_, uint256 holdingValueSftId_) external virtual onlyAdmin {
         if (holdingValueSftId_ > 0) {
-            require(IERC3525(sft_).slotOf(holdingValueSftId_) == slot_, "SolvBTCMinter: slot does not match");
+            require(IERC3525(sft_).slotOf(holdingValueSftId_) == slot_, "SolvBTCMultiAssetPool: slot does not match");
         }
 
         SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
-        sftSlotInfo.oracle = oracle_;
         sftSlotInfo.holdingValueSftId = holdingValueSftId_;
-        sftSlotInfo.allowed = allowed_;
-        emit SetSftSlot(sft_, slot_, oracle_, holdingValueSftId_, allowed_);
+        sftSlotInfo.allowed = true;
+        emit AddSftSlot(sft_, slot_, holdingValueSftId_);
     } 
+
+    function removeSftSlotOnlyAdmin(address sft_, uint256 slot_) external virtual onlyAdmin {
+        SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
+        require(sftSlotInfo.allowed, "SolvBTCMultiAssetPool: invalid sft and slot");
+        if (sftSlotInfo.holdingValueSftId > 0) {
+            // uint256 balance = IERC3525(sft_).balanceOf()
+        }
+    }
 
     function isSftSlotAllowed(address sft_, uint256 slot_) public view virtual override returns (bool) {
         return _sftSlotInfos[sft_][slot_].allowed;
