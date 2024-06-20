@@ -65,11 +65,6 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         } else {
             revert("SolvBTCMultiAssetPool: mint amount exceeds sft balance");
         }
-        // if (sftSlotInfo.holdingValueSftId == 0) {
-        //     sftSlotInfo.holdingValueSftId = ERC3525TransferHelper.doTransferIn(sft_, sftId_, value_);
-        // } else {
-        //     ERC3525TransferHelper.doTransfer(sft_, sftId_, sftSlotInfo.holdingValueSftId, value_);
-        // }
 
         ISolvBTC(solvBTC).mint(msg.sender, value_);
         emit MintSolvBTC(msg.sender, sft_, sftId_, slot, value_);
@@ -125,11 +120,14 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
     }
 
     function addSftSlotOnlyAdmin(address sft_, uint256 slot_, uint256 holdingValueSftId_) external virtual onlyAdmin {
+        SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
+        require(!sftSlotInfo.allowed, "SolvBTCMultiAssetPool: sft slot already existed");
+
         if (holdingValueSftId_ > 0) {
-            require(IERC3525(sft_).slotOf(holdingValueSftId_) == slot_, "SolvBTCMultiAssetPool: slot does not match");
+            require(IERC3525(sft_).slotOf(holdingValueSftId_) == slot_, "SolvBTCMultiAssetPool: slot not matched");
+            require(IERC3525(sft_).ownerOf(holdingValueSftId_) == address(this), "SolvBTCMultiAssetPool: sftId not owned");
         }
 
-        SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
         sftSlotInfo.holdingValueSftId = holdingValueSftId_;
         sftSlotInfo.allowed = true;
         emit AddSftSlot(sft_, slot_, holdingValueSftId_);
@@ -138,9 +136,15 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
     function removeSftSlotOnlyAdmin(address sft_, uint256 slot_) external virtual onlyAdmin {
         SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
         require(sftSlotInfo.allowed, "SolvBTCMultiAssetPool: invalid sft and slot");
+
         if (sftSlotInfo.holdingValueSftId > 0) {
-            // uint256 balance = IERC3525(sft_).balanceOf()
+            uint256 sftIdBalance = IERC3525(sft_).balanceOf(sftSlotInfo.holdingValueSftId);
+            require(sftIdBalance == 0, "SolvBTCMultiAssetPool: holdingValueSftId balance not empty");
         }
+
+        sftSlotInfo.holdingValueSftId = 0;
+        sftSlotInfo.allowed = false;
+        emit RemoveSftSlot(sft_, slot_);
     }
 
     function isSftSlotAllowed(address sft_, uint256 slot_) public view virtual override returns (bool) {
