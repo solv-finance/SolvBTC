@@ -236,8 +236,9 @@ contract SftWrapRouterTest is Test {
         uint256 sft2BalanceBefore = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_2);
         uint256 unstakeAmount = swtBalanceBefore / 4;
 
+        uint256 slot = IERC3525(WRAPPED_SFT_ADDRESS).slotOf(SFT_ID_2);
         _erc20Approve(address(swt), address(router), unstakeAmount);
-        uint256 toSftId = router.unstake(address(swt), unstakeAmount, SFT_ID_2);
+        uint256 toSftId = router.unstake(address(swt), unstakeAmount, WRAPPED_SFT_ADDRESS, slot, SFT_ID_2);
         uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
 
         assertEq(toSftId, SFT_ID_2);
@@ -258,8 +259,9 @@ contract SftWrapRouterTest is Test {
         uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
         uint256 unstakeAmount = swtBalanceBefore / 4;
 
+        uint256 slot = IERC3525(WRAPPED_SFT_ADDRESS).slotOf(SFT_ID_1);
         _erc20Approve(address(swt), address(router), unstakeAmount);
-        uint256 toSftId = router.unstake(address(swt), unstakeAmount, 0);
+        uint256 toSftId = router.unstake(address(swt), unstakeAmount, WRAPPED_SFT_ADDRESS, slot, 0);
         uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
 
         assertEq(swtBalanceBefore - swtBalanceAfter, unstakeAmount);

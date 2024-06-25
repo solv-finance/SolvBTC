@@ -49,11 +49,11 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
 
         uint256 sftBalance = IERC3525(sft_).balanceOf(sftId_);
         if (value_ == sftBalance) {
-            ERC3525TransferHelper.doSafeTransferIn(sft_, msg.sender, sftId_);
+            ERC3525TransferHelper.doTransferIn(sft_, msg.sender, sftId_);
             if (sftSlotInfo.holdingValueSftId == 0) {
                 sftSlotInfo.holdingValueSftId = sftId_;
             } else {
-                ERC3525TransferHelper.doTransfer(msg.sender, sftId_, sftSlotInfo.holdingValueSftId, value_);
+                ERC3525TransferHelper.doTransfer(sft_, sftId_, sftSlotInfo.holdingValueSftId, value_);
                 sftSlotInfo.holdingEmptySftIds.push(sftId_);
             }
         } else if (value_ < sftBalance) {
