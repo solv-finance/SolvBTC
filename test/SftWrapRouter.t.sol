@@ -3,6 +3,8 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
+import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 import "../lib/forge-std/src/Test.sol";
 import "../lib/forge-std/src/console.sol";
 import "../contracts/SftWrapRouter.sol";
@@ -26,42 +28,49 @@ contract SftWrapRouterTest is Test {
     uint256 internal constant SFT_ID_2 = 2145;
     uint256 internal constant SFT_ID_OF_ANOTHER_SLOT = 2146;
 
-    address public admin = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
-    address public governor = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
-    address public user = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
+    address internal constant ADMIN = 0x55C09707Fd7aFD670e82A62FaeE312903940013E;
+    address internal constant GOVERNOR = 0x55C09707Fd7aFD670e82A62FaeE312903940013E;
+    address internal constant USER = 0xd1B4ea4A0e176292D667695FC7674F845009b32E;
 
     SftWrappedTokenFactory public factory;
     SftWrappedToken public swt;
     SftWrapRouter public router;
 
     function setUp() public virtual {
-        vm.startPrank(admin);
-        factory = new SftWrappedTokenFactory(governor);
+        vm.startPrank(ADMIN);
+        factory = new SftWrappedTokenFactory(GOVERNOR);
         SftWrappedToken swtImpl = new SftWrappedToken();
         factory.setImplementation(PRODUCT_TYPE, address(swtImpl));
         factory.deployBeacon(PRODUCT_TYPE);
         swt = SftWrappedToken(
             factory.deployProductProxy(PRODUCT_TYPE, PRODUCT_NAME, TOKEN_NAME, TOKEN_SYMBOL, WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT, NAV_ORACLE_ADDRESS)
         );
-        router = new SftWrapRouter();
-        router.initialize(governor, MARKET_ADDRESS, address(factory));
+
+        ProxyAdmin proxyAdmin = new ProxyAdmin(ADMIN);
+        SftWrapRouter impl = new SftWrapRouter();
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
+            address(impl), address(proxyAdmin), abi.encodeWithSignature(
+                "initialize(address,address,address)", GOVERNOR, MARKET_ADDRESS, address(factory)
+            )
+        );
+        router = SftWrapRouter(address(proxy));
         vm.stopPrank();
     }
 
     function test_InitialStatus() public virtual {
-        assertEq(router.admin(), admin);
-        assertEq(router.governor(), governor);
+        assertEq(router.admin(), ADMIN);
+        assertEq(router.governor(), GOVERNOR);
         assertEq(router.openFundMarket(), MARKET_ADDRESS);
         assertEq(router.sftWrappedTokenFactory(), address(factory));
     }
 
     function test_OnERC721Received_FirstStake() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
 
-        IERC3525(WRAPPED_SFT_ADDRESS).safeTransferFrom(user, address(router), SFT_ID_1);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        IERC3525(WRAPPED_SFT_ADDRESS).safeTransferFrom(USER, address(router), SFT_ID_1);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         assertEq(swtBalanceAfter - swtBalanceBefore, sft1Balance);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), address(swt));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1), sft1Balance);
@@ -71,14 +80,14 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_OnERC721Received_NotFirstStake() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         uint256 sft2Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_2);
 
-        IERC3525(WRAPPED_SFT_ADDRESS).safeTransferFrom(user, address(router), SFT_ID_1);
-        IERC3525(WRAPPED_SFT_ADDRESS).safeTransferFrom(user, address(router), SFT_ID_2);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        IERC3525(WRAPPED_SFT_ADDRESS).safeTransferFrom(USER, address(router), SFT_ID_1);
+        IERC3525(WRAPPED_SFT_ADDRESS).safeTransferFrom(USER, address(router), SFT_ID_2);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         assertEq(swtBalanceAfter - swtBalanceBefore, sft1Balance + sft2Balance);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), address(swt));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_2), address(swt));
@@ -90,17 +99,17 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_OnERC3525Received_FirstStake() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
 
         IERC3525(WRAPPED_SFT_ADDRESS).transferFrom(SFT_ID_1, address(router), sft1Balance);
         uint256 routerHoldingSftId = router.holdingSftIds(WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT);
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
 
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         assertEq(swtBalanceAfter - swtBalanceBefore, sft1Balance);
-        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), user);
+        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), USER);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(routerHoldingSftId), address(router));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(swtHoldingValueSftId), address(swt));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1), 0);
@@ -110,8 +119,8 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_OnERC3525Received_NotFirstStake() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         uint256 sft2Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_2);
 
@@ -120,10 +129,10 @@ contract SftWrapRouterTest is Test {
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
         IERC3525(WRAPPED_SFT_ADDRESS).transferFrom(SFT_ID_2, routerHoldingSftId, sft2Balance);
 
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         assertEq(swtBalanceAfter - swtBalanceBefore, sft1Balance + sft2Balance);
-        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), user);
-        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_2), user);
+        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), USER);
+        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_2), USER);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(routerHoldingSftId), address(router));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(swtHoldingValueSftId), address(swt));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1), 0);
@@ -134,13 +143,13 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_FirstStakeWithAllValue() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
 
         IERC3525(WRAPPED_SFT_ADDRESS).approve(address(router), SFT_ID_1);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, sft1Balance);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         uint256 routerHoldingSftId = router.holdingSftIds(WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT);
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
 
@@ -153,19 +162,19 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_FirstStakeWithPartialValue() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         uint256 stakeValue = sft1Balance / 4;
 
         IERC3525(WRAPPED_SFT_ADDRESS).approve(SFT_ID_1, address(router), stakeValue);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, stakeValue);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         uint256 routerHoldingSftId = router.holdingSftIds(WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT);
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
 
         assertEq(swtBalanceAfter - swtBalanceBefore, stakeValue);
-        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), user);
+        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), USER);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(routerHoldingSftId), address(router));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(swtHoldingValueSftId), address(swt));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1), sft1Balance - stakeValue);
@@ -175,8 +184,8 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_NonFirstStakeWithAllValue() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         uint256 sft2Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_2);
 
@@ -184,7 +193,7 @@ contract SftWrapRouterTest is Test {
         IERC3525(WRAPPED_SFT_ADDRESS).approve(address(router), SFT_ID_2);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, sft1Balance);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_2, sft2Balance);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         uint256 routerHoldingSftId = router.holdingSftIds(WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT);
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
 
@@ -201,8 +210,8 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_NonFirstStakeWithPartialValue() public virtual {
-        vm.startPrank(user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         uint256 stakeValue1 = sft1Balance / 4;
         uint256 stakeValue2 = sft1Balance / 2;
@@ -210,12 +219,12 @@ contract SftWrapRouterTest is Test {
         IERC3525(WRAPPED_SFT_ADDRESS).approve(SFT_ID_1, address(router), stakeValue1 + stakeValue2);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, stakeValue1);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, stakeValue2);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         uint256 routerHoldingSftId = router.holdingSftIds(WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT);
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
 
         assertEq(swtBalanceAfter - swtBalanceBefore, stakeValue1 + stakeValue2);
-        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), user);
+        assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(SFT_ID_1), USER);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(routerHoldingSftId), address(router));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).ownerOf(swtHoldingValueSftId), address(swt));
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1), sft1Balance - stakeValue1 - stakeValue2);
@@ -225,21 +234,20 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_UnstakeWhenGivenSftId() public virtual {
-        vm.startPrank(user);
+        vm.startPrank(USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         IERC3525(WRAPPED_SFT_ADDRESS).approve(address(router), SFT_ID_1);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, sft1Balance);
 
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
         uint256 swtHoldingValueBefore = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(swtHoldingValueSftId);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 sft2BalanceBefore = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_2);
         uint256 unstakeAmount = swtBalanceBefore / 4;
 
-        uint256 slot = IERC3525(WRAPPED_SFT_ADDRESS).slotOf(SFT_ID_2);
         _erc20Approve(address(swt), address(router), unstakeAmount);
-        uint256 toSftId = router.unstake(address(swt), unstakeAmount, WRAPPED_SFT_ADDRESS, slot, SFT_ID_2);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 toSftId = router.unstake(address(swt), unstakeAmount, SFT_ID_2);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
 
         assertEq(toSftId, SFT_ID_2);
         assertEq(swtBalanceBefore - swtBalanceAfter, unstakeAmount);
@@ -249,20 +257,19 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_UnstakeWhenNotGivenSftId() public virtual {
-        vm.startPrank(user);
+        vm.startPrank(USER);
         uint256 sft1Balance = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(SFT_ID_1);
         IERC3525(WRAPPED_SFT_ADDRESS).approve(address(router), SFT_ID_1);
         router.stake(WRAPPED_SFT_ADDRESS, SFT_ID_1, sft1Balance);
 
         uint256 swtHoldingValueSftId = swt.holdingValueSftId();
         uint256 swtHoldingValueBefore = IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(swtHoldingValueSftId);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 unstakeAmount = swtBalanceBefore / 4;
 
-        uint256 slot = IERC3525(WRAPPED_SFT_ADDRESS).slotOf(SFT_ID_1);
         _erc20Approve(address(swt), address(router), unstakeAmount);
-        uint256 toSftId = router.unstake(address(swt), unstakeAmount, WRAPPED_SFT_ADDRESS, slot, 0);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 toSftId = router.unstake(address(swt), unstakeAmount, 0);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
 
         assertEq(swtBalanceBefore - swtBalanceAfter, unstakeAmount);
         assertEq(IERC3525(WRAPPED_SFT_ADDRESS).balanceOf(toSftId), unstakeAmount);
@@ -271,16 +278,16 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_CreateSubscription() public virtual {
-        vm.startPrank(user);
-        uint256 currencyBalanceBefore = _getErc20Balance(USDC_ADDRESS, user);
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        vm.startPrank(USER);
+        uint256 currencyBalanceBefore = _getErc20Balance(USDC_ADDRESS, USER);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 subscribeCurrencyAmount = 100e6;
 
         ERC20(USDC_ADDRESS).approve(address(router), subscribeCurrencyAmount);
         _erc20Approve(USDC_ADDRESS, address(router), subscribeCurrencyAmount);
         router.createSubscription(WRAPPED_SFT_POOL_ID, subscribeCurrencyAmount);
-        uint256 currencyBalanceAfter = _getErc20Balance(USDC_ADDRESS, user);
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 currencyBalanceAfter = _getErc20Balance(USDC_ADDRESS, USER);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
 
         assertEq(currencyBalanceBefore - currencyBalanceAfter, subscribeCurrencyAmount);
         uint256 nav = _getSubscribeNav(WRAPPED_SFT_POOL_ID, block.timestamp);
@@ -290,27 +297,27 @@ contract SftWrapRouterTest is Test {
     }
 
     function test_CreateRedemption() public virtual {
-        vm.startPrank(user);
+        vm.startPrank(USER);
         uint256 subscribeCurrencyAmount = 100e6;
         _erc20Approve(USDC_ADDRESS, address(router), subscribeCurrencyAmount);
         router.createSubscription(WRAPPED_SFT_POOL_ID, subscribeCurrencyAmount);
 
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         uint256 redeemAmount = 20 ether;
         _erc20Approve(address(swt), address(router), redeemAmount);
         router.createRedemption(WRAPPED_SFT_POOL_ID, redeemAmount);
 
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         assertEq(swtBalanceBefore - swtBalanceAfter, redeemAmount);
 
-        uint256 redemptionId = _getLastSftIdOwned(REDEMPTION_SFT_ADDRESS, user);
+        uint256 redemptionId = _getLastSftIdOwned(REDEMPTION_SFT_ADDRESS, USER);
         uint256 redemptionBalance = _getSftBalance(REDEMPTION_SFT_ADDRESS, redemptionId);
         assertEq(redemptionBalance, redeemAmount);
         vm.stopPrank();
     }
 
     function test_CancelRedemption() public virtual {
-        vm.startPrank(user);
+        vm.startPrank(USER);
         uint256 subscribeCurrencyAmount = 100e6;
         _erc20Approve(USDC_ADDRESS, address(router), subscribeCurrencyAmount);
         router.createSubscription(WRAPPED_SFT_POOL_ID, subscribeCurrencyAmount);
@@ -318,13 +325,13 @@ contract SftWrapRouterTest is Test {
         uint256 redeemAmount = 20 ether;
         _erc20Approve(address(swt), address(router), redeemAmount);
         router.createRedemption(WRAPPED_SFT_POOL_ID, redeemAmount);
-        uint256 redemptionId = _getLastSftIdOwned(REDEMPTION_SFT_ADDRESS, user);
+        uint256 redemptionId = _getLastSftIdOwned(REDEMPTION_SFT_ADDRESS, USER);
 
-        uint256 swtBalanceBefore = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceBefore = _getErc20Balance(address(swt), USER);
         _approveSftId(REDEMPTION_SFT_ADDRESS, address(router), redemptionId);
         router.cancelRedemption(WRAPPED_SFT_POOL_ID, redemptionId);
 
-        uint256 swtBalanceAfter = _getErc20Balance(address(swt), user);
+        uint256 swtBalanceAfter = _getErc20Balance(address(swt), USER);
         assertEq(swtBalanceAfter - swtBalanceBefore, redeemAmount);
 
         vm.expectRevert("ERC3525: invalid token ID");

@@ -12,7 +12,6 @@ import "./external/IOpenFundMarket.sol";
 import "./SftWrappedTokenFactory.sol";
 import "./SftWrappedToken.sol";
 import "./ISftWrapRouter.sol";
-import "./ISolvBTCMultiAssetPool.sol";
 
 contract SftWrapRouter is
     ISftWrapRouter,
@@ -74,6 +73,10 @@ contract SftWrapRouter is
         external
         initializer
     {
+        require(governor_ != address(0), "SftWrapRouter: invalid governor");
+        require(openFundMarket_ != address(0), "SftWrapRouter: invalid openFundMarket");
+        require(sftWrappedTokenFactory_ != address(0), "SftWrapRouter: invalid sftWrappedTokenFactory");
+
         AdminControlUpgradeable.__AdminControl_init(msg.sender);
         GovernorControlUpgradeable.__GovernorControl_init(governor_);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
@@ -95,41 +98,41 @@ contract SftWrapRouter is
         uint256 value_,
         bytes calldata /* data_ */
     ) external virtual override returns (bytes4) {
-        require(value_ > 0, "SftWrapRouter: stake amount cannot be 0");
-
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
-
         address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(
             msg.sender, openFundShareSlot
         );
+        require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
+        require(value_ > 0, "SftWrapRouter: stake amount cannot be 0");
+
         address fromSftIdOwner = openFundShare.ownerOf(fromSftId_);
-        if (
-            fromSftIdOwner == address(this) || fromSftIdOwner == openFundMarket || 
-            fromSftIdOwner == solvBTCMultiAssetPool() || 
-            (sftWrappedToken != address(0) && fromSftIdOwner == sftWrappedToken)
-        ) {
+        if (fromSftIdOwner == openFundMarket || fromSftIdOwner == sftWrappedToken) {
             return IERC3525Receiver.onERC3525Received.selector;
         }
 
-        {
-            address toSftIdOwner = openFundShare.ownerOf(toSftId_);
-            require(toSftIdOwner == address(this), "SftWrapRouter: not owned sft id");
+        address toSftIdOwner = openFundShare.ownerOf(toSftId_);
+        require(toSftIdOwner == address(this), "SftWrapRouter: not owned sft id");
 
-            if (holdingSftIds[address(openFundShare)][openFundShareSlot] == 0) {
-                holdingSftIds[address(openFundShare)][openFundShareSlot] = toSftId_;
+        if (holdingSftIds[address(openFundShare)][openFundShareSlot] == 0) {
+            holdingSftIds[address(openFundShare)][openFundShareSlot] = toSftId_;
+        } else {
+            require(
+                toSftId_ == holdingSftIds[address(openFundShare)][openFundShareSlot],
+                "SftWrapRouter: not holding sft id"
+            );
+        }
+
+        {
+            uint256 swtHoldingValueSftId = SftWrappedToken(sftWrappedToken).holdingValueSftId();
+            if (swtHoldingValueSftId == 0) {
+                ERC3525TransferHelper.doTransferOut(address(openFundShare), toSftId_, sftWrappedToken, value_);
             } else {
-                require(
-                    toSftId_ == holdingSftIds[address(openFundShare)][openFundShareSlot],
-                    "SftWrapRouter: not holding sft id"
-                );
+                ERC3525TransferHelper.doTransfer(address(openFundShare), toSftId_, swtHoldingValueSftId, value_);
             }
         }
 
-        uint256 newSftId = IERC3525(msg.sender).transferFrom(toSftId_, address(this), value_);
-        sftWrappedToken = _stakeSft(msg.sender, openFundShareSlot, newSftId, value_);
         ERC20TransferHelper.doTransferOut(sftWrappedToken, payable(fromSftIdOwner), value_);
-
         emit Stake(sftWrappedToken, fromSftIdOwner, address(openFundShare), openFundShareSlot, fromSftId_, value_);
         return IERC3525Receiver.onERC3525Received.selector;
     }
@@ -142,25 +145,22 @@ contract SftWrapRouter is
     {
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
-
         address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(
             msg.sender, openFundShareSlot
         );
+        require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
 
-        if (
-            from_ == openFundMarket || from_ == solvBTCMultiAssetPool() || 
-            (sftWrappedToken != address(0) && from_ == sftWrappedToken)
-        ) {
+        if (from_ == openFundMarket || from_ == sftWrappedToken) {
             return IERC721Receiver.onERC721Received.selector;
         }
+
+        require(openFundShare.balanceOf(sftId_) > 0, "SftWrapRouter: stake amount cannot be 0");
 
         address sftIdOwner = openFundShare.ownerOf(sftId_);
         require(sftIdOwner == address(this), "SftWrapRouter: not owned sft id");
 
         uint256 openFundShareValue = openFundShare.balanceOf(sftId_);
-        require(openFundShareValue > 0, "SftWrapRouter: stake amount cannot be 0");
-
-        sftWrappedToken = _stakeSft(msg.sender, openFundShareSlot, sftId_, openFundShareValue);
+        ERC3525TransferHelper.doSafeTransferOut(address(openFundShare), sftWrappedToken, sftId_);
         ERC20TransferHelper.doTransferOut(sftWrappedToken, payable(from_), openFundShareValue);
 
         emit Stake(sftWrappedToken, from_, address(openFundShare), openFundShareSlot, sftId_, openFundShareValue);
@@ -191,51 +191,41 @@ contract SftWrapRouter is
         }
     }
 
-    function unstake(address swtAddress_, uint256 amount_, address sft_, uint256 slot_, uint256 sftId_)
+    function unstake(address swtAddress_, uint256 amount_, uint256 sftId_)
         external
         virtual
         nonReentrant
         returns (uint256 toSftId_)
     {
         require(swtAddress_ != address(0), "SftWrapRouter: invalid swt address");
+        SftWrappedToken swt = SftWrappedToken(swtAddress_);
+        address sftAddress = swt.wrappedSftAddress();
+        uint256 slot = swt.wrappedSftSlot();
+        require(
+            swtAddress_ == SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(sftAddress, slot),
+            "SftWrapRouter: invalid swt address"
+        );
+
         require(amount_ > 0, "SftWrapRouter: unstake amount cannot be 0");
         ERC20TransferHelper.doTransferIn(swtAddress_, msg.sender, amount_);
 
-        if (
-            swtAddress_ == ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).solvBTC() && 
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).isSftSlotAllowed(sft_, slot_)
-        ) {
-            if (holdingSftIds[sft_][slot_] == 0) {
-                holdingSftIds[sft_][slot_] = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).withdraw(sft_, slot_, 0, amount_);
-            } else {
-                ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).withdraw(sft_, slot_, holdingSftIds[sft_][slot_], amount_);
-            }
+        if (holdingSftIds[sftAddress][slot] == 0) {
+            holdingSftIds[sftAddress][slot] = swt.burn(amount_, 0);
         } else {
-            SftWrappedToken swt = SftWrappedToken(swtAddress_);
-            require(sft_ == swt.wrappedSftAddress(), "SftWrapRouter: sft address not matched");
-            require(slot_ == swt.wrappedSftSlot(), "SftWrapRouter: sft slot not matched");
-            require(
-                swtAddress_ == SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(sft_, slot_),
-                "SftWrapRouter: invalid swt address"
-            );
-
-            if (holdingSftIds[sft_][slot_] == 0) {
-                holdingSftIds[sft_][slot_] = swt.burn(amount_, 0);
-            } else {
-                swt.burn(amount_, holdingSftIds[sft_][slot_]);
-            }
+            swt.burn(amount_, holdingSftIds[sftAddress][slot]);
         }
 
         if (sftId_ == 0) {
-            toSftId_ = ERC3525TransferHelper.doTransferOut(sft_, holdingSftIds[sft_][slot_], msg.sender, amount_);
+            toSftId_ =
+                ERC3525TransferHelper.doTransferOut(sftAddress, holdingSftIds[sftAddress][slot], msg.sender, amount_);
         } else {
-            require(slot_ == IERC3525(sft_).slotOf(sftId_), "SftWrapRouter: sftId slot not matched");
-            require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SftWrapRouter: not sft owner");
-            ERC3525TransferHelper.doTransfer(sft_, holdingSftIds[sft_][slot_], sftId_, amount_);
+            require(slot == IERC3525(sftAddress).slotOf(sftId_), "SftWrapRouter: slot does not match");
+            require(msg.sender == IERC3525(sftAddress).ownerOf(sftId_), "SftWrapRouter: not sft owner");
+            ERC3525TransferHelper.doTransfer(sftAddress, holdingSftIds[sftAddress][slot], sftId_, amount_);
             toSftId_ = sftId_;
         }
 
-        emit Unstake(swtAddress_, msg.sender, sft_, slot_, toSftId_, amount_);
+        emit Unstake(swtAddress_, msg.sender, sftAddress, slot, toSftId_, amount_);
     }
 
     function createSubscription(bytes32 poolId_, uint256 currencyAmount_)
@@ -248,8 +238,8 @@ contract SftWrapRouter is
         PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
         IERC3525 openFundShare = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
-
         ERC20TransferHelper.doTransferIn(poolInfo.currency, msg.sender, currencyAmount_);
+
         ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmount_);
         shareValue_ =
             IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmount_, 0, uint64(block.timestamp + 300));
@@ -259,7 +249,11 @@ contract SftWrapRouter is
         require(openFundShare.slotOf(shareId) == openFundShareSlot, "SftWrapRouter: incorrect share slot");
         require(openFundShare.balanceOf(shareId) == shareValue_, "SftWrapRouter: incorrect share value");
 
-        address sftWrappedToken = _stakeSft(address(openFundShare), openFundShareSlot, shareId, shareValue_);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
+
+        ERC3525TransferHelper.doSafeTransferOut(address(openFundShare), sftWrappedToken, shareId);
         ERC20TransferHelper.doTransferOut(sftWrappedToken, payable(msg.sender), shareValue_);
 
         emit CreateSubscription(poolId_, msg.sender, sftWrappedToken, shareValue_, poolInfo.currency, currencyAmount_);
@@ -276,22 +270,12 @@ contract SftWrapRouter is
         IERC3525 openFundRedemption = IERC3525(poolInfo.poolSFTInfo.openFundRedemption);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address sftWrappedToken;
-        uint256 shareId;
-        if (ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).isSftSlotAllowed(address(openFundShare), openFundShareSlot)) {
-            sftWrappedToken = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).solvBTC();
-            ERC20TransferHelper.doTransferIn(sftWrappedToken, msg.sender, redeemAmount_);
-            shareId = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).withdraw(
-                address(openFundShare), openFundShareSlot, 0, redeemAmount_
-            );
-        } else {
-            sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(
-                address(openFundShare), openFundShareSlot
-            );
-            require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
-            shareId = ISftWrappedToken(sftWrappedToken).burn(redeemAmount_, 0);
-        }
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
+        ERC20TransferHelper.doTransferIn(sftWrappedToken, msg.sender, redeemAmount_);
 
+        uint256 shareId = ISftWrappedToken(sftWrappedToken).burn(redeemAmount_, 0);
         ERC3525TransferHelper.doApproveId(address(openFundShare), openFundMarket, shareId);
         IOpenFundMarket(openFundMarket).requestRedeem(poolId_, shareId, 0, redeemAmount_);
 
@@ -318,7 +302,11 @@ contract SftWrapRouter is
         uint256 shareId = openFundShare.tokenOfOwnerByIndex(address(this), shareBalance - 1);
         uint256 shareValue = openFundShare.balanceOf(shareId);
 
-        address sftWrappedToken = _stakeSft(address(openFundShare), openFundShareSlot, shareId, shareValue);
+        address sftWrappedToken =
+            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
+
+        ERC3525TransferHelper.doSafeTransferOut(address(openFundShare), sftWrappedToken, shareId);
         ERC20TransferHelper.doTransferOut(sftWrappedToken, payable(msg.sender), shareValue);
 
         emit CancelRedemption(poolId_, msg.sender, sftWrappedToken, openFundRedemptionId_, shareValue);
@@ -333,23 +321,5 @@ contract SftWrapRouter is
         return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender);
     }
 
-    function solvBTCMultiAssetPool() public view virtual returns (address) {
-        return address(0);  // set address after SolvBTCMultiAssetPool is deployed
-    }
-
-    function _stakeSft(address sft_, uint256 slot_, uint256 sftId_, uint256 value_)
-        internal virtual returns (address sftWrappedToken) 
-    {
-        if (ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).isSftSlotAllowed(sft_, slot_)) {
-            sftWrappedToken = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).solvBTC();
-            IERC3525(sft_).approve(solvBTCMultiAssetPool(), sftId_);
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool()).deposit(sft_, sftId_, value_);
-        } else {
-            sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(sft_, slot_);
-            require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
-            IERC3525(sft_).approve(sftWrappedToken, sftId_);
-            ISftWrappedToken(sftWrappedToken).mint(sftId_, value_);
-        }
-    }
-
+    uint256[47] private __gap;
 }
