@@ -7,13 +7,16 @@ import "./ISolvBTCYieldToken.sol";
 import "./ISolvBTCYieldTokenOracle.sol";
 
 contract SolvBTCYieldToken is SolvBTC, ISolvBTCYieldToken {
+
     struct SolvBTCYieldTokenStorage {
-        address oracle;
+        address _oracle;
     }
 
     // keccak256(abi.encode(uint256(keccak256("solv.storage.SolvBTCYieldToken")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant SolvBTCYieldTokenStorageLocation =
         0xf05073905b1e64f5ceda3673d2f3281ec4d80a5b81532923554d532211661500;
+
+    event SetOracle(address indexed oracle);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -44,10 +47,17 @@ contract SolvBTCYieldToken is SolvBTC, ISolvBTCYieldToken {
 
     function getOracle() public view virtual override returns (address) {
         SolvBTCYieldTokenStorage storage $ = _getSolvBTCLYTStorage();
-        return $.oracle;
+        return $._oracle;
+    }
+
+    function setOracle(address oracle_) external virtual onlyOwner {
+        require(oracle_ != address(0), "SolvBTCYieldToken: invalid oracle address");
+        SolvBTCYieldTokenStorage storage $ = _getSolvBTCLYTStorage();
+        $._oracle = oracle_;
+        emit SetOracle(oracle_);
     }
 
     function getOracleDecimals() external view returns (uint8) {
-        return ISolvBTCYieldTokenOracle(getOracle()).navDecimals();
+        return ISolvBTCYieldTokenOracle(getOracle()).navDecimals(address(this));
     }
 }
