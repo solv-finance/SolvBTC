@@ -40,14 +40,16 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Owna
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
     }
 
-    function initializeV2() external virtual reinitializer(2) {
-        _transferOwnership(0x55C09707Fd7aFD670e82A62FaeE312903940013E);
-        _grantRole(DEFAULT_ADMIN_ROLE, 0x55C09707Fd7aFD670e82A62FaeE312903940013E);
+    function initializeV2(address solvBTCMultiAssetPool_) external virtual reinitializer(2) {
+        require(msg.sender == 0x55C09707Fd7aFD670e82A62FaeE312903940013E, "SolvBTC: only owner");
+        _transferOwnership(msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+
+        _setSolvBTCMultiAssetPool(solvBTCMultiAssetPool_);
 
         if (holdingValueSftId != 0) {
             ERC3525TransferHelper.doTransferOut(wrappedSftAddress, solvBTCMultiAssetPool(), holdingValueSftId);
         }
-
         wrappedSftAddress = address(0);
         wrappedSftSlot = 0;
         navOracle = address(0);
@@ -114,7 +116,7 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Owna
         return $._solvBTCMultiAssetPool;
     }
 
-    function setSolvBTCMultiAssetPool(address solvBTCMultiAssetPool_) external virtual onlyOwner {
+    function _setSolvBTCMultiAssetPool(address solvBTCMultiAssetPool_) internal virtual {
         require(solvBTCMultiAssetPool_ != address(0), "SolvBTC: invalid solvBTCMultiAssetPool address");
         SolvBTCStorage storage $ = _getSolvBTCStorage();
         require($._solvBTCMultiAssetPool == address(0), "SolvBTC: solvBTCMultiAssetPool already set");
