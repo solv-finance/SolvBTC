@@ -94,7 +94,7 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
                 ERC3525TransferHelper.doTransferOut(sft_, msg.sender, toSftId_);
             }
         } else {
-            require(slot_ == IERC3525(sft_).slotOf(sftId_), "SolvBTCMultiAssetPool: slot does not match");
+            require(slot_ == IERC3525(sft_).slotOf(sftId_), "SolvBTCMultiAssetPool: slot not matched");
             require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SolvBTCMultiAssetPool: caller is not sft owner");
             ERC3525TransferHelper.doTransfer(sft_, sftSlotInfo.holdingValueSftId, sftId_, value_);
             toSftId_ = sftId_;
@@ -112,10 +112,10 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         require(!sftSlotInfo.allowed, "SolvBTCMultiAssetPool: sft slot already existed");
         require(
             IERC3525(sft_).valueDecimals() == IERC20Metadata(solvBTC_).decimals(), 
-            "SolvBTCMultiAssetPool: decimals do not match"
+            "SolvBTCMultiAssetPool: decimals not matched"
         );
         if (holdingValueSftId_ > 0) {
-            require(IERC3525(sft_).slotOf(holdingValueSftId_) == slot_, "SolvBTCMultiAssetPool: slot does not match");
+            require(IERC3525(sft_).slotOf(holdingValueSftId_) == slot_, "SolvBTCMultiAssetPool: slot not matched");
             require(IERC3525(sft_).ownerOf(holdingValueSftId_) == address(this), "SolvBTCMultiAssetPool: sftId not owned");
         }
 
@@ -125,11 +125,7 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         emit AddSftSlot(sft_, slot_, solvBTC_, holdingValueSftId_);
     } 
 
-    function removeSftSlotOnlyAdmin(
-        address sft_, uint256 slot_, address solvBTC_
-    ) 
-        external virtual onlyAdmin 
-    {
+    function removeSftSlotOnlyAdmin(address sft_, uint256 slot_) external virtual onlyAdmin {
         SftSlotInfo storage sftSlotInfo = _sftSlotInfos[sft_][slot_];
         require(sftSlotInfo.allowed, "SolvBTCMultiAssetPool: sft slot not allowed");
 
@@ -138,10 +134,11 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
             require(sftIdBalance == 0, "SolvBTCMultiAssetPool: holdingValueSftId balance not empty");
         }
 
+        address solvBTC = sftSlotInfo.solvBTC;
         sftSlotInfo.holdingValueSftId = 0;
         sftSlotInfo.solvBTC = address(0);
         sftSlotInfo.allowed = false;
-        emit RemoveSftSlot(sft_, slot_, solvBTC_);
+        emit RemoveSftSlot(sft_, slot_, solvBTC);
     }
 
     function sweepEmptySftIdsOnlyAdmin(
@@ -181,5 +178,5 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
             IERC3525(sft_).balanceOf(sftSlotInfo.holdingValueSftId);
     }
 
-    uint256[48] private __gap;
+    uint256[49] private __gap;
 }

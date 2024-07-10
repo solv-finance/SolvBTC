@@ -11,12 +11,6 @@ import "../contracts/SftWrapRouter.sol";
 import "../contracts/SolvBTC.sol";
 import "../contracts/SolvBTCMultiAssetPool.sol";
 
-contract MockSolvBTC is SolvBTC {
-    function solvBTCMultiAssetPool() public view virtual override returns (address) {
-        return 0xC221Bc51373FD7acf3C169205113c7b11108AA11;
-    }
-}
-
 contract SolvBTCTest is Test {
     string internal constant PRODUCT_TYPE = "Open-end Fund Share Wrapped Token";
     string internal constant PRODUCT_NAME = "Solv BTC";
@@ -38,6 +32,7 @@ contract SolvBTCTest is Test {
         _upgradeAndSetup();
         assertTrue(solvBTC.supportsInterface(type(IERC3525Receiver).interfaceId));
         assertTrue(solvBTC.supportsInterface(type(IERC721Receiver).interfaceId));
+        assertTrue(solvBTC.supportsInterface(type(IAccessControl).interfaceId));
         assertTrue(solvBTC.supportsInterface(type(IERC165).interfaceId));
     }
 
@@ -72,7 +67,7 @@ contract SolvBTCTest is Test {
 
         assertEq(solvBTC.solvBTCMultiAssetPool(), address(solvBTCMultiAssetPool));
         assertNotEq(solvBTC.solvBTCMultiAssetPool(), address(0));
-        
+
         assertEq(IERC3525(SOLVBTC_SFT).ownerOf(holdingValueSftId), address(solvBTCMultiAssetPool));
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(holdingValueSftId), holdingValue);
     }
@@ -87,7 +82,7 @@ contract SolvBTCTest is Test {
     function test_RevertWhenCallInitializeV2Repeatedly() public {
         _upgradeAndSetup();
         vm.expectRevert(abi.encodeWithSignature("InvalidInitialization()"));
-        solvBTC.initializeV2();
+        solvBTC.initializeV2(address(solvBTCMultiAssetPool));
     }
 
     /** Tests for mint/burn functions */
@@ -227,7 +222,11 @@ contract SolvBTCTest is Test {
     /** Tests for AccessControl functions */
     function test_AccessControlInitialStatus() public {
         _upgradeAndSetup();
+        assertEq(solvBTC.owner(), ADMIN);
         assertTrue(solvBTC.hasRole(solvBTC.DEFAULT_ADMIN_ROLE(), ADMIN));
+        assertFalse(solvBTC.hasRole(solvBTC.DEFAULT_ADMIN_ROLE(), address(solvBTCMultiAssetPool)));
+        assertTrue(solvBTC.hasRole(solvBTC.SOLVBTC_MINTER_ROLE(), address(solvBTCMultiAssetPool)));
+        assertEq(solvBTC.getRoleAdmin(solvBTC.SOLVBTC_MINTER_ROLE()), solvBTC.DEFAULT_ADMIN_ROLE());
     }
 
     function test_GrantAdminRole() public {
@@ -282,52 +281,11 @@ contract SolvBTCTest is Test {
         assertTrue(solvBTC.hasRole(solvBTC.DEFAULT_ADMIN_ROLE(), USER));
     }
 
-    /** Tests for set SolvBTCMultiAssetPool */
-    function test_SetSolvBTCMultiAssetPool() public {
-        _deploySolvBTCMultiAssetPool();
-        _upgradeSolvBTC();
-        solvBTC.initializeV2();
-        vm.startPrank(ADMIN);
-        solvBTC.setSolvBTCMultiAssetPool(address(solvBTCMultiAssetPool));
-        vm.stopPrank();
-        assertEq(solvBTC.solvBTCMultiAssetPool(), address(solvBTCMultiAssetPool));
-    }
-
-    function test_RevertWhenSetWithInvalidSolvBTCMultiAssetPool() public {
-        _deploySolvBTCMultiAssetPool();
-        _upgradeSolvBTC();
-        solvBTC.initializeV2();
-        vm.startPrank(ADMIN);
-        vm.expectRevert("SolvBTC: invalid solvBTCMultiAssetPool address");
-        solvBTC.setSolvBTCMultiAssetPool(address(0));
-        vm.stopPrank();
-    }
-
-    function test_RevertWhenSetSolvBTCMultiAssetPoolRepeatedly() public {
-        _upgradeAndSetup();
-        vm.startPrank(ADMIN);
-        vm.expectRevert("SolvBTC: solvBTCMultiAssetPool already set");
-        solvBTC.setSolvBTCMultiAssetPool(address(solvBTCMultiAssetPool));
-        vm.stopPrank();
-    }
-
-    function test_RevertWhenSetSolvBTCMultiAssetPoolByNonAdmin() public {
-        _deploySolvBTCMultiAssetPool();
-        _upgradeSolvBTC();
-        solvBTC.initializeV2();
-        vm.startPrank(USER);
-        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", USER));
-        solvBTC.setSolvBTCMultiAssetPool(address(solvBTCMultiAssetPool));
-        vm.stopPrank();
-    }
-
-
     /** Internal functions */
     function _upgradeAndSetup() internal {
         _deploySolvBTCMultiAssetPool();
         _upgradeSolvBTC();
         _setupSolvBTC();
-        _setupSolvBTCMultiAssetPool();
     }
 
     function _deploySolvBTCMultiAssetPool() internal {
@@ -344,7 +302,7 @@ contract SolvBTCTest is Test {
 
     function _upgradeSolvBTC() internal {
         vm.startPrank(ADMIN);
-        MockSolvBTC solvBTCImpl = new MockSolvBTC();
+        SolvBTC solvBTCImpl = new SolvBTC();
         factory.setImplementation(PRODUCT_TYPE, address(solvBTCImpl));
         factory.upgradeBeacon(PRODUCT_TYPE);
         vm.stopPrank();
@@ -352,15 +310,8 @@ contract SolvBTCTest is Test {
 
     function _setupSolvBTC() internal {
         vm.startPrank(ADMIN);
-        solvBTC.initializeV2();
-        solvBTC.setSolvBTCMultiAssetPool(address(solvBTCMultiAssetPool));
+        solvBTC.initializeV2(address(solvBTCMultiAssetPool));
         solvBTC.grantRole(solvBTC.SOLVBTC_MINTER_ROLE(), address(solvBTCMultiAssetPool));
-        vm.stopPrank();
-    }
-
-    function _setupSolvBTCMultiAssetPool() internal {
-        vm.startPrank(ADMIN);
-        solvBTCMultiAssetPool.setSolvBTCOnlyAdmin(address(solvBTC));
         vm.stopPrank();
     }
 

@@ -206,7 +206,7 @@ contract SolvBTCRouter is
         );
         require(
             solvBTC_ == ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(sft_, slot_),
-            "SolvBTCRouter: solvBTC and sft slot matched"
+            "SolvBTCRouter: solvBTC and sft slot not matched"
         );
         require(value_ > 0, "SolvBTCRouter: unstake amount cannot be 0");
 
