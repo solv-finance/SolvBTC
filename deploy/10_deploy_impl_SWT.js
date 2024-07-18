@@ -1,18 +1,21 @@
-const colors = require('colors');
+const colors = require("colors");
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
 
-  const version = '';
+  const version = "_v1.1";
 
-  const instance = await deploy('SftWrappedTokenImpl' + version, {
-    contract: 'SftWrappedToken',
+  const instance = await deploy("SftWrappedTokenImpl" + version, {
+    contract: "SftWrappedToken",
     from: deployer,
     log: true,
   });
-  console.log(`* INFO: ${colors.yellow(`SftWrappedToken`)} deployed at ${colors.green(instance.address)} on ${colors.red(network.name)}`);
-
+  console.log(
+    `* INFO: ${colors.yellow(`SftWrappedToken`)} deployed at ${colors.green(
+      instance.address
+    )} on ${colors.red(network.name)}`
+  );
 };
 
-module.exports.tags = ['SWT_impl']
+module.exports.tags = ["SWT_impl"];
