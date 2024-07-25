@@ -12,23 +12,17 @@ import "./external/IOpenFundMarket.sol";
 import "./ISftWrapRouter.sol";
 import "./ISolvBTCMultiAssetPool.sol";
 
-contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminControlUpgradeable, GovernorControlUpgradeable {
-    
+contract SolvBTCRouter is
+    ISftWrapRouter,
+    ReentrancyGuardUpgradeable,
+    AdminControlUpgradeable,
+    GovernorControlUpgradeable
+{
     event Stake(
-        address indexed solvBTC,
-        address indexed staker,
-        address sft,
-        uint256 sftSlot,
-        uint256 sftId,
-        uint256 amount
+        address indexed solvBTC, address indexed staker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount
     );
     event Unstake(
-        address indexed solvBTC,
-        address indexed unstaker,
-        address sft,
-        uint256 sftSlot,
-        uint256 sftId,
-        uint256 amount
+        address indexed solvBTC, address indexed unstaker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount
     );
     event CreateSubscription(
         bytes32 indexed poolId,
@@ -52,13 +46,9 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         uint256 redemptionId,
         uint256 cancelAmount
     );
-    event SetOpenFundMarket(
-        address indexed previousOpenFundMarket,
-        address indexed newOpenFundMarket
-    );
+    event SetOpenFundMarket(address indexed previousOpenFundMarket, address indexed newOpenFundMarket);
     event SetSolvBTCMultiAssetPool(
-        address indexed previousSolvBTCMultiAssetPool,
-        address indexed newSolvBTCMultiAssetPool
+        address indexed previousSolvBTCMultiAssetPool, address indexed newSolvBTCMultiAssetPool
     );
 
     address public openFundMarket;
@@ -73,7 +63,7 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
     }
 
     function initialize(address governor_, address openFundMarket_, address solvBTCMultiAssetPool_)
-        external 
+        external
         initializer
     {
         require(governor_ != address(0), "SolvBTCRouter: invalid governor");
@@ -89,10 +79,8 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return 
-            interfaceId == type(IERC3525Receiver).interfaceId || 
-            interfaceId == type(IERC721Receiver).interfaceId || 
-            interfaceId == type(IERC165).interfaceId;
+        return interfaceId == type(IERC3525Receiver).interfaceId || interfaceId == type(IERC721Receiver).interfaceId
+            || interfaceId == type(IERC165).interfaceId;
     }
 
     function onERC3525Received(
@@ -106,13 +94,18 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
 
         require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotAllowed(address(openFundShare), openFundShareSlot),
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
+                address(openFundShare), openFundShareSlot
+            ),
             "SolvBTCRouter: sft slot not allowed"
         );
         require(value_ > 0, "SolvBTCRouter: stake amount cannot be 0");
 
         address fromSftIdOwner = openFundShare.ownerOf(fromSftId_);
-        if (fromSftIdOwner == openFundMarket || fromSftIdOwner == solvBTCMultiAssetPool || fromSftIdOwner == address(this)) {
+        if (
+            fromSftIdOwner == openFundMarket || fromSftIdOwner == solvBTCMultiAssetPool
+                || fromSftIdOwner == address(this)
+        ) {
             return IERC3525Receiver.onERC3525Received.selector;
         }
 
@@ -134,7 +127,8 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
             ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).deposit(address(openFundShare), newSftId, value_);
         }
 
-        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(address(openFundShare), openFundShareSlot);
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
         ERC20TransferHelper.doTransferOut(solvBTC, payable(fromSftIdOwner), value_);
 
         emit Stake(solvBTC, fromSftIdOwner, address(openFundShare), openFundShareSlot, fromSftId_, value_);
@@ -151,7 +145,9 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
 
         require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotAllowed(address(openFundShare), openFundShareSlot),
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
+                address(openFundShare), openFundShareSlot
+            ),
             "SolvBTCRouter: sft slot not allowed"
         );
 
@@ -168,7 +164,8 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         openFundShare.approve(solvBTCMultiAssetPool, sftId_);
         ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).deposit(address(openFundShare), sftId_, openFundShareValue);
 
-        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(address(openFundShare), openFundShareSlot);
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
         ERC20TransferHelper.doTransferOut(solvBTC, payable(from_), openFundShareValue);
 
         emit Stake(solvBTC, from_, address(openFundShare), openFundShareSlot, sftId_, openFundShareValue);
@@ -180,7 +177,9 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
 
         require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotAllowed(address(openFundShare), openFundShareSlot),
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
+                address(openFundShare), openFundShareSlot
+            ),
             "SolvBTCRouter: sft slot not allowed"
         );
 
@@ -209,11 +208,11 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         returns (uint256 toSftId_)
     {
         require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotAllowed(sft_, slot_),
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotWithdrawAllowed(sft_, slot_),
             "SolvBTCRouter: sft slot not allowed"
         );
         require(
-            solvBTCAddress_ == ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(sft_, slot_),
+            solvBTCAddress_ == ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(sft_, slot_),
             "SolvBTCRouter: solvBTC address not matched"
         );
         require(amount_ > 0, "SolvBTCRouter: unstake amount cannot be 0");
@@ -261,7 +260,8 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         openFundShare.approve(solvBTCMultiAssetPool, shareId);
         ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).deposit(address(openFundShare), shareId, shareValue_);
 
-        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(address(openFundShare), openFundShareSlot);
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
         ERC20TransferHelper.doTransferOut(solvBTC, payable(msg.sender), shareValue_);
 
         emit CreateSubscription(poolId_, msg.sender, solvBTC, shareValue_, poolInfo.currency, currencyAmount_);
@@ -279,11 +279,14 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
         require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotAllowed(address(openFundShare), openFundShareSlot),
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotWithdrawAllowed(
+                address(openFundShare), openFundShareSlot
+            ),
             "SolvBTCRouter: sft slot not allowed"
         );
 
-        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(address(openFundShare), openFundShareSlot);
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
         ERC20TransferHelper.doTransferIn(solvBTC, msg.sender, redeemAmount_);
         uint256 shareId = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).withdraw(
             address(openFundShare), openFundShareSlot, 0, redeemAmount_
@@ -317,7 +320,8 @@ contract SolvBTCRouter is ISftWrapRouter, ReentrancyGuardUpgradeable, AdminContr
 
         openFundShare.approve(solvBTCMultiAssetPool, shareId);
         ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).deposit(address(openFundShare), shareId, shareValue);
-        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getSolvBTC(address(openFundShare), openFundShareSlot);
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
 
         ERC20TransferHelper.doTransferOut(solvBTC, payable(msg.sender), shareValue);
 

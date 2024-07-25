@@ -13,7 +13,6 @@ import "../contracts/SolvBTCMultiAssetPool.sol";
 import "../contracts/SolvBTCRouter.sol";
 
 contract SolvBTCRouterTest is Test {
-
     string internal constant PRODUCT_TYPE_SOLVBTC = "Open-end Fund Share Wrapped Token";
     string internal constant PRODUCT_NAME_SOLVBTC = "Solv BTC";
 
@@ -24,14 +23,15 @@ contract SolvBTCRouterTest is Test {
 
     address internal constant SOLVBTC_SFT = 0xD20078BD38AbC1378cB0a3F6F0B359c4d8a7b90E;
     address internal constant SOLVBTC_REDEMPTION_SFT_ADDRESS = 0x5d931F572df1cd730F1ADf3F9Eb5B218D2cE641f;
-    uint256 internal constant SOLVBTC_SLOT = 39475026322910990648776764986670533412889479187054865546374468496663502783148;
+    uint256 internal constant SOLVBTC_SLOT =
+        39475026322910990648776764986670533412889479187054865546374468496663502783148;
     bytes32 internal constant SOLVBTC_POOL_ID = 0x488def4a346b409d5d57985a160cd216d29d4f555e1b716df4e04e2374d2d9f6;
     uint256 internal constant SOLVBTC_HOLDING_VALUE_SFT_ID = 72;
 
-    uint256 internal constant SOLVBTC_SFT_ID_1 = 50;
-    address internal constant SOLVBTC_SFT_HOLDER_1 = 0x08eb297be45f0AcEfe82529FEF03bCf49D6d28CD;
-    uint256 internal constant SOLVBTC_SFT_ID_2 = 85;
-    address internal constant SOLVBTC_SFT_HOLDER_2 = 0x0dE2AfF670Dd19394f96Bad9b14a8df11C9a94EB;
+    uint256 internal constant SOLVBTC_SFT_ID_1 = 66;
+    address internal constant SOLVBTC_SFT_HOLDER_1 = 0x07a1f6fc89223c5ebD4e4ddaE89Ac97629856A0f;
+    uint256 internal constant SOLVBTC_SFT_ID_2 = 77;
+    address internal constant SOLVBTC_SFT_HOLDER_2 = 0xFc220fB83314B4b1E00421777CB579a68f17c439;
 
     bytes32 internal constant SOLVBTCENA_POOL_ID = 0x0e11a7249a1ca69c4ed42b0bfcc0e3d8f45de5e510c0d866132fdf078f3849df;
 
@@ -39,6 +39,8 @@ contract SolvBTCRouterTest is Test {
 
     address internal constant ADMIN = 0x55C09707Fd7aFD670e82A62FaeE312903940013E;
     address internal constant GOVERNOR = 0x55C09707Fd7aFD670e82A62FaeE312903940013E;
+
+    address internal constant DEAD_ADDRESS = 0x000000000000000000000000000000000000dEaD;
 
     ProxyAdmin internal proxyAdmin = ProxyAdmin(0xEcb7d6497542093b25835fE7Ad1434ac8b0bce40);
 
@@ -68,7 +70,9 @@ contract SolvBTCRouterTest is Test {
         assertTrue(router.supportsInterface(type(IERC165).interfaceId));
     }
 
-    /** Tests for onERC721Received */
+    /**
+     * Tests for onERC721Received
+     */
     function test_SolvBTC_OnERC721Received_FirstStake() public {
         vm.startPrank(SOLVBTC_SFT_HOLDER_1);
         uint256 solvBTCTotalSupplyBefore = solvBTC.totalSupply();
@@ -85,7 +89,7 @@ contract SolvBTCRouterTest is Test {
         assertEq(solvBTCBalanceAfter - solvBTCBalanceBefore, solvBTCSft1BalanceBefore);
         assertEq(poolHoldingValueAfter - poolHoldingValueBefore, solvBTCSft1BalanceBefore);
         assertEq(solvBTCSft1BalanceAfter, 0);
-        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), address(solvBTCMultiAssetPool));
+        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), DEAD_ADDRESS);
         assertEq(solvBTCSft1BalanceAfter, 0);
         assertEq(router.holdingSftIds(SOLVBTC_SFT, SOLVBTC_SLOT), 0);
         vm.stopPrank();
@@ -111,13 +115,15 @@ contract SolvBTCRouterTest is Test {
         assertEq(solvBTCBalanceAfter - solvBTCBalanceBefore, solvBTCSft1BalanceBefore);
         assertEq(poolHoldingValueAfter - poolHoldingValueBefore, solvBTCSft1BalanceBefore);
         assertEq(solvBTCSft1BalanceAfter, 0);
-        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), address(solvBTCMultiAssetPool));
+        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), DEAD_ADDRESS);
         assertEq(solvBTCSft1BalanceAfter, 0);
         assertEq(router.holdingSftIds(SOLVBTC_SFT, SOLVBTC_SLOT), 0);
         vm.stopPrank();
     }
 
-    /** Tests for onERC3525Received */
+    /**
+     * Tests for onERC3525Received
+     */
     function test_SolvBTC_OnERC3525Received_FirstStake() public {
         vm.startPrank(SOLVBTC_SFT_HOLDER_1);
         uint256 solvBTCTotalSupplyBefore = solvBTC.totalSupply();
@@ -174,7 +180,9 @@ contract SolvBTCRouterTest is Test {
         vm.stopPrank();
     }
 
-    /** Tests for stake function */
+    /**
+     * Tests for stake function
+     */
     function test_FirstStakeWithAllValue() public {
         vm.startPrank(SOLVBTC_SFT_HOLDER_1);
         uint256 poolHoldingValueBefore = solvBTCMultiAssetPool.getSftSlotBalance(SOLVBTC_SFT, SOLVBTC_SLOT);
@@ -190,7 +198,7 @@ contract SolvBTCRouterTest is Test {
         assertEq(solvBTCBalanceAfter - solvBTCBalanceBefore, sft1Balance);
         assertEq(poolHoldingValueAfter - poolHoldingValueBefore, sft1Balance);
         assertEq(routerHoldingSftId, 0);
-        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), address(solvBTCMultiAssetPool));
+        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), DEAD_ADDRESS);
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1), 0);
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID), poolHoldingValueBefore + sft1Balance);
         vm.stopPrank();
@@ -245,11 +253,14 @@ contract SolvBTCRouterTest is Test {
         assertEq(solvBTCBalance1After - solvBTCBalance1Before, sft1Balance);
         assertEq(solvBTCBalance2After - solvBTCBalance2Before, sft2Balance);
         assertEq(routerHoldingSftId, 0);
-        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), address(solvBTCMultiAssetPool));
-        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_2), address(solvBTCMultiAssetPool));
+        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_1), DEAD_ADDRESS);
+        assertEq(IERC3525(SOLVBTC_SFT).ownerOf(SOLVBTC_SFT_ID_2), DEAD_ADDRESS);
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1), 0);
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_2), 0);
-        assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID), poolHoldingValueBefore + sft1Balance + sft2Balance);
+        assertEq(
+            IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID),
+            poolHoldingValueBefore + sft1Balance + sft2Balance
+        );
     }
 
     function test_NonFirstStakeWithPartialValue() public {
@@ -287,10 +298,15 @@ contract SolvBTCRouterTest is Test {
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1), sft1Balance - stakeValue1);
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_2), sft2Balance - stakeValue2);
         assertEq(IERC3525(SOLVBTC_SFT).balanceOf(routerHoldingSftId), 0);
-        assertEq(IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID), poolHoldingValueBefore + stakeValue1 + stakeValue2);
+        assertEq(
+            IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID),
+            poolHoldingValueBefore + stakeValue1 + stakeValue2
+        );
     }
 
-    /** Tests for unstake function */
+    /**
+     * Tests for unstake function
+     */
     function test_UnstakeWhenGivenSftId() public {
         vm.startPrank(SOLVBTC_SFT_HOLDER_1);
         uint256 sft1Balance = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1);
@@ -301,11 +317,11 @@ contract SolvBTCRouterTest is Test {
         uint256 poolHoldingValueBefore = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID);
         uint256 solvBTCBalanceBefore = solvBTC.balanceOf(SOLVBTC_SFT_HOLDER_1);
         uint256 sft1BalanceBefore = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1);
-        
+
         uint256 unstakeAmount = stakeValue / 2;
         solvBTC.approve(address(router), unstakeAmount);
         uint256 toSftId = router.unstake(address(solvBTC), unstakeAmount, SOLVBTC_SFT, SOLVBTC_SLOT, SOLVBTC_SFT_ID_1);
-        
+
         uint256 poolHoldingValueAfter = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID);
         uint256 solvBTCBalanceAfter = solvBTC.balanceOf(SOLVBTC_SFT_HOLDER_1);
         uint256 sft1BalanceAfter = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1);
@@ -327,11 +343,11 @@ contract SolvBTCRouterTest is Test {
         uint256 poolHoldingValueBefore = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID);
         uint256 solvBTCBalanceBefore = solvBTC.balanceOf(SOLVBTC_SFT_HOLDER_1);
         uint256 sft1BalanceBefore = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1);
-        
+
         uint256 unstakeAmount = stakeValue / 2;
         solvBTC.approve(address(router), unstakeAmount);
         uint256 toSftId = router.unstake(address(solvBTC), unstakeAmount, SOLVBTC_SFT, SOLVBTC_SLOT, 0);
-        
+
         uint256 poolHoldingValueAfter = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_HOLDING_VALUE_SFT_ID);
         uint256 solvBTCBalanceAfter = solvBTC.balanceOf(SOLVBTC_SFT_HOLDER_1);
         uint256 sft1BalanceAfter = IERC3525(SOLVBTC_SFT).balanceOf(SOLVBTC_SFT_ID_1);
@@ -345,7 +361,9 @@ contract SolvBTCRouterTest is Test {
         vm.stopPrank();
     }
 
-    /** Tests for subscribe/redeem functions */
+    /**
+     * Tests for subscribe/redeem functions
+     */
     function test_CreateSubscription() public {
         vm.startPrank(SUBSCRIBER);
         uint256 currencyBalanceBefore = ERC20(WBTC_ADDRESS).balanceOf(SUBSCRIBER);
@@ -413,16 +431,14 @@ contract SolvBTCRouterTest is Test {
         PoolInfo memory poolInfo = IOpenFundMarket(MARKET_ADDRESS).poolInfos(SOLVBTC_POOL_ID);
         poolInfo.permissionless = false;
         vm.mockCall(
-            MARKET_ADDRESS, 
-            abi.encodeWithSignature("poolInfos(bytes32)", SOLVBTC_POOL_ID),
-            abi.encode(poolInfo)
+            MARKET_ADDRESS, abi.encodeWithSignature("poolInfos(bytes32)", SOLVBTC_POOL_ID), abi.encode(poolInfo)
         );
         vm.mockCall(
-            WHITELIST_MANAGER_ADDRESS, 
+            WHITELIST_MANAGER_ADDRESS,
             abi.encodeWithSignature("isWhitelisted(bytes32,address)", SOLVBTC_POOL_ID, SUBSCRIBER),
             abi.encode(false)
         );
-        
+
         vm.startPrank(SUBSCRIBER);
         uint256 subscribeCurrencyAmount = 1e8;
         ERC20(WBTC_ADDRESS).approve(address(router), subscribeCurrencyAmount);
@@ -438,7 +454,9 @@ contract SolvBTCRouterTest is Test {
         vm.stopPrank();
     }
 
-    /** Tests for setups */
+    /**
+     * Tests for setups
+     */
     function test_SetOpenFundMarket() public {
         vm.startPrank(ADMIN);
         address newMockMarket = makeAddr("Mock OpenFundMarket");
@@ -485,8 +503,9 @@ contract SolvBTCRouterTest is Test {
         vm.stopPrank();
     }
 
-
-    /** Internal functions */
+    /**
+     * Internal functions
+     */
     function _deploySolvBTCMultiAssetPool() internal {
         vm.startPrank(ADMIN);
         SolvBTCMultiAssetPool impl = new SolvBTCMultiAssetPool();
@@ -514,7 +533,9 @@ contract SolvBTCRouterTest is Test {
 
     function _setupMultiAssetPool() internal {
         vm.startPrank(ADMIN);
-        solvBTCMultiAssetPool.addSftSlotOnlyAdmin(SOLVBTC_SFT, SOLVBTC_SLOT, address(solvBTC), SOLVBTC_HOLDING_VALUE_SFT_ID);
+        solvBTCMultiAssetPool.addSftSlotOnlyAdmin(
+            SOLVBTC_SFT, SOLVBTC_SLOT, address(solvBTC), SOLVBTC_HOLDING_VALUE_SFT_ID
+        );
         vm.stopPrank();
     }
 
@@ -534,12 +555,11 @@ contract SolvBTCRouterTest is Test {
             abi.encodeWithSignature("getSubscribeNav(bytes32,uint256)", poolId, timestamp)
         );
         require(success, "get nav failed");
-        (nav, ) = abi.decode(result, (uint256, uint256));
+        (nav,) = abi.decode(result, (uint256, uint256));
     }
 
     function _getLastSftIdOwned(address sft, address owner) internal view returns (uint256) {
         uint256 balance = IERC3525(sft).balanceOf(owner);
         return IERC3525(sft).tokenOfOwnerByIndex(owner, balance - 1);
     }
-
 }
