@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 interface ISolvBTCMultiAssetPool {
     function deposit(address sft_, uint256 sftId_, uint256 value_) external;
