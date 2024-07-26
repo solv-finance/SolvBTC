@@ -34,9 +34,9 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         _disableInitializers();
     }
 
-    function initialize(address admin_) external virtual initializer {
+    function initialize() external virtual initializer {
+        AdminControlUpgradeable.__AdminControl_init(msg.sender);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-        AdminControlUpgradeable.__AdminControl_init(admin_);
     }
 
     function deposit(address sft_, uint256 sftId_, uint256 value_) external virtual override nonReentrant {

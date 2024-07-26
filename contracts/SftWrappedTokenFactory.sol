@@ -42,9 +42,12 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
     // sft address => sft slot => sftWrappedToken address
     mapping(address => mapping(uint256 => address)) public sftWrappedTokens;
 
-    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {}
+    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {
+        require(governor_ != address(0), "SftWrappedTokenFactory: invalid governor");
+    }
     
     function setImplementation(string memory productType_, address implementation_) external virtual onlyAdmin {
+        require(implementation_ != address(0), "SftWrappedTokenFactory: invalid implementation");
         productTypes[productType_].implementation = implementation_;
         emit NewImplementation(productType_, implementation_);
     }

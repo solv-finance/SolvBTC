@@ -26,7 +26,9 @@ contract SolvBTCFactory is AdminControl, GovernorControl {
 
     mapping(string => ProductType) public productTypes;
 
-    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {}
+    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {
+        require(governor_ != address(0), "SolvBTCFactory: invalid governor");
+    }
 
     function setImplementation(string memory productType_, address implementation_) 
         external virtual onlyAdmin returns (address beacon_) 

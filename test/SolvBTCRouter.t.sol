@@ -510,7 +510,7 @@ contract SolvBTCRouterTest is Test {
         vm.startPrank(ADMIN);
         SolvBTCMultiAssetPool impl = new SolvBTCMultiAssetPool();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
-            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(address)", ADMIN)
+            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize()")
         );
         solvBTCMultiAssetPool = SolvBTCMultiAssetPool(address(proxy));
         vm.stopPrank();

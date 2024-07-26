@@ -294,7 +294,7 @@ contract SolvBTCTest is Test {
         SolvBTCMultiAssetPool impl = new SolvBTCMultiAssetPool{salt: implSalt}();
         bytes32 proxySalt = keccak256(abi.encodePacked(impl));
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy{salt: proxySalt}(
-            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(address)", ADMIN)
+            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize()")
         );
         solvBTCMultiAssetPool = SolvBTCMultiAssetPool(address(proxy));
         vm.stopPrank();
