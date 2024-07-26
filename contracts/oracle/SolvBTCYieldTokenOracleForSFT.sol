@@ -49,20 +49,20 @@ contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, AdminControl
     }
 
     function getNav(address erc20) external view override returns (uint256) {
+        SFTOracleConfig storage config = sftOracles[erc20];
         require(
-            sftOracles[erc20].oracle != address(0) && sftOracles[erc20].poolId != 0x00,
+            config.oracle != address(0) && config.poolId != 0x00,
             "SolvBTCYieldTokenOracleForSFT: no oracle for erc20"
         );
 
-        (uint256 latestNav,) =
-            ISFTNavOracle(sftOracles[erc20].oracle).getSubscribeNav(sftOracles[erc20].poolId, block.timestamp);
+        (uint256 latestNav,) = ISFTNavOracle(config.oracle).getSubscribeNav(config.poolId, block.timestamp);
         return latestNav;
     }
 
     function navDecimals(address erc20) external view override returns (uint8) {
-        address sftConcreteAddress = IOpenFundSftDelegate(sftOracles[erc20].sft).concrete();
-        SlotBaseInfo memory slotBaseInfo =
-            IOpenFundSftConcrete(sftConcreteAddress).slotBaseInfo(sftOracles[erc20].sftSlot);
+        SFTOracleConfig storage config = sftOracles[erc20];
+        address sftConcreteAddress = IOpenFundSftDelegate(config.sft).concrete();
+        SlotBaseInfo memory slotBaseInfo = IOpenFundSftConcrete(sftConcreteAddress).slotBaseInfo(config.sftSlot);
         return IERC20(slotBaseInfo.currency).decimals();
     }
 
