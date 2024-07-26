@@ -173,6 +173,7 @@ contract SftWrappedTokenFactoryTest is Test {
         vm.startPrank(admin);
         factory.setImplementation(PRODUCT_TYPE, swtImplAddress);
         factory.deployBeacon(PRODUCT_TYPE);
+        vm.stopPrank();
 
         vm.startPrank(governor);
         factory.deployProductProxy(PRODUCT_TYPE, PRODUCT_NAME, TOKEN_NAME, TOKEN_SYMBOL, WRAPPED_SFT_ADDRESS, WRAPPED_SFT_SLOT, NAV_ORACLE_ADDRESS);
