@@ -2,9 +2,8 @@
 
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-
 import "../ISolvBTCYieldTokenOracle.sol";
+import "../access/AdminControlUpgradeable.sol";
 
 struct SlotBaseInfo {
     address issuer;
@@ -32,7 +31,7 @@ interface IERC20 {
     function decimals() external view returns (uint8);
 }
 
-contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, OwnableUpgradeable {
+contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     struct SFTOracleConfig {
         bytes32 poolId;
         address sft;
@@ -46,7 +45,7 @@ contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, OwnableUpgra
     mapping(address => SFTOracleConfig) public sftOracles;
 
     function initialize() external initializer {
-        __Ownable_init(_msgSender());
+        __AdminControl_init(msg.sender);
     }
 
     function getNav(address erc20) external view override returns (uint256) {
@@ -69,7 +68,7 @@ contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, OwnableUpgra
 
     function setSFTOracle(address erc20, address sft, uint256 sftSlot, bytes32 poolId, address sftOracle)
         external
-        onlyOwner
+        onlyAdmin
     {
         require(erc20 != address(0), "SolvBTCYieldTokenOracleForSFT: invalid erc20 address");
         require(sft != address(0), "SolvBTCYieldTokenOracleForSFT: invalid sft address");
