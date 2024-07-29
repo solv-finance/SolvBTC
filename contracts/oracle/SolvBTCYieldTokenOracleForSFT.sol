@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
-
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+pragma solidity 0.8.20;
 
 import "../ISolvBTCYieldTokenOracle.sol";
+import "../access/AdminControlUpgradeable.sol";
 
 struct SlotBaseInfo {
     address issuer;
@@ -32,7 +31,7 @@ interface IERC20 {
     function decimals() external view returns (uint8);
 }
 
-contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, OwnableUpgradeable {
+contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     struct SFTOracleConfig {
         bytes32 poolId;
         address sft;
@@ -46,30 +45,30 @@ contract SolvBTCYieldTokenOracleForSFT is ISolvBTCYieldTokenOracle, OwnableUpgra
     mapping(address => SFTOracleConfig) public sftOracles;
 
     function initialize() external initializer {
-        __Ownable_init(_msgSender());
+        __AdminControl_init(msg.sender);
     }
 
     function getNav(address erc20) external view override returns (uint256) {
+        SFTOracleConfig storage config = sftOracles[erc20];
         require(
-            sftOracles[erc20].oracle != address(0) && sftOracles[erc20].poolId != 0x00,
+            config.oracle != address(0) && config.poolId != 0x00,
             "SolvBTCYieldTokenOracleForSFT: no oracle for erc20"
         );
 
-        (uint256 latestNav,) =
-            ISFTNavOracle(sftOracles[erc20].oracle).getSubscribeNav(sftOracles[erc20].poolId, block.timestamp);
+        (uint256 latestNav,) = ISFTNavOracle(config.oracle).getSubscribeNav(config.poolId, block.timestamp);
         return latestNav;
     }
 
     function navDecimals(address erc20) external view override returns (uint8) {
-        address sftConcreteAddress = IOpenFundSftDelegate(sftOracles[erc20].sft).concrete();
-        SlotBaseInfo memory slotBaseInfo =
-            IOpenFundSftConcrete(sftConcreteAddress).slotBaseInfo(sftOracles[erc20].sftSlot);
+        SFTOracleConfig storage config = sftOracles[erc20];
+        address sftConcreteAddress = IOpenFundSftDelegate(config.sft).concrete();
+        SlotBaseInfo memory slotBaseInfo = IOpenFundSftConcrete(sftConcreteAddress).slotBaseInfo(config.sftSlot);
         return IERC20(slotBaseInfo.currency).decimals();
     }
 
     function setSFTOracle(address erc20, address sft, uint256 sftSlot, bytes32 poolId, address sftOracle)
         external
-        onlyOwner
+        onlyAdmin
     {
         require(erc20 != address(0), "SolvBTCYieldTokenOracleForSFT: invalid erc20 address");
         require(sft != address(0), "SolvBTCYieldTokenOracleForSFT: invalid sft address");

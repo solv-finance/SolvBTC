@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
@@ -42,9 +42,12 @@ contract SftWrappedTokenFactory is AdminControl, GovernorControl {
     // sft address => sft slot => sftWrappedToken address
     mapping(address => mapping(uint256 => address)) public sftWrappedTokens;
 
-    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {}
+    constructor(address governor_) AdminControl(msg.sender) GovernorControl(governor_) {
+        require(governor_ != address(0), "SftWrappedTokenFactory: invalid governor");
+    }
     
     function setImplementation(string memory productType_, address implementation_) external virtual onlyAdmin {
+        require(implementation_ != address(0), "SftWrappedTokenFactory: invalid implementation");
         productTypes[productType_].implementation = implementation_;
         emit NewImplementation(productType_, implementation_);
     }

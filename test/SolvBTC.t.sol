@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
@@ -294,7 +294,7 @@ contract SolvBTCTest is Test {
         SolvBTCMultiAssetPool impl = new SolvBTCMultiAssetPool{salt: implSalt}();
         bytes32 proxySalt = keccak256(abi.encodePacked(impl));
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy{salt: proxySalt}(
-            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(address)", ADMIN)
+            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize()")
         );
         solvBTCMultiAssetPool = SolvBTCMultiAssetPool(address(proxy));
         vm.stopPrank();
