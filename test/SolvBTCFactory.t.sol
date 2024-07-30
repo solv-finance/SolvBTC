@@ -40,7 +40,7 @@ contract SolvBTCFactoryTest is Test {
 
     function setUp() public {
         vm.startPrank(ADMIN);
-        solvBTCFactory = new SolvBTCFactory(GOVERNOR);
+        solvBTCFactory = new SolvBTCFactory(ADMIN, GOVERNOR);
         solvBTCImplAddress = address(new SolvBTC());
         vm.stopPrank();
     }
