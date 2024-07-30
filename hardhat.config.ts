@@ -69,6 +69,21 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    merlin_test: {
+      url: process.env.MERLIN_TEST_URL || `https://testnet-rpc.merlinchain.io`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    ailayer_test: {
+      url: process.env.AILAYER_TEST_URL || `https://testnet-rpc.ailayer.xyz/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    bob_test: {
+      url: process.env.BOB_TEST_URL || `https://testnet.rpc.gobob.xyz/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mumbai: {
       url: process.env.MUMBAI_URL || `https://rpc-mumbai.maticvigil.com/`,
       accounts:
@@ -104,13 +119,13 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    merlin_test: {
-      url: process.env.MERLIN_TEST_URL || `https://testnet-rpc.merlinchain.io`,
+    ailayer: {
+      url: process.env.AILAYER_TEST_URL || `https://mainnet-rpc.ailayer.xyz/`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    ailayer_test: {
-      url: process.env.AILAYER_TEST_URL || `https://testnet-rpc.ailayer.xyz/`,
+    bob: {
+      url: process.env.BOB_URL || `https://rpc.gobob.xyz/`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     }

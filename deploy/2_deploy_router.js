@@ -15,6 +15,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     sepolia: '0x91967806F47e2c6603C9617efd5cc91Bc2A7473E',
     merlin_test: '0xA853A738d3D86e1cd24b79bdB16916F57e8F9886',
     ailayer_test: '0x60680f8921E50c25A8030F4175C5d12C91Ee1Fe9',
+    bob_test: '0x60680f8921E50c25A8030F4175C5d12C91Ee1Fe9',
 
     arb: '0x629aD7Bc14726e9cEA4FCb3A7b363D237bB5dBE8',
     mantle: '0x1210371F2E26a74827F250afDfdbE3091304a3b7',
