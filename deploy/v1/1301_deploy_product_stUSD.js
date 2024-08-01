@@ -1,4 +1,4 @@
-const factoryHelpers = require('./helpers/factoryHelpers');
+const factoryHelpers = require('../helpers/factoryHelpers');
 
 module.exports = async ({ deployments }) => {
 

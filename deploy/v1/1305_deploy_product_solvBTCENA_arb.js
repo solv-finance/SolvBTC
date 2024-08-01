@@ -1,14 +1,14 @@
-const factoryHelpers = require("./helpers/factoryHelpers");
+const factoryHelpers = require("../helpers/factoryHelpers");
 
 module.exports = async ({ deployments }) => {
   const productType = "SolvBTC Yield Pool";
   const productName = "SolvBTC Ethena";
   const tokenName = "SolvBTC Ethena";
   const tokenSymbol = "SolvBTC.ENA";
-  const wrappedSft = "0xB816018E5d421E8b809A4dc01aF179D86056eBDF";
+  const wrappedSft = "0x22799DAA45209338B7f938edf251bdfD1E6dCB32";
   const wrappedSlot =
-    "89208590061209537649550317104742331433006176747085251606825693434226550591473";
-  const navOracle = "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889";
+    "73370673862338774703804051393194258049657950181644297527289682663167654669645";
+  const navOracle = "0x6ec1fEC6c6AF53624733F671B490B8250Ff251eD";
 
   await factoryHelpers.deployProxy(
     productType,
@@ -21,4 +21,4 @@ module.exports = async ({ deployments }) => {
   );
 };
 
-module.exports.tags = ["solvBTC.ENA_bnb"];
+module.exports.tags = ["solvBTC.ENA_arb"];

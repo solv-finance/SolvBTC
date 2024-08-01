@@ -1,5 +1,5 @@
-const transparentUpgrade = require('./utils/transparentUpgrade');
-const gasTracker = require('./utils/gasTracker');
+const transparentUpgrade = require('../utils/transparentUpgrade');
+const gasTracker = require('../utils/gasTracker');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
