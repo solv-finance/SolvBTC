@@ -21,6 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     merlin: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
     bsc: "0xaE050694c137aD777611286C316E5FDda58242F3",
     ailayer: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
+    avax: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   };
   const factory = (await deployments.get("SftWrappedTokenFactory")).address;
 
