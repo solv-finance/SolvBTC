@@ -96,6 +96,7 @@ const getGasPrice = (network) => {
         ailayer_test: 0.1e9,
         ailayer: 0.06e9,
         merlin: 0.1e9,
+        avax: 30e9,
       };
       if (defaultPrice[network] == undefined) {
         gasPrice = 5e9; //5 gwei
