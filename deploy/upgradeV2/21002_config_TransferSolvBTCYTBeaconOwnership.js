@@ -8,9 +8,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const sftWrappedTokenFactoryAddress = (await deployments.get('SftWrappedTokenFactory')).address;
   const sftWrappedTokenFactory = SftWrappedTokenFactoryFactory.attach(sftWrappedTokenFactoryAddress);
 
-  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCYieldTokenFactory', deployer);
-  const solvBTCYieldTokenFactory = SolvBTCYieldTokenFactoryFactory.attach(solvBTCYieldTokenFactoryAddress);
-
   const oldProductType = 'SolvBTC Yield Pool';
 
   const solvBTCFactoryAddresses = require('../SolvBTCYieldToken/20999_export_SolvBTCYTInfos').SolvBTCFactoryAddresses;

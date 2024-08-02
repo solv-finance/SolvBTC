@@ -11,9 +11,14 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const productType = 'SolvBTC Yield Token';
   const implementation = (await deployments.get('SolvBTCYieldToken_v2.0')).address;
 
-  const upgradeBeaconTx = await solvBTCYieldTokenFactory.setImplementation(productType, implementation);
-  console.log(`* INFO: Upgrade SolvBTC at ${upgradeBeaconTx.hash}`);
-  await txWait(upgradeBeaconTx);
+  const beaconInFactory = await solvBTCYieldTokenFactory.getImplementation(productType);
+  if (beaconInFactory != implementation) {
+    const upgradeBeaconTx = await solvBTCYieldTokenFactory.setImplementation(productType, implementation);
+    console.log(`* INFO: Upgrade SolvBTCYieldToken at ${upgradeBeaconTx.hash}`);
+    await txWait(upgradeBeaconTx);
+  } else {
+    console.log(`* INFO: SolvBTCYieldToken already upgraded to latest implementation ${implementation}`);
+  }
 
   const solvBTCYTMultiAssetPool = (await deployments.get('SolvBTCYieldTokenMultiAssetPoolProxy')).address;
   const solvBTCYieldTokenOracle = (await deployments.get('SolvBTCYieldTokenOracleForSFTProxy')).address;
@@ -26,15 +31,24 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     assert(tokenAddress == solvBTCYieldTokenInfos[network.name][productName].erc20, `${productName} token address not matched`);
     let token = SolvBTCYieldTokenFactory_.attach(tokenAddress);
 
-    let initializeV2Tx = await token.initializeV2(solvBTCYTMultiAssetPool);
-    console.log(`* INFO: ${tokenInfo[0]} initializeV2 at ${initializeV2Tx.hash}`);
-    await txWait(initializeV2Tx);
+    let poolInSolvBTCYieldToken = await token.solvBTCYTMultiAssetPool();
+    if (poolInSolvBTCYieldToken == ethers.constants.AddressZero) {
+      let initializeV2Tx = await token.initializeV2(solvBTCYTMultiAssetPool);
+      console.log(`* INFO: ${productName} initializeV2 at ${initializeV2Tx.hash}`);
+      await txWait(initializeV2Tx);
+    } else {
+      console.log(`* INFO: ${productName} initializeV2 already executed`);
+    }
 
-    let setOracleTx = await token.setOracle(solvBTCYieldTokenOracle);
-    console.log(`* INFO: ${tokenInfo[0]} setOracle at ${setOracleTx.hash}`);
-    await txWait(setOracleTx);
+    let oracleInSolvBTCYieldToken = await token.getOracle();
+    if (oracleInSolvBTCYieldToken == ethers.constants.AddressZero) {
+      let setOracleTx = await token.setOracle(solvBTCYieldTokenOracle);
+      console.log(`* INFO: {productName} setOracle at ${setOracleTx.hash}`);
+      await txWait(setOracleTx);
+    } else {
+      console.log(`* INFO: ${productName} oracle already set`);
+    }
   }
-
 };
 
 module.exports.tags = ['UpgradeSolvBTCYT']

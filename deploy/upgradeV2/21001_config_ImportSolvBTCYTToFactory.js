@@ -18,18 +18,28 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenBeaconInfos = require('../SolvBTCYieldToken/20999_export_SolvBTCYTInfos').SolvBTCYieldTokenBeaconAddresses;
   const solvBTCYieldTokenInfos = require('../SolvBTCYieldToken/20999_export_SolvBTCYTInfos').SolvBTCYieldTokenInfos;
 
-  const beaconAddress = await sftWrappedTokenFactory.getBeacon(oldProductType);
-  assert(beaconAddress == solvBTCYieldTokenBeaconInfos[network.name], `${network.name} beacon address not matched`);
-  const importBeaconTx = await solvBTCYieldTokenFactory.importBeacon(newProductType, beaconAddress);
-  console.log(`* INFO: Import SolvBTCYieldToken beacon to SolvBTCYieldTokenFactory at ${importBeaconTx.hash}`);
-  await txWait(importBeaconTx);
+  const beaconInFactory = await solvBTCYieldTokenFactory.getBeacon(newProductType);
+  if (beaconInFactory == ethers.constants.AddressZero) {
+    const beaconAddress = await sftWrappedTokenFactory.getBeacon(oldProductType);
+    assert(beaconAddress == solvBTCYieldTokenBeaconInfos[network.name], `${network.name} beacon address not matched`);
+    const importBeaconTx = await solvBTCYieldTokenFactory.importBeacon(newProductType, beaconAddress);
+    console.log(`* INFO: Import SolvBTCYieldToken beacon to SolvBTCYieldTokenFactory at ${importBeaconTx.hash}`);
+    await txWait(importBeaconTx);
+  } else {
+    console.log(`* INFO: SolvBTCYieldToken beacon already imported`);
+  }
 
   for (let productName in solvBTCYieldTokenInfos[network.name]) {
-    let erc20Address = await sftWrappedTokenFactory.getProxy(oldProductType, productName);
-    assert(erc20Address == solvBTCYieldTokenInfos[network.name].erc20, `${network.name} ${productName} token address not matched`);
-    let importProxyTx = await solvBTCYieldTokenFactory.importProductProxy(newProductType, productName, erc20Address);
-    console.log(`* INFO: Import ${productName} to SolvBTCYieldTokenFactory at ${importProxyTx.hash}`);
-    await txWait(importProxyTx);
+    const proxyInFactory = await solvBTCYieldTokenFactory.getProxy(newProductType, productName);
+    if (proxyInFactory == ethers.constants.AddressZero) {
+      let erc20Address = await sftWrappedTokenFactory.getProxy(oldProductType, productName);
+      assert(erc20Address == solvBTCYieldTokenInfos[network.name].erc20, `${network.name} ${productName} token address not matched`);
+      let importProxyTx = await solvBTCYieldTokenFactory.importProductProxy(newProductType, productName, erc20Address);
+      console.log(`* INFO: Import ${productName} to SolvBTCYieldTokenFactory at ${importProxyTx.hash}`);
+      await txWait(importProxyTx);
+    } else {
+      console.log(`* INFO: ${productName} proxy already imported`);
+    }
   }
 };
 

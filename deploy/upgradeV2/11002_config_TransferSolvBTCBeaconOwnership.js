@@ -17,7 +17,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const transferTx = await sftWrappedTokenFactory.transferBeaconOwnership(oldProductType, solvBTCFactoryAddress);
   console.log(`* INFO: Transfer SolvBTC beacon ownership to SolvBTCFactory at ${transferTx.hash}`);
   await txWait(transferTx);
-
 };
 
 module.exports.tags = ['TransferSolvBTCBeaconOwnership']
