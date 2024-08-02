@@ -1,5 +1,6 @@
 const assert = require('assert');
 const colors = require('colors');
+const { txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
@@ -10,10 +11,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const oldProductType = 'SolvBTC Yield Pool';
 
-  const solvBTCFactoryAddresses = require('../SolvBTCYieldToken/20999_export_SolvBTCYTInfos').SolvBTCFactoryAddresses;
+  const solvBTCYieldTokenFactoryAddresses = require('../SolvBTCYieldToken/20999_export_SolvBTCYTInfos').SolvBTCYieldTokenFactoryAddresses;
 
   const solvBTCYieldTokenFactoryAddress = (await deployments.get('SolvBTCYieldTokenFactory')).address;
-  assert(solvBTCYieldTokenFactoryAddress == solvBTCFactoryAddresses[network.name]);
+  assert(solvBTCYieldTokenFactoryAddress == solvBTCYieldTokenFactoryAddresses[network.name]);
   const transferTx = await sftWrappedTokenFactory.transferBeaconOwnership(oldProductType, solvBTCYieldTokenFactoryAddress);
   console.log(`* INFO: Transfer SolvBTCYieldToken beacon ownership to SolvBTCYieldTokenFactory at ${transferTx.hash}`);
   await txWait(transferTx);

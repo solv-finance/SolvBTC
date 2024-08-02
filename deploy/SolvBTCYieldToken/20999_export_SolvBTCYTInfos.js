@@ -1,5 +1,5 @@
 const SolvBTCYieldTokenFactoryAddresses = {
-  dev_sepolia: '',
+  dev_sepolia: '0xA3aFA754db2EFc80Be3F925c3E47c18752aC72b8',
   sepolia: '',
   mainnet: '',
   arb: '',
@@ -16,6 +16,16 @@ const SolvBTCYieldTokenBeaconAddresses = {
   bsc: '0xB259aD28968563E75fd442d91426aDE9194b0f71',
   merlin: '0x5339129852204C8466EeBDA420aCbB466c27B9A4',
   mantle: '0x905d782024727dDB1516D66c4762E5CE8F1dc91A',
+}
+
+const SolvBTCYieldTokenMultiAssetPoolAddresses = {
+  dev_sepolia: '0xc57C23278e0C02998bbA7D5a842A49F34744d4ce',
+  sepolia: '',
+  mainnet: '',
+  arb: '',
+  bsc: '',
+  merlin: '',
+  mantle: '',
 }
 
 const SolvBTCYieldTokenInfos = {
@@ -152,5 +162,6 @@ const SolvBTCYieldTokenInfos = {
 module.exports = {
   SolvBTCYieldTokenFactoryAddresses,
   SolvBTCYieldTokenBeaconAddresses,
+  SolvBTCYieldTokenMultiAssetPoolAddresses,
   SolvBTCYieldTokenInfos
 }

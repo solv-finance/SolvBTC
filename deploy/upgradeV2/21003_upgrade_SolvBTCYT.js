@@ -1,10 +1,11 @@
 const assert = require('assert');
 const colors = require('colors');
+const { txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
 
-  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCYieldTokenFactory', deployer);
+  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', deployer);
   const solvBTCYieldTokenFactoryAddress = (await deployments.get('SolvBTCYieldTokenFactory')).address;
   const solvBTCYieldTokenFactory = SolvBTCYieldTokenFactoryFactory.attach(solvBTCYieldTokenFactoryAddress);
 
@@ -31,7 +32,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     assert(tokenAddress == solvBTCYieldTokenInfos[network.name][productName].erc20, `${productName} token address not matched`);
     let token = SolvBTCYieldTokenFactory_.attach(tokenAddress);
 
-    let poolInSolvBTCYieldToken = await token.solvBTCYTMultiAssetPool();
+    let poolInSolvBTCYieldToken = await token.solvBTCMultiAssetPool();
     if (poolInSolvBTCYieldToken == ethers.constants.AddressZero) {
       let initializeV2Tx = await token.initializeV2(solvBTCYTMultiAssetPool);
       console.log(`* INFO: ${productName} initializeV2 at ${initializeV2Tx.hash}`);
@@ -43,7 +44,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     let oracleInSolvBTCYieldToken = await token.getOracle();
     if (oracleInSolvBTCYieldToken == ethers.constants.AddressZero) {
       let setOracleTx = await token.setOracle(solvBTCYieldTokenOracle);
-      console.log(`* INFO: {productName} setOracle at ${setOracleTx.hash}`);
+      console.log(`* INFO: ${productName} setOracle at ${setOracleTx.hash}`);
       await txWait(setOracleTx);
     } else {
       console.log(`* INFO: ${productName} oracle already set`);

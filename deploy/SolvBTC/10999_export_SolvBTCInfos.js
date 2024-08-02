@@ -1,5 +1,17 @@
+const OpenFundMarketAddresses = {
+  dev_sepolia: '0x109198Eb8BD3064Efa5d0711b505f59cFd77de18',
+  sepolia: '0x91967806F47e2c6603C9617efd5cc91Bc2A7473E',
+  mainnet: '0x57bB6a8563a8e8478391C79F3F433C6BA077c567',
+  arb: '0x629aD7Bc14726e9cEA4FCb3A7b363D237bB5dBE8',
+  bsc: '0xaE050694c137aD777611286C316E5FDda58242F3',
+  merlin: '0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf',
+  mantle: '0x1210371F2E26a74827F250afDfdbE3091304a3b7',
+  ailayer: '0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf',
+  avax: '0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf',
+};
+
 const SolvBTCFactoryAddresses = {
-  dev_sepolia: '',
+  dev_sepolia: '0x9F2dB6aDd1c575b71e5208057579e6aAe3EA07dc',
   sepolia: '',
   mainnet: '',
   arb: '',
@@ -17,6 +29,16 @@ const SolvBTCBeaconAddresses = {
   merlin: '0x49020F44F613E1acc1491E671C226F5E1352Bf24',
   mantle: '0x78749db68F9f2252dd0D853011c286E396A70144',
   ailayer: '0x754784a5735Dddc7352a821E5516ACd77c0091a7',
+}
+
+const SolvBTCMultiAssetPoolAddresses = {
+  dev_sepolia: '0xBdF15396e8A49773386fBA396D74dbbB8ED993f2',
+  sepolia: '',
+  mainnet: '',
+  arb: '',
+  bsc: '',
+  merlin: '',
+  mantle: '',
 }
 
 const SolvBTCInfos = {
@@ -69,10 +91,18 @@ const SolvBTCInfos = {
     erc20: '0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777', 
     holdingValueSftId: 1
   },
+  avax: {
+    sft: '0x6B2e555B6C17BfBBA251cC3Cde084071f4A7eF38', 
+    slot: '11855698383361531140241834848840694583099560042595010827827423787557845170628', 
+    erc20: '0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777', 
+    holdingValueSftId: 0
+  }
 }
 
 module.exports = {
+  OpenFundMarketAddresses,
   SolvBTCFactoryAddresses,
   SolvBTCBeaconAddresses,
+  SolvBTCMultiAssetPoolAddresses,
   SolvBTCInfos
 }

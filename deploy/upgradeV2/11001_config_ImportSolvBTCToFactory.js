@@ -1,5 +1,6 @@
 const assert = require('assert');
 const colors = require('colors');
+const { txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
@@ -20,7 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCBeaconInfos = require('../SolvBTC/10999_export_SolvBTCInfos').SolvBTCBeaconAddresses;
   const solvBTCInfos = require('../SolvBTC/10999_export_SolvBTCInfos').SolvBTCInfos;
 
-  const beaconInFactory = await solvBTCFactory.getBeacon(newProductType);
+  let beaconInFactory = await solvBTCFactory.getBeacon(newProductType);
   if (beaconInFactory == ethers.constants.AddressZero) {
     const beaconAddress = await sftWrappedTokenFactory.getBeacon(oldProductType);
     assert(beaconAddress == solvBTCBeaconInfos[network.name]);
@@ -30,8 +31,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   } else {
     console.log(`* INFO: SolvBTC beacon already imported`);
   }
+  beaconInFactory = await solvBTCFactory.getBeacon(newProductType);
+  console.log(`* INFO: SolvBTC beacon in SolvBTCFactory is ${beaconInFactory}`);
 
-  const solvBTCInFactory = await solvBTCFactory.getProxy(newProductType, newProductName);
+  let solvBTCInFactory = await solvBTCFactory.getProxy(newProductType, newProductName);
   if (solvBTCInFactory == ethers.constants.AddressZero) {
     const solvBTCAddress = await sftWrappedTokenFactory.getProxy(oldProductType, oldProductName);
     assert(solvBTCAddress == solvBTCInfos[network.name].erc20);
@@ -41,6 +44,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   } else {
     console.log(`* INFO: SolvBTC proxy already imported`);
   }
+  solvBTCInFactory = await solvBTCFactory.getProxy(newProductType, newProductName);
+  console.log(`* INFO: SolvBTC proxy in SolvBTCFactory is ${solvBTCInFactory}`);
 };
 
 module.exports.tags = ['ImportSolvBTCToFactory']
