@@ -1,6 +1,8 @@
 const OpenFundMarketAddresses = {
   dev_sepolia: '0x109198Eb8BD3064Efa5d0711b505f59cFd77de18',
   sepolia: '0x91967806F47e2c6603C9617efd5cc91Bc2A7473E',
+  bsctest: '0x929b1B405714ef93CdFFFd6492009baff351f788',
+  avax_test: '0xb873927Db3145BdDf1F63acE301CD6eCe52cC4bD',
   mainnet: '0x57bB6a8563a8e8478391C79F3F433C6BA077c567',
   arb: '0x629aD7Bc14726e9cEA4FCb3A7b363D237bB5dBE8',
   bsc: '0xaE050694c137aD777611286C316E5FDda58242F3',
@@ -13,6 +15,8 @@ const OpenFundMarketAddresses = {
 const SolvBTCFactoryAddresses = {
   dev_sepolia: '0x9F2dB6aDd1c575b71e5208057579e6aAe3EA07dc',
   sepolia: '',
+  bsctest: '0x48EbD3A257a35bf4200d1c6fAe4ab2FcF6f26B54',
+  avax_test: '0x48EbD3A257a35bf4200d1c6fAe4ab2FcF6f26B54',
   mainnet: '',
   arb: '',
   bsc: '',
@@ -23,6 +27,8 @@ const SolvBTCFactoryAddresses = {
 const SolvBTCBeaconAddresses = {
   dev_sepolia: '0xca45679c4D60aa1E751E98ac6a1403870cc17dc7',
   sepolia: '0x64E3dC3399F9394e7179370F930e8e29c3ac320c',
+  bsctest: '',
+  avax_test: '',
   mainnet: '0xFc335FdA7E6a33329A83F4d5F578eC7d8A43DC4A',
   arb: '0x3d209Fb3ca4fCBA1f43f3F14285e2307Db531C07',
   bsc: '0x11a09335301CbbFd358e7F38a3466dA20a5042b3',
@@ -34,6 +40,8 @@ const SolvBTCBeaconAddresses = {
 const SolvBTCMultiAssetPoolAddresses = {
   dev_sepolia: '0xBdF15396e8A49773386fBA396D74dbbB8ED993f2',
   sepolia: '',
+  bsctest: '0xED714AC014a11e758af1Fbc53d3B8a6F3056a1F8',
+  avax_test: '0x51D8883C096E4697e20eE110DcF4d2d30678f6BB',
   mainnet: '',
   arb: '',
   bsc: '',

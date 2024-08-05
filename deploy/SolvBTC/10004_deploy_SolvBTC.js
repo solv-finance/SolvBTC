@@ -13,11 +13,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const tokenName = 'Solv BTC';
   const tokenSymbol = 'SolvBTC';
 
-  const proxyAddress = await solvBTCFactory.getProxy(productType, productName);
+  let proxyAddress = await solvBTCFactory.getProxy(productType, productName);
   if (proxyAddress == ethers.constants.AddressZero) {
     const deployProxyTx = await solvBTCFactory.deployProductProxy(productType, productName, tokenName, tokenSymbol);
     console.log(`* INFO: Deploy SolvBTC at ${deployProxyTx.hash}`);
     await txWait(deployProxyTx);
+
+    proxyAddress = await solvBTCFactory.getProxy(productType, productName);
+    console.log(`* INFO: SolvBTC deployed at ${proxyAddress}`);
+    
   } else {
     console.log(`* INFO: SolvBTC already deployed at ${proxyAddress}`);
   }

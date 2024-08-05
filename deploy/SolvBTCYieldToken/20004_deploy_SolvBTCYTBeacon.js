@@ -12,9 +12,19 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const version = '_v2.0';
   const implementation = (await deployments.get('SolvBTCYieldToken' + version)).address;
 
-  const deployBeaconTx = await solvBTCYieldTokenFactory.setImplementation(productType, implementation);
-  console.log(`* INFO: Deploy SolvBTCYieldToken beacon at ${deployBeaconTx.hash}`);
-  await txWait(deployBeaconTx);
+  let beaconAddress = await solvBTCYieldTokenFactory.getBeacon(productType);
+  let implAddress = await solvBTCYieldTokenFactory.getImplementation(productType);
+  if (beaconAddress == ethers.constants.AddressZero) {
+    const deployBeaconTx = await solvBTCYieldTokenFactory.setImplementation(productType, implementation);
+    console.log(`* INFO: Deploy SolvBTCYieldToken beacon at ${deployBeaconTx.hash}`);
+    await txWait(deployBeaconTx);
+
+    beaconAddress = await solvBTCYieldTokenFactory.getBeacon(productType);
+    implAddress = await solvBTCYieldTokenFactory.getImplementation(productType);
+    console.log(`* INFO: SolvBTCYieldToken beacon deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+  } else {
+    console.log(`* INFO: SolvBTCYieldToken beacon already deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+  }
 };
 
 module.exports.tags = ['SolvBTCYTBeacon']

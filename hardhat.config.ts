@@ -74,6 +74,21 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    ailayer_test: {
+      url: process.env.AILAYER_TEST_URL || `https://testnet-rpc.ailayer.xyz/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    avax_test: {
+      url: process.env.AVAX_TEST_URL || `https://api.avax-test.network/ext/bc/C/rpc`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    bob_test: {
+      url: process.env.BOB_TEST_URL || `https://testnet.rpc.gobob.xyz/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mainnet: {
       url: process.env.GOERLI_URL || `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:

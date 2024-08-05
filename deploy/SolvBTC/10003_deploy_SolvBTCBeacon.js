@@ -12,9 +12,20 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const version = '_v2.0';
   const implementation = (await deployments.get('SolvBTC' + version)).address;
 
-  const deployBeaconTx = await solvBTCFactory.setImplementation(productType, implementation);
-  console.log(`* INFO: Deploy SolvBTC beacon at ${deployBeaconTx.hash}`);
-  await txWait(deployBeaconTx);
+  let beaconAddress = await solvBTCFactory.getBeacon(productType);
+  let implAddress = await solvBTCFactory.getImplementation(productType);
+  if (beaconAddress == ethers.constants.AddressZero) {
+    const deployBeaconTx = await solvBTCFactory.setImplementation(productType, implementation);
+    console.log(`* INFO: Deploy SolvBTC beacon at ${deployBeaconTx.hash}`);
+    await txWait(deployBeaconTx);
+
+    beaconAddress = await solvBTCFactory.getBeacon(productType);
+    implAddress = await solvBTCFactory.getImplementation(productType);
+    console.log(`* INFO: SolvBTC beacon deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+  } else {
+    console.log(`* INFO: SolvBTC beacon already deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+  }
+
 };
 
 module.exports.tags = ['SolvBTCBeacon']
