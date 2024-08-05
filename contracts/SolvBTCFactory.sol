@@ -84,13 +84,13 @@ contract SolvBTCFactory is AdminControl, GovernorControl {
         emit NewBeaconProxy(productType_, productName_, proxy_);
     }
 
-    function importProductProxy(string memory productType_, string memory productName_, address proxy_) external onlyGovernor {
+    function importProductProxy(string memory productType_, string memory productName_, address proxy_) external onlyAdmin {
         require(productTypes[productType_].beacon != address(0), "SolvBTCFactory: beacon not deployed");
         productTypes[productType_].proxies[productName_] = proxy_;
         emit ImportBeaconProxy(productType_, productName_, proxy_);
     }
 
-    function removeProductProxy(string memory productType_, string memory productName_) external onlyGovernor {
+    function removeProductProxy(string memory productType_, string memory productName_) external onlyAdmin {
         address proxy = productTypes[productType_].proxies[productName_];
         require(proxy != address(0), "SolvBTCFactory: proxy not deployed");
         delete productTypes[productType_].proxies[productName_];
