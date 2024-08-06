@@ -20,4 +20,4 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 };
 
-module.exports.tags = ['SetSolvBTCYieldTokenMultiAssetPool']
+module.exports.tags = ['SetSolvBTCYTMultiAssetPool']

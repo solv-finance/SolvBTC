@@ -23,13 +23,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     {
       contract: contractName,
       from: deployer,
-      gasPrice: gasPrice,
+      // gasPrice: gasPrice,
       log: true
     },
     {
       initializer: { 
         method: "initialize", 
-        args: [ governor, market[network.name], solvBTCYieldTokenMultiAssetPool ] 
+        args: [ governor, market, solvBTCYieldTokenMultiAssetPool ] 
       },
       upgrades: upgrades
     }

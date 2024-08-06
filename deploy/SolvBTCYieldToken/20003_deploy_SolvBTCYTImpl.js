@@ -9,6 +9,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const deterministicSuffix = {
     dev_sepolia: '_dev' + version,
     sepolia: '_tnt' + version,
+    bsctest: '_tnt' + version,
+    avax_test: '_tnt' + version,
     merlin_test: '_tnt' + version,
     blast_test: '_tnt' + version,
     ailayer_test: '_tnt' + version,

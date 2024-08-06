@@ -20,10 +20,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     await txWait(deployProxyTx);
 
     proxyAddress = await solvBTCFactory.getProxy(productType, productName);
-    console.log(`* INFO: SolvBTC deployed at ${proxyAddress}`);
+    console.log(`* INFO: SolvBTC deployed at ${colors.yellow(proxyAddress)}`);
     
   } else {
-    console.log(`* INFO: SolvBTC already deployed at ${proxyAddress}`);
+    console.log(`* INFO: SolvBTC already deployed at ${colors.yellow(proxyAddress)}`);
   }
 
   const SolvBTCFactory_ = await ethers.getContractFactory('SolvBTC', deployer);

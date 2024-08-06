@@ -21,9 +21,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
     beaconAddress = await solvBTCFactory.getBeacon(productType);
     implAddress = await solvBTCFactory.getImplementation(productType);
-    console.log(`* INFO: SolvBTC beacon deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+    console.log(`* INFO: SolvBTC beacon deployed at ${colors.yellow(beaconAddress)} pointing to implementation ${implAddress}`);
   } else {
-    console.log(`* INFO: SolvBTC beacon already deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+    console.log(`* INFO: SolvBTC beacon already deployed at ${colors.yellow(beaconAddress)} pointing to implementation ${implAddress}`);
   }
 
 };

@@ -1,6 +1,8 @@
 const SolvBTCYieldTokenFactoryAddresses = {
   dev_sepolia: '0xA3aFA754db2EFc80Be3F925c3E47c18752aC72b8',
   sepolia: '',
+  bsctest: '0x3201A82c790A8c64187a08DC004501De5a03D1f7',
+  avax_test: '0x3201A82c790A8c64187a08DC004501De5a03D1f7',
   mainnet: '',
   arb: '',
   bsc: '',
@@ -11,6 +13,8 @@ const SolvBTCYieldTokenFactoryAddresses = {
 const SolvBTCYieldTokenBeaconAddresses = {
   dev_sepolia: '0x0C62BEc3Ef44cD5d6b795B37F986Bee6B7Ca9550',
   sepolia: '0x5409D9f1516fFc65DDe006Bf28c3c7Ca642aa71b',
+  bsctest: '0xb27bB271E591f8780DE74a02AA98693dC59EA96B',
+  avax_test: '0xb27bB271E591f8780DE74a02AA98693dC59EA96B',
   mainnet: '0xb49De2a621c8540874Ae4B2Ae9a2E59C948645f1',
   arb: '0x7B375C1a95335Ec443f9b610b427e5AfC91E566D',
   bsc: '0xB259aD28968563E75fd442d91426aDE9194b0f71',
@@ -21,6 +25,8 @@ const SolvBTCYieldTokenBeaconAddresses = {
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   dev_sepolia: '0xc57C23278e0C02998bbA7D5a842A49F34744d4ce',
   sepolia: '',
+  bsctest: '0x56006176aEe38928ea658A80De972E9232521026',
+  avax_test: '0xad060cf4f583f3430039A4977405cf2D9518A23B',
   mainnet: '',
   arb: '',
   bsc: '',
@@ -69,6 +75,48 @@ const SolvBTCYieldTokenInfos = {
       navOracle: '0x2271d9FB0A45b63c781D038d0F44596e865dbc2b',
       holdingValueSftId: 152
     },
+  },
+
+  bsctest: {
+    'SolvBTC Ethena': {
+      // https://fm-testnet.solv.finance/open-fund/management/105/overview
+      erc20: '0xaDAe5fc8d830f86f53E20c8a39F7E12Ff6d4E87c',
+      sft: '0xB85A099103De07AC3d2C498453a6599D273be701',
+      slot: '12526117735193062182090145515759589275636046673596702184953905457027724477198',
+      poolId: '0xc0aefb6754da0510f31decd714b5b3f349b4bf1875c1ab6ddafedba6f33d3e72',
+      navOracle: '0x36F243D5F334e9D2Cec2b7CA65c387FE50334eb8',
+      holdingValueSftId: 0
+    },
+    'SolvBTC Babylon': {
+      // https://fm-testnet.solv.finance/open-fund/management/104/overview
+      erc20: '0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad', 
+      sft: '0xB85A099103De07AC3d2C498453a6599D273be701',
+      slot: '76548208369463880492791231241009271667333958519492442327947788696951833061193',
+      poolId: '0xaf3b2b789b70339ac56f23c2c8bfd0edd2b1b496f174aefa46880e011fc86187',
+      navOracle: '0x36F243D5F334e9D2Cec2b7CA65c387FE50334eb8',
+      holdingValueSftId: 0
+    }
+  },
+
+  avax_test: {
+    'SolvBTC Ethena': {
+      // https://fm-testnet.solv.finance/open-fund/management/109/overview
+      erc20: '0xaDAe5fc8d830f86f53E20c8a39F7E12Ff6d4E87c',
+      sft: '0xB85A099103De07AC3d2C498453a6599D273be701',
+      slot: '77352684328629403168054561780811928472731450143792839986378428654149540286727',
+      poolId: '0xbea049b6d33f16654613523da17a07d145c1bf234f7925f2562fde10436a6990',
+      navOracle: '0x9c447c1805e3c15396372529dC6187AA0f111F83',
+      holdingValueSftId: 0
+    },
+    'SolvBTC Babylon': {
+      // https://fm-testnet.solv.finance/open-fund/management/107/overview
+      erc20: '0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad', 
+      sft: '0xB85A099103De07AC3d2C498453a6599D273be701',
+      slot: '5879614720995096369708503247285617478765367550410727340820540538729013061220',
+      poolId: '0xf7f87808e4189df70370009d13c2c672956acbdc9e3792c2d950c8df040300a2',
+      navOracle: '0x9c447c1805e3c15396372529dC6187AA0f111F83',
+      holdingValueSftId: 0
+    }
   },
 
   mainnet: {

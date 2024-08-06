@@ -4,7 +4,7 @@ const { txWait } = require('../utils/deployUtils');
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
 
-  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCYieldTokenFactory', deployer);
+  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', deployer);
   const solvBTCYieldTokenFactoryAddress = (await deployments.get('SolvBTCYieldTokenFactory')).address;
   const solvBTCYieldTokenFactory = SolvBTCYieldTokenFactoryFactory.attach(solvBTCYieldTokenFactoryAddress);
 
@@ -21,9 +21,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
     beaconAddress = await solvBTCYieldTokenFactory.getBeacon(productType);
     implAddress = await solvBTCYieldTokenFactory.getImplementation(productType);
-    console.log(`* INFO: SolvBTCYieldToken beacon deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+    console.log(`* INFO: SolvBTCYieldToken beacon deployed at ${colors.yellow(beaconAddress)} pointing to implementation ${implAddress}`);
   } else {
-    console.log(`* INFO: SolvBTCYieldToken beacon already deployed at ${beaconAddress} pointing to implementation ${implAddress}`);
+    console.log(`* INFO: SolvBTCYieldToken beacon already deployed at ${colors.yellow(beaconAddress)} pointing to implementation ${implAddress}`);
   }
 };
 

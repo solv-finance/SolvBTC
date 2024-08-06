@@ -4,7 +4,7 @@ const { txWait } = require('../utils/deployUtils');
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
 
-  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCYieldTokenFactory', deployer);
+  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', deployer);
   const solvBTCYieldTokenFactoryAddress = (await deployments.get('SolvBTCYieldTokenFactory')).address;
   const solvBTCYieldTokenFactory = SolvBTCYieldTokenFactoryFactory.attach(solvBTCYieldTokenFactoryAddress);
 
@@ -20,10 +20,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     await txWait(deployProxyTx);
 
     proxyAddress = await solvBTCYieldTokenFactory.getProxy(productType, productName);
-    console.log(`* INFO: ${tokenSymbol} deployed at ${proxyAddress}`);
+    console.log(`* INFO: ${tokenSymbol} deployed at ${colors.yellow(proxyAddress)}`);
 
   } else {
-    console.log(`* INFO: ${tokenSymbol} already deployed at ${proxyAddress}`);
+    console.log(`* INFO: ${tokenSymbol} already deployed at ${colors.yellow(proxyAddress)}`);
   }
 
   const SolvBTCYieldTokenFactory_ = await ethers.getContractFactory('SolvBTCYieldToken', deployer);
