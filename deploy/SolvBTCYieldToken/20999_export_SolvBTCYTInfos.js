@@ -138,6 +138,16 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x8c29858319614380024093DBEE553F9337665756",
       holdingValueSftId: 2,
     },
+    "SolvBTC Ethena": {
+      // https://fund-management.solv.finance/open-fund/management/140/overview
+      erc20: "0x325DC9EBceC31940C658aCACa45f8293418d811E",
+      sft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
+      slot: "69967604453435411887182567130316797880284649445056338117915549089269498614313",
+      poolId:
+        "0x5bd198d0d81b1055dc9f6828678e5ec6edfe49b858a86624ee99adf755f6c39d",
+      navOracle: "0x8c29858319614380024093dbee553f9337665756",
+      holdingValueSftId: 0,
+    },
   },
 
   arb: {
