@@ -10,12 +10,18 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const solvBTCInfos = require('./10999_export_SolvBTCInfos').SolvBTCInfos;
 
-  const addSftTx = await solvBTCMultiAssetPool.addSftSlotOnlyAdmin(
-    solvBTCInfos[network.name].sft, solvBTCInfos[network.name].slot, 
-    solvBTCInfos[network.name].erc20, solvBTCInfos[network.name].holdingValueSftId
-  );
-  console.log(`* INFO: SolvBTCMultiAssetPool add sft at ${addSftTx.hash}`);
-  await txWait(addSftTx);
+  const erc20InPool = await solvBTCMultiAssetPool.getERC20(solvBTCInfos[network.name].sft, solvBTCInfos[network.name].slot);
+  if (erc20InPool == ethers.constants.AddressZero) {
+    const addSftTx = await solvBTCMultiAssetPool.addSftSlotOnlyAdmin(
+      solvBTCInfos[network.name].sft, solvBTCInfos[network.name].slot, 
+      solvBTCInfos[network.name].erc20, solvBTCInfos[network.name].holdingValueSftId
+    );
+    console.log(`* INFO: SolvBTCMultiAssetPool add sft at ${addSftTx.hash}`);
+    await txWait(addSftTx);
+  } else {
+    console.log(`* INFO: ${erc20InPool} already added to SolvBTCMultiAssetPool`);
+  }
+
 };
 
 module.exports.tags = ['SetSolvBTCMultiAssetPool']

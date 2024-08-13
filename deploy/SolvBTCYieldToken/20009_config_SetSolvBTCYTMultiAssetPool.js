@@ -12,12 +12,19 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   for (let productName in productInfos[network.name]) {
     let info = productInfos[network.name][productName];
-    let addSftTx = await solvBTCYieldTokenMultiAssetPool.addSftSlotOnlyAdmin(
-      info.sft, info.slot, info.erc20, info.holdingValueSftId
-    );
-    console.log(`* INFO: SolvBTCYieldTokenMultiAssetPool add sft at ${addSftTx.hash}`);
-    await txWait(addSftTx);
+    let erc20InPool = await solvBTCYieldTokenMultiAssetPool.getERC20(info.sft, info.slot);
+
+    if (erc20InPool == ethers.constants.AddressZero) {
+      let addSftTx = await solvBTCYieldTokenMultiAssetPool.addSftSlotOnlyAdmin(
+        info.sft, info.slot, info.erc20, info.holdingValueSftId
+      );
+      console.log(`* INFO: SolvBTCYieldTokenMultiAssetPool add sft for ${info.erc20} at ${addSftTx.hash}`);
+      await txWait(addSftTx);
+    } else {
+      console.log(`* INFO: ${erc20InPool} already added to SolvBTCYieldTokenMultiAssetPool`);
+    }
   }
 };
 
 module.exports.tags = ['SetSolvBTCYTMultiAssetPool']
+
