@@ -139,7 +139,7 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 2,
     },
     "SolvBTC Ethena": {
-      // https://fund-management.solv.finance/open-fund/management/140/overview
+      // https://fund-management.solv.finance/open-fund/management/184/overview
       erc20: "0x325DC9EBceC31940C658aCACa45f8293418d811E",
       sft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
       slot: "69967604453435411887182567130316797880284649445056338117915549089269498614313",
