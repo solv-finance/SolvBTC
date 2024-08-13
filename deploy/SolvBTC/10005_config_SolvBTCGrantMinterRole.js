@@ -14,9 +14,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   assert(solvBTCMultiAssetPoolAddress == solvBTCMultiAssetPoolAddressInConfig, 'pool address not matched');
 
   const minterRole = await solvBTC.SOLVBTC_MINTER_ROLE();
-  const grantRoleTx = await solvBTC.grantRole(minterRole, solvBTCMultiAssetPoolAddress);
-  console.log(`* INFO: SolvBTC grant minter role to MultiAssetPool ${solvBTCMultiAssetPoolAddress} at ${grantRoleTx.hash}`);
-  await txWait(grantRoleTx);
+  const hasRole = await solvBTC.hasRole(minterRole, solvBTCMultiAssetPoolAddress);
+  if (!hasRole) {
+    const grantRoleTx = await solvBTC.grantRole(minterRole, solvBTCMultiAssetPoolAddress);
+    console.log(`* INFO: SolvBTC grant minter role to MultiAssetPool ${solvBTCMultiAssetPoolAddress} at ${grantRoleTx.hash}`);
+    await txWait(grantRoleTx);
+  } else {
+    console.log(`* INFO: SolvBTC already granted minter role to MultiAssetPool ${solvBTCMultiAssetPoolAddress}`);
+  }
+
 };
 
 module.exports.tags = ['SolvBTCGrantMinterRole']
