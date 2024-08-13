@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./access/AdminControlUpgradeable.sol";
@@ -73,6 +73,10 @@ contract SftWrapRouter is
         external
         initializer
     {
+        require(governor_ != address(0), "SftWrapRouter: invalid governor");
+        require(openFundMarket_ != address(0), "SftWrapRouter: invalid openFundMarket");
+        require(sftWrappedTokenFactory_ != address(0), "SftWrapRouter: invalid sftWrappedTokenFactory");
+
         AdminControlUpgradeable.__AdminControl_init(msg.sender);
         GovernorControlUpgradeable.__GovernorControl_init(governor_);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
@@ -81,8 +85,10 @@ contract SftWrapRouter is
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IERC3525Receiver).interfaceId || interfaceId == type(IERC721Receiver).interfaceId
-            || interfaceId == type(IERC165).interfaceId;
+        return 
+            interfaceId == type(IERC3525Receiver).interfaceId || 
+            interfaceId == type(IERC721Receiver).interfaceId || 
+            interfaceId == type(IERC165).interfaceId;
     }
 
     function onERC3525Received(
@@ -94,8 +100,9 @@ contract SftWrapRouter is
     ) external virtual override returns (bytes4) {
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
-        address sftWrappedToken =
-            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(
+            msg.sender, openFundShareSlot
+        );
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
         require(value_ > 0, "SftWrapRouter: stake amount cannot be 0");
 
@@ -138,11 +145,12 @@ contract SftWrapRouter is
     {
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
-        address sftWrappedToken =
-            SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(address(openFundShare), openFundShareSlot);
+        address sftWrappedToken = SftWrappedTokenFactory(sftWrappedTokenFactory).sftWrappedTokens(
+            msg.sender, openFundShareSlot
+        );
         require(sftWrappedToken != address(0), "SftWrapRouter: sft wrapped token not created");
 
-        if (from_ == sftWrappedToken || from_ == openFundMarket) {
+        if (from_ == openFundMarket || from_ == sftWrappedToken) {
             return IERC721Receiver.onERC721Received.selector;
         }
 
@@ -312,4 +320,6 @@ contract SftWrapRouter is
         address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
         return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender);
     }
+
+    uint256[47] private __gap;
 }

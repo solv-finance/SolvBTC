@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
 
 struct SubscribeLimitInfo {
     uint256 hardCap;
@@ -51,7 +51,8 @@ interface IOpenFundMarket {
     function revokeRedeem(bytes32 poolId, uint256 openFundRedemptionId) external;
 
     function poolInfos(bytes32 poolId) external view returns (PoolInfo memory);
-    function getAddress(bytes32 name_) external view returns (address);
+    function getAddress(bytes32 name) external view returns (address);
+    function purchasedRecords(bytes32 poolId, address buyer) external view returns (uint256);
 }
 
 interface IOFMWhitelistStrategyManager {
