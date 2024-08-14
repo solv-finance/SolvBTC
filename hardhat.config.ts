@@ -92,7 +92,9 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     avax_test: {
-      url: process.env.AVAX_TEST_URL || `https://api.avax-test.network/ext/bc/C/rpc`,
+      url:
+        process.env.AVAX_TEST_URL ||
+        `https://api.avax-test.network/ext/bc/C/rpc`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -152,6 +154,11 @@ const config: HardhatUserConfig = {
     },
     avax: {
       url: process.env.AVAX_URL || `https://api.avax.network/ext/bc/C/rpc`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    bob: {
+      url: process.env.BOB_URL || `https://rpc.gobob.xyz/`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
