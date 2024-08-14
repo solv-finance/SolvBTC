@@ -108,11 +108,11 @@ contract SolvBTCTest is Test {
         vm.startPrank(USER);
         uint256 totalSupplyBefore = solvBTC.totalSupply();
         uint256 userBalanceBefore = solvBTC.balanceOf(USER);
-        solvBTC.burn(USER, 0.5 ether);
+        solvBTC.mint(USER, 0.5 ether);
         uint256 totalSupplyAfter = solvBTC.totalSupply();
         uint256 userBalanceAfter = solvBTC.balanceOf(USER);
-        assertEq(totalSupplyBefore - totalSupplyAfter, 0.5 ether);
-        assertEq(userBalanceBefore - userBalanceAfter, 0.5 ether);
+        assertEq(totalSupplyAfter - totalSupplyBefore, 0.5 ether);
+        assertEq(userBalanceAfter - userBalanceBefore, 0.5 ether);
         vm.stopPrank();
     }
 
@@ -129,7 +129,24 @@ contract SolvBTCTest is Test {
         vm.stopPrank();
     }
 
-    function test_BurnByAnotherMinter() public {
+    function test_BurnWithAccountByAnotherMinter() public {
+        _upgradeAndSetup();
+        vm.startPrank(ADMIN);
+        solvBTC.grantRole(solvBTC.SOLVBTC_POOL_BURNER_ROLE(), USER);
+        vm.stopPrank();
+
+        vm.startPrank(USER);
+        uint256 totalSupplyBefore = solvBTC.totalSupply();
+        uint256 userBalanceBefore = solvBTC.balanceOf(USER);
+        solvBTC.burn(USER, 0.5 ether);
+        uint256 totalSupplyAfter = solvBTC.totalSupply();
+        uint256 userBalanceAfter = solvBTC.balanceOf(USER);
+        assertEq(totalSupplyBefore - totalSupplyAfter, 0.5 ether);
+        assertEq(userBalanceBefore - userBalanceAfter, 0.5 ether);
+        vm.stopPrank();
+    }
+
+    function test_BurnWithoutAccountByAnotherMinter() public {
         _upgradeAndSetup();
         vm.startPrank(ADMIN);
         solvBTC.grantRole(solvBTC.SOLVBTC_MINTER_ROLE(), USER);
@@ -138,7 +155,7 @@ contract SolvBTCTest is Test {
         vm.startPrank(USER);
         uint256 totalSupplyBefore = solvBTC.totalSupply();
         uint256 userBalanceBefore = solvBTC.balanceOf(USER);
-        solvBTC.burn(USER, 0.5 ether);
+        solvBTC.burn(0.5 ether);
         uint256 totalSupplyAfter = solvBTC.totalSupply();
         uint256 userBalanceAfter = solvBTC.balanceOf(USER);
         assertEq(totalSupplyBefore - totalSupplyAfter, 0.5 ether);
@@ -154,10 +171,18 @@ contract SolvBTCTest is Test {
         vm.stopPrank();
     }
 
-    function test_RevertWhenBurnByNonMinter() public {
+    function test_RevertWhenBurnWithoutAccountByNonMinter() public {
         _upgradeAndSetup();
         vm.startPrank(USER);
         vm.expectRevert(abi.encodeWithSignature("AccessControlUnauthorizedAccount(address,bytes32)", USER, solvBTC.SOLVBTC_MINTER_ROLE()));
+        solvBTC.burn(0.5 ether);
+        vm.stopPrank();
+    }
+
+    function test_RevertWhenBurnWithAccountByNonPoolBurner() public {
+        _upgradeAndSetup();
+        vm.startPrank(USER);
+        vm.expectRevert(abi.encodeWithSignature("AccessControlUnauthorizedAccount(address,bytes32)", USER, solvBTC.SOLVBTC_POOL_BURNER_ROLE()));
         solvBTC.burn(USER, 0.5 ether);
         vm.stopPrank();
     }
@@ -312,6 +337,7 @@ contract SolvBTCTest is Test {
         vm.startPrank(ADMIN);
         solvBTC.initializeV2(address(solvBTCMultiAssetPool));
         solvBTC.grantRole(solvBTC.SOLVBTC_MINTER_ROLE(), address(solvBTCMultiAssetPool));
+        solvBTC.grantRole(solvBTC.SOLVBTC_POOL_BURNER_ROLE(), address(solvBTCMultiAssetPool));
         vm.stopPrank();
     }
 
