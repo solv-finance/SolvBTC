@@ -19,9 +19,10 @@ const SolvBTCFactoryAddresses = {
   avax_test: "0xe99F1835621B810B170ED5279816A36742B77110",
   mainnet: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   arb: "",
-  bsc: "",
+  bsc: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   merlin: "",
   mantle: "",
+  bob: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
 };
 
 const SolvBTCBeaconAddresses = {
@@ -44,9 +45,10 @@ const SolvBTCMultiAssetPoolAddresses = {
   avax_test: "0x51D8883C096E4697e20eE110DcF4d2d30678f6BB",
   mainnet: "0x1d5262919C4AAb745A8C9dD56B80DB9FeaEf86BA",
   arb: "",
-  bsc: "",
+  bsc: "0x1FF72318deeD339e724e3c8deBCD528dC013D845",
   merlin: "",
   mantle: "",
+  bob: "0xc2f69541e3dC306777D260dC66bfD54fcb897100",
 };
 
 const SolvBTCInfos = {
