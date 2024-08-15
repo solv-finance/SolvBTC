@@ -1,6 +1,6 @@
 const SolvBTCYieldTokenFactoryAddresses = {
   dev_sepolia: "0xA3aFA754db2EFc80Be3F925c3E47c18752aC72b8",
-  sepolia: "",
+  sepolia: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   bsctest: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   avax_test: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   mainnet: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
@@ -24,7 +24,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   dev_sepolia: "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce",
-  sepolia: "",
+  sepolia: "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c",
   bsctest: "0x56006176aEe38928ea658A80De972E9232521026",
   avax_test: "0xad060cf4f583f3430039A4977405cf2D9518A23B",
   mainnet: "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
