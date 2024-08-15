@@ -143,7 +143,7 @@ contract SolvBTCFactoryTest is Test {
         solvBTCFactory.importBeacon(PRODUCT_TYPE_SOLVBTC, beacon);
         vm.stopPrank();
 
-        vm.startPrank(GOVERNOR);
+        vm.startPrank(ADMIN);
         address proxy = swtFactory.getProxy(PRODUCT_TYPE_SWT, PRODUCT_NAME_SWT);
         solvBTCFactory.importProductProxy(PRODUCT_TYPE_SOLVBTC, PRODUCT_NAME_SOLVBTC, proxy);
         assertEq(solvBTCFactory.getProxy(PRODUCT_TYPE_SOLVBTC, PRODUCT_NAME_SOLVBTC), proxy);
@@ -196,17 +196,14 @@ contract SolvBTCFactoryTest is Test {
         vm.stopPrank();
     }
 
-    function test_RevertWhenRemoveProductByNonGovernor() public {
+    function test_RevertWhenRemoveProductByNonAdmin() public {
         vm.startPrank(ADMIN);
         solvBTCFactory.setImplementation(PRODUCT_TYPE_SOLVBTC, solvBTCImplAddress);
         vm.stopPrank();
 
         vm.startPrank(GOVERNOR);
         solvBTCFactory.deployProductProxy(PRODUCT_TYPE_SOLVBTC, PRODUCT_NAME_SOLVBTC, TOKEN_NAME_SOLVBTC, TOKEN_SYMBOL_SOLVBTC);
-        vm.stopPrank();
-
-        vm.startPrank(ADMIN);
-        vm.expectRevert("only governor");
+        vm.expectRevert("only admin");
         solvBTCFactory.removeProductProxy(PRODUCT_TYPE_SOLVBTC, PRODUCT_NAME_SOLVBTC);
         vm.stopPrank();
     }

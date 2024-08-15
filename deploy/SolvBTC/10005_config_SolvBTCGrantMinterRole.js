@@ -14,15 +14,24 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   assert(solvBTCMultiAssetPoolAddress == solvBTCMultiAssetPoolAddressInConfig, 'pool address not matched');
 
   const minterRole = await solvBTC.SOLVBTC_MINTER_ROLE();
-  const hasRole = await solvBTC.hasRole(minterRole, solvBTCMultiAssetPoolAddress);
-  if (!hasRole) {
-    const grantRoleTx = await solvBTC.grantRole(minterRole, solvBTCMultiAssetPoolAddress);
-    console.log(`* INFO: SolvBTC grant minter role to MultiAssetPool ${solvBTCMultiAssetPoolAddress} at ${grantRoleTx.hash}`);
-    await txWait(grantRoleTx);
+  const hasMinterRole = await solvBTC.hasRole(minterRole, solvBTCMultiAssetPoolAddress);
+  if (!hasMinterRole) {
+    const grantMinterRoleTx = await solvBTC.grantRole(minterRole, solvBTCMultiAssetPoolAddress);
+    console.log(`* INFO: SolvBTC grant minter role to MultiAssetPool ${solvBTCMultiAssetPoolAddress} at ${grantMinterRoleTx.hash}`);
+    await txWait(grantMinterRoleTx);
   } else {
     console.log(`* INFO: SolvBTC already granted minter role to MultiAssetPool ${solvBTCMultiAssetPoolAddress}`);
   }
 
+  const poolBurnerRole = await solvBTC.SOLVBTC_POOL_BURNER_ROLE();
+  const hasBurnerRole = await solvBTC.hasRole(poolBurnerRole, solvBTCMultiAssetPoolAddress);
+  if (!hasBurnerRole) {
+    const grantBurnerRoleTx = await solvBTC.grantRole(poolBurnerRole, solvBTCMultiAssetPoolAddress);
+    console.log(`* INFO: SolvBTC grant pool burner role to MultiAssetPool ${solvBTCMultiAssetPoolAddress} at ${grantBurnerRoleTx.hash}`);
+    await txWait(grantBurnerRoleTx);
+  } else {
+    console.log(`* INFO: SolvBTC already granted pool burner role to MultiAssetPool ${solvBTCMultiAssetPoolAddress}`);
+  }
 };
 
 module.exports.tags = ['SolvBTCGrantMinterRole']

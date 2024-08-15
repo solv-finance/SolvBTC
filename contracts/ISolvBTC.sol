@@ -14,6 +14,7 @@ interface ISolvBTC is IERC20, IERC721Receiver, IERC3525Receiver, IERC165 {
 
     function mint(address account, uint256 value) external;
     function burn(address account, uint256 value) external;
+    function burn(uint256 value) external;
 
     function solvBTCMultiAssetPool() external view returns (address);
 }

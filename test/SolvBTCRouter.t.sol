@@ -528,6 +528,7 @@ contract SolvBTCRouterTest is Test {
         vm.startPrank(ADMIN);
         solvBTC.initializeV2(address(solvBTCMultiAssetPool));
         solvBTC.grantRole(solvBTC.SOLVBTC_MINTER_ROLE(), address(solvBTCMultiAssetPool));
+        solvBTC.grantRole(solvBTC.SOLVBTC_POOL_BURNER_ROLE(), address(solvBTCMultiAssetPool));
         vm.stopPrank();
     }
 

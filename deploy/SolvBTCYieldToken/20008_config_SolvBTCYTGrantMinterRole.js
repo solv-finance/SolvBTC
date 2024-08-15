@@ -18,13 +18,23 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     let solvBTCYieldToken = SolvBTCYieldTokenFactory.attach(erc20Address);
     let minterRole = await solvBTCYieldToken.SOLVBTC_MINTER_ROLE();
 
-    let hasRole = await solvBTCYieldToken.hasRole(minterRole, solvBTCYieldTokenMultiAssetPoolAddress);
-    if (!hasRole) {
-      let grantRoleTx = await solvBTCYieldToken.grantRole(minterRole, solvBTCYieldTokenMultiAssetPoolAddress);
-      console.log(`* INFO: ${productName} grant minter role to MultiAssetPool ${solvBTCYieldTokenMultiAssetPoolAddress} at ${grantRoleTx.hash}`);
-      await txWait(grantRoleTx);
+    let hasMinterRole = await solvBTCYieldToken.hasRole(minterRole, solvBTCYieldTokenMultiAssetPoolAddress);
+    if (!hasMinterRole) {
+      let grantMinterRoleTx = await solvBTCYieldToken.grantRole(minterRole, solvBTCYieldTokenMultiAssetPoolAddress);
+      console.log(`* INFO: ${productName} grant minter role to MultiAssetPool ${solvBTCYieldTokenMultiAssetPoolAddress} at ${grantMinterRoleTx.hash}`);
+      await txWait(grantMinterRoleTx);
     } else {
       console.log(`* INFO: ${productName} already granted minter role to MultiAssetPool ${solvBTCYieldTokenMultiAssetPoolAddress}`);
+    }
+
+    let poolBurnerRole = await solvBTCYieldToken.SOLVBTC_POOL_BURNER_ROLE();
+    let hasBurnerRole = await solvBTCYieldToken.hasRole(poolBurnerRole, solvBTCYieldTokenMultiAssetPoolAddress);
+    if (!hasBurnerRole) {
+      let grantBurnerRoleTx = await solvBTCYieldToken.grantRole(poolBurnerRole, solvBTCYieldTokenMultiAssetPoolAddress);
+      console.log(`* INFO: ${productName} grant pool burner role to MultiAssetPool ${solvBTCYieldTokenMultiAssetPoolAddress} at ${grantBurnerRoleTx.hash}`);
+      await txWait(grantBurnerRoleTx);
+    } else {
+      console.log(`* INFO: ${productName} already granted pool burner role to MultiAssetPool ${solvBTCYieldTokenMultiAssetPoolAddress}`);
     }
   }
 };
