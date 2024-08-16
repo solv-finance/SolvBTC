@@ -231,6 +231,19 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 1019,
     },
   },
+  avax: {
+    "SolvBTC Babylon": {
+      // https://fund-management.solv.finance/open-fund/management/185/overview
+      erc20: "",
+      sft: "0x29f870ed75b4632301946bb935433605f39d515e",
+      slot: "91416864602533104392592890824497157334485490509693941626320001937970957602493",
+      poolId:
+        "0xfe32d4edc14725d9178a3dd19d5f17c94e33945adc6e0091dc67c126bdf30182",
+      navOracle: "0x540a9dbba1ae6250253ba8793714492ee357ac1d",
+      holdingValueSftId: 0,
+    },
+  },
+
 };
 
 module.exports = {
