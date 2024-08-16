@@ -48,7 +48,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
     // verify oracle status
     const sftInfoInOracle = await solvBTCYieldTokenOracle.sftOracles(tokenInfo.erc20);
-    assert(sftInfoInOracle.sft == tokenInfo.sft, `Oracle: ${productName} sft address not matched`);
+    assert(sftInfoInOracle.sft.toUpperCase() == tokenInfo.sft.toUpperCase(), `Oracle: ${productName} sft address not matched`);
     assert(sftInfoInOracle.sftSlot == tokenInfo.slot, `Oracle: ${productName} sft slot not matched`);
     assert(sftInfoInOracle.poolId == tokenInfo.poolId, `Oracle: ${productName} poolId address not matched`);
 

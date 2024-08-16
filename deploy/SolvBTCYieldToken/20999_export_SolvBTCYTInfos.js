@@ -7,7 +7,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   arb: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   bsc: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   merlin: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
-  mantle: "",
+  mantle: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   avax: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
@@ -33,7 +33,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   arb: "0x0679E96f5EEDa5313099f812b558714717AEC176",
   bsc: "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
   merlin: "0x7bf5827F3aa751D08Ba1835d3cdB330654ad348b",
-  mantle: "",
+  mantle: "0x7c8f50cb4d1a5b9E58a084BC8D792D7d22108C74",
   avax: "0x814F3ae67dF0da9fe2399a29516FD14b9085263a",
 };
 
