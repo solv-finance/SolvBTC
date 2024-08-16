@@ -8,6 +8,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   bsc: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   merlin: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   mantle: "",
+  avax: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
 const SolvBTCYieldTokenBeaconAddresses = {
@@ -20,6 +21,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
   bsc: "0xB259aD28968563E75fd442d91426aDE9194b0f71",
   merlin: "0x5339129852204C8466EeBDA420aCbB466c27B9A4",
   mantle: "0x905d782024727dDB1516D66c4762E5CE8F1dc91A",
+  avax: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -32,6 +34,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   bsc: "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
   merlin: "0x7bf5827F3aa751D08Ba1835d3cdB330654ad348b",
   mantle: "",
+  avax: "0x814F3ae67dF0da9fe2399a29516FD14b9085263a",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -234,7 +237,7 @@ const SolvBTCYieldTokenInfos = {
   avax: {
     "SolvBTC Babylon": {
       // https://fund-management.solv.finance/open-fund/management/185/overview
-      erc20: "",
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
       sft: "0x29f870ed75b4632301946bb935433605f39d515e",
       slot: "91416864602533104392592890824497157334485490509693941626320001937970957602493",
       poolId:

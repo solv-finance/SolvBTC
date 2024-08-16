@@ -116,14 +116,12 @@ const SolvBTCInfos = {
     erc20: "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777",
     holdingValueSftId: 1,
   },
-  /*
   avax: {
     sft: "0x6B2e555B6C17BfBBA251cC3Cde084071f4A7eF38",
     slot: "11855698383361531140241834848840694583099560042595010827827423787557845170628",
     erc20: "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777",
-    holdingValueSftId: 0,
+    holdingValueSftId: 1,
   },
-  */
 };
 
 module.exports = {
