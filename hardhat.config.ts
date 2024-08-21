@@ -142,11 +142,6 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-    ailayer_test: {
-      url: process.env.AILAYER_TEST_URL || `https://testnet-rpc.ailayer.xyz/`,
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
     ailayer: {
       url: process.env.AILAYER_URL || `https://mainnet-rpc.ailayer.xyz/`,
       accounts:
@@ -169,7 +164,9 @@ const config: HardhatUserConfig = {
       bsc: process.env.BSCSCAN_API_KEY || "",
       arb: process.env.ARBISCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",
+      merlin: process.env.MERLINSCAN_API_KEY || "",
       mantle: "mantle",
+      avax: "avax",
     },
     customChains: [
       {
@@ -181,11 +178,27 @@ const config: HardhatUserConfig = {
         },
       },
       {
+        network: "merlin",
+        chainId: 4200,
+        urls: {
+          apiURL: "https://scan.merlinchain.io/api/",
+          browserURL: "https://scan.merlinchain.io",
+        },
+      },
+      {
         network: "mantle",
         chainId: 5000,
         urls: {
           apiURL: "https://explorer.mantle.xyz/api",
           browserURL: "https://explorer.mantle.xyz/",
+        },
+      },
+      {
+        network: "avax",
+        chainId: 43114,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api",
+          browserURL: "https://snowtrace.io/",
         },
       },
     ],
