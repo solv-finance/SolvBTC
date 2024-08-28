@@ -157,6 +157,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    base: {
+      url: process.env.BASE_URL || `https://mainnet.base.org/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {
@@ -197,7 +202,8 @@ const config: HardhatUserConfig = {
         network: "avax",
         chainId: 43114,
         urls: {
-          apiURL: "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api",
+          apiURL:
+            "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api",
           browserURL: "https://snowtrace.io/",
         },
       },
