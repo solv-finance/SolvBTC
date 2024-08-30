@@ -24,6 +24,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ailayer: version,
     bob: version,
     avax: version,
+    base: version,
   }
 
   const instance = await deploy('SolvBTCYieldToken' + version, {

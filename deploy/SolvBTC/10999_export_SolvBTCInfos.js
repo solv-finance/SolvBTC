@@ -11,6 +11,7 @@ const OpenFundMarketAddresses = {
   ailayer: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   avax: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   bob: "0xf5a247157656678398B08d3eFa1673358C611A3f",
+  base: "0xf5a247157656678398B08d3eFa1673358C611A3f",
 };
 
 const SolvBTCFactoryAddresses = {
@@ -26,6 +27,7 @@ const SolvBTCFactoryAddresses = {
   bob: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   avax: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578", 
   ailayer: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
+  base: "0x58803103db1aFE4b78Dfd1A4dEC732463DC2330F",
 };
 
 const SolvBTCBeaconAddresses = {
@@ -41,6 +43,7 @@ const SolvBTCBeaconAddresses = {
   ailayer: "0x754784a5735Dddc7352a821E5516ACd77c0091a7",
   avax: "0x754784a5735Dddc7352a821E5516ACd77c0091a7",
   bob: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
+  base: "0xaEb73ed76c10E3B8a26Ef7BDa8069eB4E8050774",
 };
 
 const SolvBTCMultiAssetPoolAddresses = {
@@ -56,6 +59,7 @@ const SolvBTCMultiAssetPoolAddresses = {
   bob: "0xc2f69541e3dC306777D260dC66bfD54fcb897100",
   avax: "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705",
   ailayer: "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705",
+  base: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
 };
 
 const SolvBTCInfos = {
@@ -85,10 +89,16 @@ const SolvBTCInfos = {
   },
 
   mainnet: {
+    /*
     sft: "0x7d6C3860B71CF82e2e1E8d5D104CF77f5B84f93a",
     slot: "85402499252096164095609232758358824605868392495188266406491311694532023267832",
     erc20: "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
     holdingValueSftId: 5,
+    */
+    sft: "0x7d6C3860B71CF82e2e1E8d5D104CF77f5B84f93a",
+    slot: "108857912775976246409905353735754692710771288981462794160478074302375993823074",
+    erc20: "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+    holdingValueSftId: 0,
   },
   arb: {
     sft: "0xD20078BD38AbC1378cB0a3F6F0B359c4d8a7b90E",
@@ -126,11 +136,18 @@ const SolvBTCInfos = {
     erc20: "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777",
     holdingValueSftId: 1,
   },
-  //https://fund-management.solv.finance/open-fund/management/197/overview
   bob: {
+    //https://fund-management.solv.finance/open-fund/management/197/overview
     sft: "0x6b2e555b6c17bfbba251cc3cde084071f4a7ef38",
     slot: "9570008177830247768462162393577819187586398375631138262466168469058310861435",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+    holdingValueSftId: 0,
+  },
+  base: {
+    //https://fund-management.solv.finance/open-fund/management/200/overview
+    sft: "0x6b2e555b6c17bfbba251cc3cde084071f4a7ef38",
+    slot: "88468361214282768022888996948490661551803884394452793264507689010931000556751",
+    erc20: "0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f",
     holdingValueSftId: 0,
   },
 };

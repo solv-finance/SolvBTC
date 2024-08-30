@@ -10,6 +10,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   mantle: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   avax: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   bob: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
+  base: "0x508751254850C5b78D4A9a430ADd9320959D847f",
 };
 
 const SolvBTCYieldTokenBeaconAddresses = {
@@ -24,6 +25,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
   mantle: "0x905d782024727dDB1516D66c4762E5CE8F1dc91A",
   avax: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   bob: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+  base: "0x88a9b6aA32ac3B4ED14BAb150b3d6eF1768ba43B",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -38,6 +40,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   mantle: "0x7c8f50cb4d1a5b9E58a084BC8D792D7d22108C74",
   avax: "0x814F3ae67dF0da9fe2399a29516FD14b9085263a",
   bob: "0xd157B70F917fEf3A59502b9128feCA911dEbC864",
+  base: "0xD7bf464839a28969846F2E0d1709d61c281d7888",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -257,6 +260,18 @@ const SolvBTCYieldTokenInfos = {
       slot: "108568168644578414292629788190007224872417361798654086509675235669006585971038",
       poolId:
         "0x6899a7e13b655fa367208cb27c6eaa2410370d1565dc1f5f11853a1e8cbef033",
+      navOracle: "0x1210371f2e26a74827f250afdfdbe3091304a3b7",
+      holdingValueSftId: 0,
+    },
+  },
+  base: {
+    "SolvBTC Babylon": {
+      // https://fund-management.solv.finance/open-fund/management/199/overview
+      erc20: "0xC26C9099BD3789107888c35bb41178079B282561",
+      sft: "0x29f870ed75b4632301946bb935433605f39d515e",
+      slot: "21594604619467779384440136342992607739900587760885830736240056183867191526104",
+      poolId:
+        "0xb20032ac848893cf4820a7b3259020ffd5057d49f537c2adc5f74a337cc56ddc",
       navOracle: "0x1210371f2e26a74827f250afdfdbe3091304a3b7",
       holdingValueSftId: 0,
     },
