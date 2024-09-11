@@ -11,7 +11,8 @@ const OpenFundMarketAddresses = {
   ailayer: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   avax: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   bob: "0xf5a247157656678398B08d3eFa1673358C611A3f",
-  base: "0xf5a247157656678398B08d3eFa1673358C611A3f",
+  base: "0xf5a247157656678398B08d3eFa1673358C611A3f", 
+  core: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
 };
 
 const SolvBTCFactoryAddresses = {
