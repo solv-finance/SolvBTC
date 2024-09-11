@@ -94,6 +94,7 @@ const getGasPrice = (network) => {
         testnet: 30e9,
         mantle_testnet: 1,
         ailayer_test: 0.1e9,
+        core_test: 30e9,
         ailayer: 0.06e9,
         merlin: 0.1e9,
         avax: 30e9,

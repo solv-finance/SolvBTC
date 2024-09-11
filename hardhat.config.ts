@@ -103,6 +103,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    core_test: {
+      url: process.env.CORE_TEST_URL || `https://rpc.test.btcs.network`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mainnet: {
       url:
         process.env.GOERLI_URL ||
