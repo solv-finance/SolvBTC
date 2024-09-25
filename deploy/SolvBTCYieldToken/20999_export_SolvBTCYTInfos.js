@@ -209,6 +209,16 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
       holdingValueSftId: 907,
     },
+    "SolvBTC Core": {
+      // https://fund-management.solv.finance/open-fund/management/213/overview
+      erc20: "0xb9f59cAB0d6AA9D711acE5c3640003Bc09C15Faf",
+      sft: "0xb816018e5d421e8b809a4dc01af179d86056ebdf",
+      slot: "9331468752369883019190218344229780222795188341380172838600664704830739192117",
+      poolId:
+        "0xb83aa381d2cff0f59e823628b56236aa65f74267458390ca1ba5037cfabff4f8",
+      navOracle: "0x9c491539aec346aafeb0bee9a1e9d9c02ab50889",
+      holdingValueSftId: 0,
+    },
   },
 
   merlin: {
