@@ -70,7 +70,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     const initializeV2Tx = await solvBTCYieldToken.initializeV2(
       solvBTCYieldPoolMultiAssetPoolAddress
     );
-    console.log(`* INFO: SolvBTC.CORE initializeV2 at ${initializeV2Tx.hash}`);
+    console.log(
+      `* INFO: ${tokenSymbol} initializeV2 at ${initializeV2Tx.hash}`
+    );
     await txWait(initializeV2Tx);
   } else {
     console.log(`* INFO: ${tokenSymbol} initializeV2 already executed`);
