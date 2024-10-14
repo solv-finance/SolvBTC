@@ -177,6 +177,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    taiko: {
+      url: process.env.CORE_URL || `https://rpc.mainnet.taiko.xyz`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {

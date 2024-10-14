@@ -15,8 +15,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     blast_test: "_tnt" + version,
     ailayer_test: "_tnt" + version,
     bob_test: "_tnt" + version,
-    core_test: '_tnt' + version,
-    taiko_test: '_tnt' + version,
+    core_test: "_tnt" + version,
+    taiko_test: "_tnt" + version,
 
     mainnet: version,
     arb: version,
@@ -28,6 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     avax: version,
     base: version,
     core: version,
+    taiko: version,
   };
 
   const instance = await deploy("SolvBTCYieldToken" + version, {
