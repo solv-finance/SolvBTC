@@ -34,6 +34,7 @@ const SolvBTCFactoryAddresses = {
   avax: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578", 
   ailayer: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   base: "0x58803103db1aFE4b78Dfd1A4dEC732463DC2330F",
+  taiko: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
 };
 
 const SolvBTCBeaconAddresses = {
@@ -52,6 +53,7 @@ const SolvBTCBeaconAddresses = {
   avax: "0x754784a5735Dddc7352a821E5516ACd77c0091a7",
   bob: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
   base: "0xaEb73ed76c10E3B8a26Ef7BDa8069eB4E8050774",
+  taiko: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
 };
 
 const SolvBTCMultiAssetPoolAddresses = {
@@ -71,6 +73,7 @@ const SolvBTCMultiAssetPoolAddresses = {
   avax: "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705",
   ailayer: "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705",
   base: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
+  taiko: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
 };
 
 const SolvBTCInfos = {
@@ -171,6 +174,13 @@ const SolvBTCInfos = {
     sft: "0x6b2e555b6c17bfbba251cc3cde084071f4a7ef38",
     slot: "88468361214282768022888996948490661551803884394452793264507689010931000556751",
     erc20: "0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f",
+    holdingValueSftId: 0,
+  },
+ taiko: {
+    //only cross-chain
+    sft: "",
+    slot: "",
+    erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
   },
 };
