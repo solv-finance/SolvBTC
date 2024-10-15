@@ -108,8 +108,18 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    base_test: {
+      url: process.env.BASE_TEST_URL || `https://sepolia.base.org`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     taiko_test: {
       url: process.env.TAIKO_TEST_URL || `https://rpc.hekla.taiko.xyz`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    hashkey_test: {
+      url: process.env.HASHKEY_TEST_URL || `https://hsk-scroll-testnet-rpc.alt.technology`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
