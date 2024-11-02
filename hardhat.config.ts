@@ -125,6 +125,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    mode_test: {
+      url: process.env.MODE_TEST_URL || `https://sepolia.mode.network`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mainnet: {
       url:
         process.env.GOERLI_URL ||
