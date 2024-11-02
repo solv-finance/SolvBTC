@@ -30,6 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     avax: version,
     core: version,
     taiko: version,
+    mode: version,
   };
 
   const admin = deployer;
