@@ -119,7 +119,9 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     hashkey_test: {
-      url: process.env.HASHKEY_TEST_URL || `https://hsk-scroll-testnet-rpc.alt.technology`,
+      url:
+        process.env.HASHKEY_TEST_URL ||
+        `https://hsk-scroll-testnet-rpc.alt.technology`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -189,6 +191,11 @@ const config: HardhatUserConfig = {
     },
     taiko: {
       url: process.env.CORE_URL || `https://rpc.mainnet.taiko.xyz`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    mode: {
+      url: process.env.CORE_URL || `https://mainnet.mode.network`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
