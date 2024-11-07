@@ -16,6 +16,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   bob: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   base: "0x508751254850C5b78D4A9a430ADd9320959D847f",
   core: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
+  taiko: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
 const SolvBTCYieldTokenBeaconAddresses = {
@@ -33,6 +34,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
   bob: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   base: "0x88a9b6aA32ac3B4ED14BAb150b3d6eF1768ba43B",
   core: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+  taiko: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -53,6 +55,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   bob: "0xd157B70F917fEf3A59502b9128feCA911dEbC864",
   base: "0xD7bf464839a28969846F2E0d1709d61c281d7888",
   core: "0xA29aC443560Ef79732A6d444e73a585416676d1e",
+  taiko: "0x689020287883DfeBa3382158Ade309a5963952BA",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -320,7 +323,17 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 0,
     },
   },
-
+  taiko: {
+    "SolvBTC BBN": {
+      // only cross chain
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
+      holdingValueSftId: 0,
+    },
+  },
 };
 
 module.exports = {

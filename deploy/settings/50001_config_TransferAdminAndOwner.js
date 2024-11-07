@@ -53,7 +53,7 @@ const transferAdminAndOwner = async (productName, token) => {
   // Transfer ownership to newAdmin
   let owner = await token.owner();
   let pendingOwner = await token.pendingOwner();
-  if (owner != newAdmin || pendingOwner != newAdmin) {
+  if (owner != newAdmin && pendingOwner != newAdmin) {
     const transferOwnershipTx = await token.transferOwnership(newAdmin);
     console.log(
       `* ${colors.yellow(
