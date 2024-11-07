@@ -128,6 +128,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    form_test: {
+      url: process.env.FORM_TEST_URL || `https://testnet-rpc.form.network/http`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mainnet: {
       url:
         process.env.GOERLI_URL ||

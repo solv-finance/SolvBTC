@@ -20,6 +20,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     taiko_test: "_tnt" + version,
     hashkey_test: "_tnt" + version,
     mode_test: "_tnt" + version,
+    form_test: "_tnt" + version,
 
     mainnet: version,
     arb: version,
