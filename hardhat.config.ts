@@ -81,6 +81,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    merlin_test: {
+      url: process.env.MERLIN_TEST_URL || `https://testnet-rpc.merlinchain.io`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mumbai: {
       url: process.env.MUMBAI_URL || `https://rpc-mumbai.maticvigil.com/`,
       accounts:
@@ -135,6 +140,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    bera_test: {
+      url: process.env.BERA_TEST_URL || `https://bartio.rpc.berachain.com/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mainnet: {
       url:
         process.env.GOERLI_URL ||
@@ -166,11 +176,6 @@ const config: HardhatUserConfig = {
     },
     merlin: {
       url: process.env.MERLIN_URL || ` https://rpc.merlinchain.io`,
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    merlin_test: {
-      url: process.env.MERLIN_TEST_URL || `https://testnet-rpc.merlinchain.io`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
