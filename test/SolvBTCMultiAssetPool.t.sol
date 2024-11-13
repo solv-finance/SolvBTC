@@ -592,6 +592,7 @@ contract SolvBTCMultiAssetPoolTest is Test {
         vm.startPrank(ADMIN);
         solvBTC.initializeV2(address(solvBTCMultiAssetPool));
         solvBTC.grantRole(solvBTC.SOLVBTC_MINTER_ROLE(), address(solvBTCMultiAssetPool));
+        solvBTC.grantRole(solvBTC.SOLVBTC_POOL_BURNER_ROLE(), address(solvBTCMultiAssetPool));
         vm.stopPrank();
     }
 
@@ -605,6 +606,7 @@ contract SolvBTCMultiAssetPoolTest is Test {
         gmxBTC = SolvBTC(address(proxy));
         gmxBTC.initializeV2(address(solvBTCMultiAssetPool));
         gmxBTC.grantRole(gmxBTC.SOLVBTC_MINTER_ROLE(), address(solvBTCMultiAssetPool));
+        gmxBTC.grantRole(gmxBTC.SOLVBTC_POOL_BURNER_ROLE(), address(solvBTCMultiAssetPool));
         vm.stopPrank();
     }
 

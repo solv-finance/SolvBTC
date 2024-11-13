@@ -27,6 +27,7 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Owna
     bytes32 private constant SolvBTCStorageLocation = 0x25351088c72db31d4a47cbdabb12f8d9c124b300211236164ae2941317058400;
 
     bytes32 public constant SOLVBTC_MINTER_ROLE = keccak256(abi.encodePacked("SOLVBTC_MINTER"));
+    bytes32 public constant SOLVBTC_POOL_BURNER_ROLE = keccak256(abi.encodePacked("SOLVBTC_POOL_BURNER"));
 
     event SetSolvBTCMultiAssetPool(address indexed solvBTCMultiAssetPool);
 
@@ -88,7 +89,12 @@ contract SolvBTC is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Owna
         _mint(account_, value_);
     }
 
-    function burn(address account_, uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_MINTER_ROLE) {
+    function burn(uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_MINTER_ROLE) {
+        require(value_ > 0, "SolvBTC: burn value cannot be 0");
+        _burn(msg.sender, value_);
+    }
+
+    function burn(address account_, uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_POOL_BURNER_ROLE) {
         require(value_ > 0, "SolvBTC: burn value cannot be 0");
         _burn(account_, value_);
     }
