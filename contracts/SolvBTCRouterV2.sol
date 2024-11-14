@@ -1,0 +1,236 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.20;
+
+import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {AdminControlUpgradeable} from "./access/AdminControlUpgradeable.sol";
+import {IOpenFundMarket, IOFMWhitelistStrategyManager, PoolInfo} from "./external/IOpenFundMarket.sol";
+import {IOpenFundRedemptionDelegate, IOpenFundRedemptionConcrete, RedeemInfo} from "./external/IOpenFundRedemption.sol";
+import {IERC721} from "./external/IERC721.sol";
+import {IERC3525} from "./external/IERC3525.sol";
+import {ERC20TransferHelper} from "./utils/ERC20TransferHelper.sol";
+import {ERC3525TransferHelper} from "./utils/ERC3525TransferHelper.sol";
+import {ISolvBTCMultiAssetPool} from "./ISolvBTCMultiAssetPool.sol";
+import {SolvBTC} from "./SolvBTC.sol";
+
+contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
+
+    event Deposit(
+        address indexed targetToken,
+        address indexed currency,
+        address indexed depositor,
+        uint256 targetTokenAmount,
+        uint256 currencyAmount,
+        address[] path
+    );
+    event RequestRedeem(
+        address indexed targetToken, 
+        address indexed currency, 
+        address indexed redeemer, 
+        uint256 redeemAmount,
+        uint256 redemptionId 
+    );
+    event CancelRedeem(
+        address indexed targetToken, 
+        address indexed redemption, 
+        uint256 redemptionId, 
+        uint256 targetTokenAmount
+    );
+    event SetPoolId(address indexed targetToken, address indexed currency, bytes32 indexed poolId);
+    event SetPath(address indexed currency, address indexed targetToken, address[] path);
+
+    address public openFundMarket;
+
+    address[] public kycSBTVerifiers;
+
+    // target ERC20 (SolvBTC or LSTs) => currency => poolId
+    mapping(address => mapping(address => bytes32)) public poolIds;
+
+    // currency => target ERC20 => path
+    mapping(address => mapping(address => address[])) public paths;
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address admin_, address openFundMarket_) external initializer {
+        require(admin_ != address(0), "SolvBTCRouterV2: invalid admin");
+        require(openFundMarket_ != address(0), "SolvBTCRouterV2: invalid openFundMarket");
+
+        AdminControlUpgradeable.__AdminControl_init(admin_);
+        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
+        openFundMarket = openFundMarket_;
+    }
+
+    function deposit(address targetToken_, address currency_, uint256 currencyAmount_) 
+        external 
+        virtual 
+        nonReentrant 
+        returns (uint256 targetTokenAmount_) 
+    {
+        require(checkKycSBT(), "SolvBTCRouterV2: kyc required");
+        require(currencyAmount_ > 0, "SolvBTCRouterV2: invalid currency amount");
+        ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
+
+        address[] memory path = paths[targetToken_][currency_];
+        targetTokenAmount_ = currencyAmount_;
+        for (uint256 i = 0; i <= path.length; i++) {
+            address paidToken = i == 0 ? currency_ : path[i - 1];
+            address receivedToken = i == path.length ? targetToken_ : path[i];
+            targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_);
+        }
+        ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
+
+        emit Deposit(targetToken_, currency_, msg.sender, targetTokenAmount_, currencyAmount_, path);
+    }
+
+    function _deposit(address targetToken_, address currency_, uint256 currencyAmount_)
+        internal
+        returns (uint256 targetTokenAmount_)
+    {
+        bytes32 targetPoolId = poolIds[targetToken_][currency_];
+        require(targetPoolId > 0, "SolvBTCRouterV2: poolId not found");
+        require(checkPoolPermission(targetPoolId), "SolvBTCRouterV2: pool permission denied");
+
+        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(targetPoolId);
+        require(currency_ == poolInfo.currency, "SolvBTCRouterV2: currency not match");
+        IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
+        uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
+
+        address multiAssetPool = SolvBTC(targetToken_).solvBTCMultiAssetPool();
+        require(
+            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
+            "SolvBTCRouterV2: target token not match"
+        );
+
+        ERC20TransferHelper.doApprove(currency_, openFundMarket, currencyAmount_);
+        targetTokenAmount_ = IOpenFundMarket(openFundMarket).subscribe(
+            targetPoolId, currencyAmount_, 0, uint64(block.timestamp + 300)
+        );
+
+        uint256 shareCount = share.balanceOf(address(this));
+        uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
+        require(shareSlot == share.slotOf(shareId), "SolvBTCRouterV2: share slot not match");
+        require(targetTokenAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
+
+        share.approve(multiAssetPool, shareId);
+        ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
+    }
+
+    function requestRedeem(address targetToken_, address currency_, uint256 redeemAmount_) 
+        external
+        virtual
+        nonReentrant
+        returns (address, uint256) 
+    {
+        bytes32 targetPoolId = poolIds[targetToken_][currency_];
+        require(targetPoolId > 0, "SolvBTCRouterV2: poolId not found");
+
+        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(targetPoolId);
+        require(currency_ == poolInfo.currency, "SolvBTCRouterV2: currency not match");
+        IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
+        IERC3525 redemption = IERC3525(poolInfo.poolSFTInfo.openFundRedemption);
+        uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
+
+        address multiAssetPool = SolvBTC(targetToken_).solvBTCMultiAssetPool();
+        require(
+            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
+            "SolvBTCRouterV2: target token not match"
+        );
+
+        ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, redeemAmount_);
+        uint256 shareId = ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, redeemAmount_);
+        require(redeemAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
+
+        ERC3525TransferHelper.doApproveId(address(share), openFundMarket, shareId);
+        IOpenFundMarket(openFundMarket).requestRedeem(targetPoolId, shareId, 0, redeemAmount_);
+
+        uint256 redemptionCount = redemption.balanceOf(address(this));
+        uint256 redemptionId_ = redemption.tokenOfOwnerByIndex(address(this), redemptionCount - 1);
+        require(redeemAmount_ == redemption.balanceOf(redemptionId_), "SolvBTCRouterV2: redemption value not match");
+        ERC3525TransferHelper.doTransferOut(address(redemption), payable(msg.sender), redemptionId_);
+
+        emit RequestRedeem(targetToken_, currency_, msg.sender, redeemAmount_, redemptionId_);
+        return (address(redemption), redemptionId_);
+    }
+
+    function cancelRedeem(address targetToken_, address redemption_, uint256 redemptionId_) 
+        external 
+        virtual 
+        nonReentrant 
+        returns (uint256 targetTokenAmount_)
+    {
+        bytes32 targetPoolId = _getPoolIdByRedemptionId(redemption_, redemptionId_);
+        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(targetPoolId);
+        IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
+        uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
+
+        address multiAssetPool = SolvBTC(targetToken_).solvBTCMultiAssetPool();
+        require(
+            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
+            "SolvBTCRouterV2: target token not match"
+        );
+
+        targetTokenAmount_ = IERC3525(redemption_).balanceOf(redemptionId_);
+        ERC3525TransferHelper.doTransferIn(redemption_, msg.sender, redemptionId_);
+        ERC3525TransferHelper.doApproveId(redemption_, openFundMarket, redemptionId_);
+        IOpenFundMarket(openFundMarket).revokeRedeem(targetPoolId, redemptionId_);
+        uint256 shareCount = share.balanceOf(address(this));
+        uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
+        require(targetTokenAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: cancel amount not match");
+
+        ERC3525TransferHelper.doApproveId(address(share), multiAssetPool, shareId);
+        ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
+        ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
+
+        emit CancelRedeem(targetToken_, redemption_, redemptionId_, targetTokenAmount_);
+    }
+
+    function checkKycSBT() public view virtual returns (bool) {
+        for (uint256 i = 0; i < kycSBTVerifiers.length; i++) {
+            if (IERC721(kycSBTVerifiers[i]).balanceOf(msg.sender) > 0) {
+                return true;
+            }
+        }
+        return kycSBTVerifiers.length == 0;
+    }
+
+    function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
+        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
+        if (poolInfo.permissionless) {
+            return true;
+        }
+        address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
+        return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender);
+    }
+
+    function _getPoolIdByRedemptionId(address redemption_, uint256 redemptionId_) internal virtual returns (bytes32) {
+        address redemptionConcrete = IOpenFundRedemptionDelegate(redemption_).concrete();
+        uint256 redemptionSlot = IERC3525(redemption_).slotOf(redemptionId_);
+        RedeemInfo memory redeemInfo = IOpenFundRedemptionConcrete(redemptionConcrete).getRedeemInfo(redemptionSlot);
+        return redeemInfo.poolId;
+    }
+
+    function setPoolId(address targetToken_, address currency_, bytes32 poolId_) external onlyAdmin {
+        require(targetToken_ != address(0), "SolvBTCRouterV2: invalid targetToken");
+        require(currency_ != address(0), "SolvBTCRouterV2: invalid currency");
+        require(poolId_ > 0, "SolvBTCRouterV2: invalid poolId");
+
+        poolIds[targetToken_][currency_] = poolId_;
+        emit SetPoolId(targetToken_, currency_, poolId_);
+    }
+
+    function setPath(address currency_, address targetToken_, address[] memory path_) external onlyAdmin {
+        require(currency_ != address(0), "SolvBTCRouterV2: invalid currency");
+        require(targetToken_ != address(0), "SolvBTCRouterV2: invalid targetToken");
+        for (uint256 i = 0; i < path_.length; i++) {
+            require(path_[i] != address(0), "SolvBTCRouterV2: invalid path token");
+        }
+        
+        paths[currency_][targetToken_] = path_;
+        emit SetPath(currency_, targetToken_, path_);
+    }
+
+    uint256[46] private __gap;
+}
