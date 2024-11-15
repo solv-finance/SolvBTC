@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.20;
 
-import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import {AdminControlUpgradeable} from "./access/AdminControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {IOpenFundMarket, IOFMWhitelistStrategyManager, PoolInfo} from "./external/IOpenFundMarket.sol";
 import {IOpenFundRedemptionDelegate, IOpenFundRedemptionConcrete, RedeemInfo} from "./external/IOpenFundRedemption.sol";
 import {IERC721} from "./external/IERC721.sol";
@@ -12,8 +12,9 @@ import {ERC20TransferHelper} from "./utils/ERC20TransferHelper.sol";
 import {ERC3525TransferHelper} from "./utils/ERC3525TransferHelper.sol";
 import {ISolvBTCMultiAssetPool} from "./ISolvBTCMultiAssetPool.sol";
 import {SolvBTC} from "./SolvBTC.sol";
+import "../lib/forge-std/src/console.sol";
 
-contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
+contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
 
     event Deposit(
         address indexed targetToken,
@@ -23,44 +24,45 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         uint256 currencyAmount,
         address[] path
     );
-    event RequestRedeem(
+    event WithdrawRequest(
         address indexed targetToken, 
         address indexed currency, 
-        address indexed redeemer, 
-        uint256 redeemAmount,
+        address indexed requester, 
+        uint256 withdrawAmount,
         uint256 redemptionId 
     );
-    event CancelRedeem(
+    event CancelWithdrawRequest(
         address indexed targetToken, 
         address indexed redemption, 
+        address indexed requester,
         uint256 redemptionId, 
         uint256 targetTokenAmount
     );
-    event SetPoolId(address indexed targetToken, address indexed currency, bytes32 indexed poolId);
+    event SetOpenFundMarket(address indexed openFundMarket);
+    event AddKycSBTVerifier(address indexed verifier);
+    event RemoveKycSBTVerifier(address indexed verifier);
     event SetPath(address indexed currency, address indexed targetToken, address[] path);
+    event SetPoolId(address indexed targetToken, address indexed currency, bytes32 indexed poolId);
 
     address public openFundMarket;
 
     address[] public kycSBTVerifiers;
 
+    // currency => target ERC20 => path(ERC20[])
+    mapping(address => mapping(address => address[])) public paths;
+
     // target ERC20 (SolvBTC or LSTs) => currency => poolId
     mapping(address => mapping(address => bytes32)) public poolIds;
-
-    // currency => target ERC20 => path
-    mapping(address => mapping(address => address[])) public paths;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    function initialize(address admin_, address openFundMarket_) external initializer {
-        require(admin_ != address(0), "SolvBTCRouterV2: invalid admin");
-        require(openFundMarket_ != address(0), "SolvBTCRouterV2: invalid openFundMarket");
-
-        AdminControlUpgradeable.__AdminControl_init(admin_);
-        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-        openFundMarket = openFundMarket_;
+    function initialize(address owner_) external initializer {
+        require(owner_ != address(0), "SolvBTCRouterV2: invalid admin");
+        __Ownable_init_unchained(owner_);
+        __ReentrancyGuard_init();
     }
 
     function deposit(address targetToken_, address currency_, uint256 currencyAmount_) 
@@ -73,7 +75,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         require(currencyAmount_ > 0, "SolvBTCRouterV2: invalid currency amount");
         ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
 
-        address[] memory path = paths[targetToken_][currency_];
+        address[] memory path = paths[currency_][targetToken_];
         targetTokenAmount_ = currencyAmount_;
         for (uint256 i = 0; i <= path.length; i++) {
             address paidToken = i == 0 ? currency_ : path[i - 1];
@@ -118,7 +120,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
     }
 
-    function requestRedeem(address targetToken_, address currency_, uint256 redeemAmount_) 
+    function withdrawRequest(address targetToken_, address currency_, uint256 withdrawAmount_) 
         external
         virtual
         nonReentrant
@@ -139,23 +141,23 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
             "SolvBTCRouterV2: target token not match"
         );
 
-        ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, redeemAmount_);
-        uint256 shareId = ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, redeemAmount_);
-        require(redeemAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
+        ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, withdrawAmount_);
+        uint256 shareId = ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
+        require(withdrawAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
 
         ERC3525TransferHelper.doApproveId(address(share), openFundMarket, shareId);
-        IOpenFundMarket(openFundMarket).requestRedeem(targetPoolId, shareId, 0, redeemAmount_);
+        IOpenFundMarket(openFundMarket).requestRedeem(targetPoolId, shareId, 0, withdrawAmount_);
 
         uint256 redemptionCount = redemption.balanceOf(address(this));
         uint256 redemptionId_ = redemption.tokenOfOwnerByIndex(address(this), redemptionCount - 1);
-        require(redeemAmount_ == redemption.balanceOf(redemptionId_), "SolvBTCRouterV2: redemption value not match");
+        require(withdrawAmount_ == redemption.balanceOf(redemptionId_), "SolvBTCRouterV2: redemption value not match");
         ERC3525TransferHelper.doTransferOut(address(redemption), payable(msg.sender), redemptionId_);
 
-        emit RequestRedeem(targetToken_, currency_, msg.sender, redeemAmount_, redemptionId_);
+        emit WithdrawRequest(targetToken_, currency_, msg.sender, withdrawAmount_, redemptionId_);
         return (address(redemption), redemptionId_);
     }
 
-    function cancelRedeem(address targetToken_, address redemption_, uint256 redemptionId_) 
+    function cancelWithdrawRequest(address targetToken_, address redemption_, uint256 redemptionId_) 
         external 
         virtual 
         nonReentrant 
@@ -184,7 +186,18 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
 
-        emit CancelRedeem(targetToken_, redemption_, redemptionId_, targetTokenAmount_);
+        emit CancelWithdrawRequest(targetToken_, redemption_, msg.sender, redemptionId_, targetTokenAmount_);
+    }
+
+    function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
+        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
+        if (poolInfo.permissionless) {
+            return true;
+        }
+        address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
+        return 
+            IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender) ||
+            checkKycSBT();
     }
 
     function checkKycSBT() public view virtual returns (bool) {
@@ -196,13 +209,21 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         return kycSBTVerifiers.length == 0;
     }
 
-    function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
-        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
-        if (poolInfo.permissionless) {
-            return true;
+    function addKycSBTVerifier(address kycSBTVerifier_) external onlyOwner {
+        require(kycSBTVerifier_ != address(0), "SolvBTCRouterV2: invalid verifier");
+        kycSBTVerifiers.push(kycSBTVerifier_);
+        emit AddKycSBTVerifier(kycSBTVerifier_);
+    }
+
+    function removeKycSBTVerifier(address kycSBTVerifier_) external onlyOwner {
+        for (uint256 i = 0; i < kycSBTVerifiers.length; i++) {
+            if (kycSBTVerifiers[i] == kycSBTVerifier_) {
+                kycSBTVerifiers[i] = kycSBTVerifiers[kycSBTVerifiers.length - 1];
+                kycSBTVerifiers.pop();
+                break;
+            }
         }
-        address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
-        return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender);
+        emit RemoveKycSBTVerifier(kycSBTVerifier_);
     }
 
     function _getPoolIdByRedemptionId(address redemption_, uint256 redemptionId_) internal virtual returns (bytes32) {
@@ -212,7 +233,13 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         return redeemInfo.poolId;
     }
 
-    function setPoolId(address targetToken_, address currency_, bytes32 poolId_) external onlyAdmin {
+    function setOpenFundMarket(address openFundMarket_) external onlyOwner {
+        require(openFundMarket_ != address(0), "SolvBTCRouterV2: invalid openFundMarket");
+        openFundMarket = openFundMarket_;
+        emit SetOpenFundMarket(openFundMarket_);
+    }
+
+    function setPoolId(address targetToken_, address currency_, bytes32 poolId_) external onlyOwner {
         require(targetToken_ != address(0), "SolvBTCRouterV2: invalid targetToken");
         require(currency_ != address(0), "SolvBTCRouterV2: invalid currency");
         require(poolId_ > 0, "SolvBTCRouterV2: invalid poolId");
@@ -221,7 +248,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, AdminControlUpgradeable 
         emit SetPoolId(targetToken_, currency_, poolId_);
     }
 
-    function setPath(address currency_, address targetToken_, address[] memory path_) external onlyAdmin {
+    function setPath(address currency_, address targetToken_, address[] memory path_) external onlyOwner {
         require(currency_ != address(0), "SolvBTCRouterV2: invalid currency");
         require(targetToken_ != address(0), "SolvBTCRouterV2: invalid targetToken");
         for (uint256 i = 0; i < path_.length; i++) {
