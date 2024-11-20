@@ -22,12 +22,14 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         address indexed depositor,
         uint256 targetTokenAmount,
         uint256 currencyAmount,
-        address[] path
+        address[] path,
+        bytes32[] poolIds
     );
     event WithdrawRequest(
         address indexed targetToken, 
         address indexed currency, 
         address indexed requester, 
+        bytes32 poolId,
         uint256 withdrawAmount,
         uint256 redemptionId 
     );
@@ -35,6 +37,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         address indexed targetToken, 
         address indexed redemption, 
         address indexed requester,
+        bytes32 poolId,
         uint256 redemptionId, 
         uint256 targetTokenAmount
     );
@@ -76,15 +79,17 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
 
         address[] memory path = paths[currency_][targetToken_];
+        bytes32[] memory pathPoolIds = new bytes32[](path.length + 1);
         targetTokenAmount_ = currencyAmount_;
         for (uint256 i = 0; i <= path.length; i++) {
             address paidToken = i == 0 ? currency_ : path[i - 1];
             address receivedToken = i == path.length ? targetToken_ : path[i];
+            pathPoolIds[i] = poolIds[receivedToken][paidToken];
             targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_);
         }
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
 
-        emit Deposit(targetToken_, currency_, msg.sender, targetTokenAmount_, currencyAmount_, path);
+        emit Deposit(targetToken_, currency_, msg.sender, targetTokenAmount_, currencyAmount_, path, pathPoolIds);
     }
 
     function _deposit(address targetToken_, address currency_, uint256 currencyAmount_)
@@ -141,19 +146,21 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
             "SolvBTCRouterV2: target token not match"
         );
 
-        ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, withdrawAmount_);
-        uint256 shareId = ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
-        require(withdrawAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
+        {
+            ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, withdrawAmount_);
+            uint256 shareId = ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
+            require(withdrawAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
 
-        ERC3525TransferHelper.doApproveId(address(share), openFundMarket, shareId);
-        IOpenFundMarket(openFundMarket).requestRedeem(targetPoolId, shareId, 0, withdrawAmount_);
+            ERC3525TransferHelper.doApproveId(address(share), openFundMarket, shareId);
+            IOpenFundMarket(openFundMarket).requestRedeem(targetPoolId, shareId, 0, withdrawAmount_);
+        }
 
         uint256 redemptionCount = redemption.balanceOf(address(this));
         uint256 redemptionId_ = redemption.tokenOfOwnerByIndex(address(this), redemptionCount - 1);
         require(withdrawAmount_ == redemption.balanceOf(redemptionId_), "SolvBTCRouterV2: redemption value not match");
         ERC3525TransferHelper.doTransferOut(address(redemption), payable(msg.sender), redemptionId_);
 
-        emit WithdrawRequest(targetToken_, currency_, msg.sender, withdrawAmount_, redemptionId_);
+        emit WithdrawRequest(targetToken_, currency_, msg.sender, targetPoolId, withdrawAmount_, redemptionId_);
         return (address(redemption), redemptionId_);
     }
 
@@ -186,7 +193,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
 
-        emit CancelWithdrawRequest(targetToken_, redemption_, msg.sender, redemptionId_, targetTokenAmount_);
+        emit CancelWithdrawRequest(targetToken_, redemption_, msg.sender, targetPoolId, redemptionId_, targetTokenAmount_);
     }
 
     function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
