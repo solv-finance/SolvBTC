@@ -132,6 +132,16 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x36F243D5F334e9D2Cec2b7CA65c387FE50334eb8",
       holdingValueSftId: 0,
     },
+    "SolvBTC DEFI": {
+      // https://fm-testnet.solv.finance/open-fund/management/125/overview
+      erc20: "0x89E573571B6786b11643585acbCcF3Cb3ABef81e",
+      sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      slot: "59301747325904929043805373080530014747367005377212424987873796484290130281133",
+      poolId:
+        "0xde178805efb7fbbf779048a5a09fb176f7c28fb87204718fcc9c6f927eea8140",
+      navOracle: "0x36F243D5F334e9D2Cec2b7CA65c387FE50334eb8",
+      holdingValueSftId: 0,
+    },
   },
 
   avax_test: {
