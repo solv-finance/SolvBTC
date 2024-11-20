@@ -145,6 +145,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    linea_test: {
+      url: process.env.LINEA_TEST_URL || `https://linea-sepolia.blockpi.network/v1/rpc/public`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mainnet: {
       url:
         process.env.GOERLI_URL ||

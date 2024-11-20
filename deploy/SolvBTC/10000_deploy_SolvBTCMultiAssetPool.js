@@ -19,7 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     {
       contract: contractName,
       from: deployer,
-      gasPrice: gasPrice,
+      
       log: true
     },
     {

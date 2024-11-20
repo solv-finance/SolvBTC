@@ -22,6 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     mode_test: "_tnt" + version,
     form_test: "_tnt" + version,
     bera_test: "_tnt" + version,
+    linea_test: "_tnt" + version,
 
     mainnet: version,
     arb: version,
