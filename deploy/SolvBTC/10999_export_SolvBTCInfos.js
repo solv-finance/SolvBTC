@@ -17,6 +17,7 @@ const OpenFundMarketAddresses = {
   bob: "0xf5a247157656678398B08d3eFa1673358C611A3f",
   base: "0xf5a247157656678398B08d3eFa1673358C611A3f", 
   core: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+  linea: "0xf5a247157656678398B08d3eFa1673358C611A3f",
 };
 
 const SolvBTCFactoryAddresses = {
@@ -43,6 +44,7 @@ const SolvBTCFactoryAddresses = {
   ailayer: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   base: "0x58803103db1aFE4b78Dfd1A4dEC732463DC2330F",
   taiko: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
+  linea: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
 };
 
 const SolvBTCBeaconAddresses = {
@@ -68,6 +70,7 @@ const SolvBTCBeaconAddresses = {
   bob: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
   base: "0xaEb73ed76c10E3B8a26Ef7BDa8069eB4E8050774",
   taiko: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
+  linea: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
 };
 
 const SolvBTCMultiAssetPoolAddresses = {
@@ -94,6 +97,7 @@ const SolvBTCMultiAssetPoolAddresses = {
   ailayer: "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705",
   base: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
   taiko: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
+  linea: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
 };
 
 const SolvBTCInfos = {
@@ -219,6 +223,13 @@ const SolvBTCInfos = {
     //only cross-chain
     sft: "",
     slot: "",
+    erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+    holdingValueSftId: 0,
+  },
+  linea: {
+    //https://fund-management.solv.finance/open-fund/management/238/overview
+    sft: "0x6b2e555b6c17bfbba251cc3cde084071f4a7ef38",
+    slot: "84531624719859354378327451138171545523855830645841752756364351502579237121040",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
   },

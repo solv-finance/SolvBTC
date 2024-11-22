@@ -19,6 +19,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   base: "0x508751254850C5b78D4A9a430ADd9320959D847f",
   core: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   taiko: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
+  linea: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
 const SolvBTCYieldTokenBeaconAddresses = {
@@ -39,6 +40,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
   base: "0x88a9b6aA32ac3B4ED14BAb150b3d6eF1768ba43B",
   core: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   taiko: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+  linea: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -62,6 +64,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   base: "0xD7bf464839a28969846F2E0d1709d61c281d7888",
   core: "0xA29aC443560Ef79732A6d444e73a585416676d1e",
   taiko: "0x689020287883DfeBa3382158Ade309a5963952BA",
+  linea: "0x5b60F7e24Ac48C1146d1aedb6a72B62c83378730",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -360,6 +363,17 @@ const SolvBTCYieldTokenInfos = {
       slot: "",
       poolId: "",
       navOracle: "",
+      holdingValueSftId: 0,
+    },
+  },
+  linea: {
+    "SolvBTC Babylon": {
+      // https://fund-management.solv.finance/open-fund/management/239/overview
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+      sft: "0x29f870ed75b4632301946bb935433605f39d515e",
+      slot: "63950668890804329480931069325915123854394556555578485584971294316396625135919",
+      poolId: "0xca75c7fc33f3a7985b1b154358c46586a93f606b6e0073de973dcfaacdb052af",
+      navOracle: "0x1210371f2e26a74827f250afdfdbe3091304a3b7",
       holdingValueSftId: 0,
     },
   },
