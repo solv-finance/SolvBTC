@@ -12,7 +12,6 @@ import {ERC20TransferHelper} from "./utils/ERC20TransferHelper.sol";
 import {ERC3525TransferHelper} from "./utils/ERC3525TransferHelper.sol";
 import {ISolvBTCMultiAssetPool} from "./ISolvBTCMultiAssetPool.sol";
 import {SolvBTC} from "./SolvBTC.sol";
-import "../lib/forge-std/src/console.sol";
 
 contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
 
@@ -74,7 +73,6 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         nonReentrant 
         returns (uint256 targetTokenAmount_) 
     {
-        require(checkKycSBT(), "SolvBTCRouterV2: kyc required");
         require(currencyAmount_ > 0, "SolvBTCRouterV2: invalid currency amount");
         ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
 
@@ -227,10 +225,10 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
             if (kycSBTVerifiers[i] == kycSBTVerifier_) {
                 kycSBTVerifiers[i] = kycSBTVerifiers[kycSBTVerifiers.length - 1];
                 kycSBTVerifiers.pop();
+                emit RemoveKycSBTVerifier(kycSBTVerifier_);
                 break;
             }
         }
-        emit RemoveKycSBTVerifier(kycSBTVerifier_);
     }
 
     function _getPoolIdByRedemptionId(address redemption_, uint256 redemptionId_) internal virtual returns (bytes32) {
