@@ -86,6 +86,7 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+
     mumbai: {
       url: process.env.MUMBAI_URL || `https://rpc-mumbai.maticvigil.com/`,
       accounts:
@@ -136,36 +137,33 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     form_test: {
-      url: 
-        process.env.FORM_TEST_URL || `https://testnet-rpc.form.network/http`,
+      url: process.env.FORM_TEST_URL || `https://testnet-rpc.form.network/http`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     bera_test: {
-      url: 
-        process.env.BERA_TEST_URL || `https://bartio.rpc.berachain.com/`,
+      url: process.env.BERA_TEST_URL || `https://bartio.rpc.berachain.com/`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     linea_test: {
-      url: 
-        process.env.LINEA_TEST_URL || `https://linea-sepolia.blockpi.network/v1/rpc/public`,
-      accounts: 
+      url:
+        process.env.LINEA_TEST_URL ||
+        `https://linea-sepolia.blockpi.network/v1/rpc/public`,
+      accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     bitlayer_test: {
-      url: 
-        process.env.BITLAYER_TEST_URL || `https://testnet-rpc.bitlayer.org`,
-      accounts: 
+      url: process.env.BITLAYER_TEST_URL || `https://testnet-rpc.bitlayer.org`,
+      accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     rootstock_test: {
-      url: 
+      url:
         process.env.ROOTSTOCK_TEST_URL || `https://public-node.testnet.rsk.co`,
-      accounts: 
+      accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
-
 
     mainnet: {
       url:
@@ -291,8 +289,7 @@ const config: HardhatUserConfig = {
         network: "base",
         chainId: 8453,
         urls: {
-          apiURL:
-            "https://api.basescan.org/api",
+          apiURL: "https://api.basescan.org/api",
           browserURL: "https://basescan.org/",
         },
       },
