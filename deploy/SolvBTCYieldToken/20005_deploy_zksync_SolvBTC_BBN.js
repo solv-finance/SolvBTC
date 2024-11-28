@@ -1,20 +1,21 @@
 const colors = require('colors');
-const { txWait } = require('../utils/deployUtils');
+const { getSigner, txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
+  const signer = await getSigner(deployer);
 
-  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', deployer);
+  const SolvBTCYieldTokenFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', signer);
   const solvBTCYieldTokenFactoryAddress = (await deployments.get('SolvBTCYieldTokenFactory')).address;
   const solvBTCYieldTokenFactory = SolvBTCYieldTokenFactoryFactory.attach(solvBTCYieldTokenFactoryAddress);
 
   const productType = 'SolvBTC Yield Token';
-  const productName = 'SolvBTC Ethena';
-  const tokenName = 'SolvBTC Ethena';
-  const tokenSymbol = 'SolvBTC.ENA';
+  const productName = 'SolvBTC Babylon';
+  const tokenName = 'SolvBTC Babylon';
+  const tokenSymbol = 'SolvBTC.BBN';
 
   let proxyAddress = await solvBTCYieldTokenFactory.getProxy(productType, productName);
-  if (proxyAddress == ethers.constants.AddressZero) {
+  if (proxyAddress == ethers.ZeroAddress) {
     const deployProxyTx = await solvBTCYieldTokenFactory.deployProductProxy(productType, productName, tokenName, tokenSymbol);
     console.log(`* INFO: Deploy ${tokenSymbol} at ${deployProxyTx.hash}`);
     await txWait(deployProxyTx);
@@ -26,13 +27,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     console.log(`* INFO: ${tokenSymbol} already deployed at ${colors.yellow(proxyAddress)}`);
   }
 
-  const SolvBTCYieldTokenFactory_ = await ethers.getContractFactory('SolvBTCYieldToken', deployer);
+  const SolvBTCYieldTokenFactory_ = await ethers.getContractFactory('SolvBTCYieldToken', signer);
   const solvBTCYieldTokenAddress = await solvBTCYieldTokenFactory.getProxy(productType, productName);
   const solvBTCYieldToken = SolvBTCYieldTokenFactory_.attach(solvBTCYieldTokenAddress);
 
   // execute `initializeV2` for SolvBTCYieldToken
   const poolAddressInSolvBTC = await solvBTCYieldToken.solvBTCMultiAssetPool();
-  if (poolAddressInSolvBTC == ethers.constants.AddressZero) {
+  if (poolAddressInSolvBTC == ethers.ZeroAddress) {
     const solvBTCYieldPoolMultiAssetPoolAddress = (await deployments.get('SolvBTCYieldTokenMultiAssetPoolProxy')).address;
     const initializeV2Tx = await solvBTCYieldToken.initializeV2(solvBTCYieldPoolMultiAssetPoolAddress);
     console.log(`* INFO: SolvBTC.ENA initializeV2 at ${initializeV2Tx.hash}`);
@@ -43,7 +44,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   // set oracle address for SolvBTCYieldToken
   const oracleAddressInSolvBTC = await solvBTCYieldToken.getOracle();
-  if (oracleAddressInSolvBTC == ethers.constants.AddressZero) {
+  if (oracleAddressInSolvBTC == ethers.ZeroAddress) {
     const solvBTCYieldPoolOracleAddress = (await deployments.get('SolvBTCYieldTokenOracleForSFTProxy')).address;
     const setOracleTx = await solvBTCYieldToken.setOracle(solvBTCYieldPoolOracleAddress);
     console.log(`* INFO: ${tokenSymbol} setOracle ${solvBTCYieldPoolOracleAddress} at ${setOracleTx.hash}`);
@@ -53,4 +54,4 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 };
 
-module.exports.tags = ['SolvBTC_ENA']
+module.exports.tags = ['SolvBTC_BBN']

@@ -1,5 +1,5 @@
 const colors = require('colors');
-const { txWait } = require('../utils/deployUtils');
+const { getSigner, txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
@@ -9,9 +9,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenFactory = SolvBTCYieldTokenFactoryFactory.attach(solvBTCYieldTokenFactoryAddress);
 
   const productType = 'SolvBTC Yield Token';
-  const productName = 'SolvBTC Babylon';
-  const tokenName = 'SolvBTC Babylon';
-  const tokenSymbol = 'SolvBTC.BBN';
+  const productName = 'SolvBTC Ethena';
+  const tokenName = 'SolvBTC Ethena';
+  const tokenSymbol = 'SolvBTC.ENA';
 
   let proxyAddress = await solvBTCYieldTokenFactory.getProxy(productType, productName);
   if (proxyAddress == ethers.constants.AddressZero) {
@@ -53,4 +53,4 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 };
 
-module.exports.tags = ['SolvBTC_BBN']
+module.exports.tags = ['SolvBTC_ENA']

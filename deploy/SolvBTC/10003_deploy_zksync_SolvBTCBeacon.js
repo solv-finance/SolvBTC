@@ -1,10 +1,11 @@
 const colors = require('colors');
-const { txWait } = require('../utils/deployUtils');
+const { getSigner, txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
+  const signer = await getSigner(deployer);
 
-  const SolvBTCFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', deployer);
+  const SolvBTCFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', signer);
   const solvBTCFactoryAddress = (await deployments.get('SolvBTCFactory')).address;
   const solvBTCFactory = SolvBTCFactoryFactory.attach(solvBTCFactoryAddress);
 
@@ -14,7 +15,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   let beaconAddress = await solvBTCFactory.getBeacon(productType);
   let implAddress = await solvBTCFactory.getImplementation(productType);
-  if (beaconAddress == ethers.constants.AddressZero) {
+  if (beaconAddress == ethers.ZeroAddress) {
     const deployBeaconTx = await solvBTCFactory.setImplementation(productType, implementation);
     console.log(`* INFO: Deploy SolvBTC beacon at ${deployBeaconTx.hash}`);
     await txWait(deployBeaconTx);

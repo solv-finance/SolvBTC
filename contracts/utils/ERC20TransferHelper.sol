@@ -32,7 +32,7 @@ library ERC20TransferHelper {
     function doTransferIn(address underlying, address from, uint256 amount) internal {
         if (underlying == ETH_ADDRESS) {
             // Sanity checks
-            require(tx.origin == from || msg.sender == from, "sender mismatch");
+            require(msg.sender == from, "sender mismatch");
             require(msg.value >= amount, "value mismatch");
         } else {
             require(underlying.code.length > 0, "invalid underlying");

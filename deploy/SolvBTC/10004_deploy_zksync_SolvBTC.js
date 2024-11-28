@@ -1,10 +1,11 @@
 const colors = require('colors');
-const { txWait } = require('../utils/deployUtils');
+const { getSigner, txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
+  const signer = await getSigner(deployer);
 
-  const SolvBTCFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', deployer);
+  const SolvBTCFactoryFactory = await ethers.getContractFactory('SolvBTCFactory', signer);
   const solvBTCFactoryAddress = (await deployments.get('SolvBTCFactory')).address;
   const solvBTCFactory = SolvBTCFactoryFactory.attach(solvBTCFactoryAddress);
 
@@ -14,24 +15,24 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const tokenSymbol = 'SolvBTC';
 
   let proxyAddress = await solvBTCFactory.getProxy(productType, productName);
-  if (proxyAddress == ethers.constants.AddressZero) {
+  if (proxyAddress == ethers.ZeroAddress) {
     const deployProxyTx = await solvBTCFactory.deployProductProxy(productType, productName, tokenName, tokenSymbol);
     console.log(`* INFO: Deploy SolvBTC at ${deployProxyTx.hash}`);
     await txWait(deployProxyTx);
 
     proxyAddress = await solvBTCFactory.getProxy(productType, productName);
     console.log(`* INFO: SolvBTC deployed at ${colors.yellow(proxyAddress)}`);
-    
+
   } else {
     console.log(`* INFO: SolvBTC already deployed at ${colors.yellow(proxyAddress)}`);
   }
 
-  const SolvBTCFactory_ = await ethers.getContractFactory('SolvBTC', deployer);
+  const SolvBTCFactory_ = await ethers.getContractFactory('SolvBTC', signer);
   const solvBTCAddress = await solvBTCFactory.getProxy(productType, productName);
   const solvBTC = SolvBTCFactory_.attach(solvBTCAddress);
 
   const poolAddressInSolvBTC = await solvBTC.solvBTCMultiAssetPool();
-  if (poolAddressInSolvBTC == ethers.constants.AddressZero) {
+  if (poolAddressInSolvBTC == ethers.ZeroAddress) {
     const solvBTCMultiAssetPool = (await deployments.get('SolvBTCMultiAssetPoolProxy')).address;
     const initializeV2Tx = await solvBTC.initializeV2(solvBTCMultiAssetPool);
     console.log(`* INFO: SolvBTC initializeV2 at ${initializeV2Tx.hash}`);
