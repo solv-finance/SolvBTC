@@ -37,12 +37,12 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // target token - SolvBTC
         "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // currency - BTCB
-        "0xafb1107b43875eb79f72e3e896933d4f96707451c3d5c32741e8e05410b321d8", // pool ID
+        "0xafb1107b43875eb79f72e3e896933d4f96707451c3d5c32741e8e05410b321d8", // 102 fund pool ID
       ],
       [
         "0x1346b618dC92810EC74163e4c27004c921D446a5", // target token - SolvBTC.BBN
         "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
-        "1336354853777768727075850191656536701909968430898108410559797247549735288643", // pool ID
+        "0x6fe7f2753798616f555389f971dae58b32e181fab8b1d60d35e5ddafbb6bb5b7", // 103 fund pool ID
       ],
     ],
   };
