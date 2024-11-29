@@ -272,7 +272,7 @@ const SolvBTCYieldTokenInfos = {
     },
     "SolvBTC DeFi": {
       // https://fund-management.solv.finance/open-fund/management/240/overview
-      erc20: "",
+      erc20: "0x647A50540F5a1058B206f5a3eB17f56f29127F53",
       sft: "0xb816018e5d421e8b809a4dc01af179d86056ebdf",
       slot: "82600062431471570172766070594596566732265135054234714404414271568545157248057",
       poolId:
