@@ -250,6 +250,7 @@ const config: HardhatUserConfig = {
       mantle: "mantle",
       avax: "avax",
       base: process.env.BASESCAN_API_KEY || "",
+      linea: process.env.LINEASCAN_API_KEY || "",
     },
     customChains: [
       {
@@ -291,6 +292,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://api.basescan.org/api",
           browserURL: "https://basescan.org/",
+        },
+      },
+      {
+        network: "linea",
+        chainId: 59144,
+        urls: {
+          apiURL: "https://api.lineascan.build/api",
+          browserURL: "https://lineascan.build/",
         },
       },
     ],

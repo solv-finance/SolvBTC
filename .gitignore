@@ -3,6 +3,9 @@ artifacts/
 cache/
 typechain-types/
 
+artifacts-zk/
+cache-zk/
+
 cache_forge/
 out/
 
