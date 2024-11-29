@@ -270,6 +270,16 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x9c491539aec346aafeb0bee9a1e9d9c02ab50889",
       holdingValueSftId: 0,
     },
+    "SolvBTC DeFi": {
+      // https://fund-management.solv.finance/open-fund/management/240/overview
+      erc20: "",
+      sft: "0xb816018e5d421e8b809a4dc01af179d86056ebdf",
+      slot: "82600062431471570172766070594596566732265135054234714404414271568545157248057",
+      poolId:
+        "0x34bba90734634811d28d6c33eaad61f93686793ddf442190573619e9476c8925",
+      navOracle: "0x9c491539aec346aafeb0bee9a1e9d9c02ab50889",
+      holdingValueSftId: 0,
+    },
   },
 
   merlin: {
@@ -372,7 +382,8 @@ const SolvBTCYieldTokenInfos = {
       erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
       sft: "0x29f870ed75b4632301946bb935433605f39d515e",
       slot: "63950668890804329480931069325915123854394556555578485584971294316396625135919",
-      poolId: "0xca75c7fc33f3a7985b1b154358c46586a93f606b6e0073de973dcfaacdb052af",
+      poolId:
+        "0xca75c7fc33f3a7985b1b154358c46586a93f606b6e0073de973dcfaacdb052af",
       navOracle: "0x1210371f2e26a74827f250afdfdbe3091304a3b7",
       holdingValueSftId: 0,
     },
