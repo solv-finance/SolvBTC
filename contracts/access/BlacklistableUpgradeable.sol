@@ -51,6 +51,13 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
         emit BlacklistAdded(_account);
     }
 
+    function addBlacklistBatch(address[] memory _accounts) external onlyBlacklistManager {
+        for (uint256 i = 0; i < _accounts.length; i++) {
+            _addBlacklist(_accounts[i]);
+            emit BlacklistAdded(_accounts[i]);
+        }
+    }
+
     /**
      * @notice Removes account from blacklist.
      * @param _account The address to remove from the blacklist.
@@ -58,6 +65,13 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
     function removeBlacklist(address _account) external onlyBlacklistManager {
         _removeBlacklist(_account);
         emit BlacklistRemoved(_account);
+    }
+
+    function removeBlacklistBatch(address[] memory _accounts) external onlyBlacklistManager {
+        for (uint256 i = 0; i < _accounts.length; i++) {
+            _removeBlacklist(_accounts[i]);
+            emit BlacklistRemoved(_accounts[i]);
+        }
     }
 
     /**

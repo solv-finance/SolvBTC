@@ -29,6 +29,8 @@ contract SolvBTCV2 is SolvBTC, BlacklistableUpgradeable {
     }
 
     function destroyBlackFunds(address account, uint256 amount) internal virtual onlyOwner {
+        //TODO: check if the account is blacklisted
+        //TODO: rewrite burn avoid call _update
         _burn(account, amount);
         emit DestroyBlackFunds(account, amount);
     }
