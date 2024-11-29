@@ -29,7 +29,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param _account The address to check.
      */
     modifier notBlacklisted(address _account) {
-        require(!_isBlacklisted(_account), "Blacklistable: account is blacklisted");
+        require(!_blacklisted[_account], "Blacklistable: account is blacklisted");
         _;
     }
 
@@ -39,7 +39,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @return True if the account is blacklisted, false if the account is not blacklisted.
      */
     function isBlacklisted(address _account) external view returns (bool) {
-        return _isBlacklisted(_account);
+        return _blacklisted[_account];
     }
 
     /**
@@ -48,13 +48,11 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      */
     function addBlacklist(address _account) external onlyBlacklistManager {
         _addBlacklist(_account);
-        emit BlacklistAdded(_account);
     }
 
     function addBlacklistBatch(address[] memory _accounts) external onlyBlacklistManager {
         for (uint256 i = 0; i < _accounts.length; i++) {
             _addBlacklist(_accounts[i]);
-            emit BlacklistAdded(_accounts[i]);
         }
     }
 
@@ -64,13 +62,11 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      */
     function removeBlacklist(address _account) external onlyBlacklistManager {
         _removeBlacklist(_account);
-        emit BlacklistRemoved(_account);
     }
 
     function removeBlacklistBatch(address[] memory _accounts) external onlyBlacklistManager {
         for (uint256 i = 0; i < _accounts.length; i++) {
             _removeBlacklist(_accounts[i]);
-            emit BlacklistRemoved(_accounts[i]);
         }
     }
 
@@ -85,20 +81,12 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
     }
 
     /**
-     * @dev Checks if account is blacklisted.
-     * @param _account The address to check.
-     * @return true if the account is blacklisted, false otherwise.
-     */
-    function _isBlacklisted(address _account) internal view virtual returns (bool) {
-        return _blacklisted[_account];
-    }
-
-    /**
      * @dev Helper method that blacklists an account.
      * @param _account The address to blacklist.
      */
     function _addBlacklist(address _account) internal virtual {
         _blacklisted[_account] = true;
+        emit BlacklistAdded(_account);
     }
 
     /**
@@ -107,7 +95,8 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      */
     function _removeBlacklist(address _account) internal virtual {
         _blacklisted[_account] = false;
+        emit BlacklistRemoved(_account);
     }
 
-    uint256[45] private __gap;
+    uint256[48] private __gap;
 }

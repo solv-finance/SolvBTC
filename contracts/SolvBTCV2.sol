@@ -28,12 +28,11 @@ contract SolvBTCV2 is SolvBTC, BlacklistableUpgradeable {
         super._update(from, to, value);
     }
 
-    function destroyBlackFunds(address account, uint256 amount) internal virtual onlyOwner {
-        //TODO: check if the account is blacklisted
-        //TODO: rewrite burn avoid call _update
-        _burn(account, amount);
+    function destroyBlackFunds(address account, uint256 amount) external virtual onlyOwner {
+        require(_blacklisted[account], "SolvBTCV2: account is not blacklisted");
+        super._update(account, address(0), amount);
         emit DestroyBlackFunds(account, amount);
     }
 
-    uint256[45] private __gap;
+    uint256[50] private __gap;
 }
