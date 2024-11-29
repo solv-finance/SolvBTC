@@ -35,6 +35,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     taiko: version,
     mode: version,
     linea: version,
+    bitlayer: version,
   };
 
   const instance = await deploy("SolvBTCYieldToken" + version, {
