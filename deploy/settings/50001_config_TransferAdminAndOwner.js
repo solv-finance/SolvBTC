@@ -64,7 +64,9 @@ const transferAdminAndOwner = async (productName, token) => {
     );
     await txWait(transferOwnershipTx);
   }
-  assert.equal(await token.pendingOwner(), newAdmin);
+  if (owner != newAdmin) {
+  	assert.equal(await token.pendingOwner(), newAdmin);
+  }
   console.log(
     `* ${colors.yellow(
       productName
