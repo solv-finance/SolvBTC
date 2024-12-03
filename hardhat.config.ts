@@ -255,6 +255,7 @@ const config: HardhatUserConfig = {
       mantle: "mantle",
       avax: "avax",
       base: process.env.BASESCAN_API_KEY || "",
+      taiko: process.env.TAIKOSCAN_API_KEY || "",
       linea: process.env.LINEASCAN_API_KEY || "",
     },
     customChains: [
@@ -297,6 +298,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://api.basescan.org/api",
           browserURL: "https://basescan.org/",
+        },
+      },
+      {
+        network: "taiko",
+        chainId: 167000,
+        urls: {
+          apiURL: "https://api.taikoscan.io/api",
+          browserURL: "https://taikoscan.io/",
         },
       },
       {
