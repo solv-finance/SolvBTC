@@ -5,19 +5,23 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import "../contracts/SolvBTCFactory.sol";
 import "../contracts/SolvBTC.sol";
-import "../contracts/SolvBTCV2.sol";
+import "../contracts/SolvBTCV3.sol";
 
 import "../lib/forge-std/src/Test.sol";
 import "../lib/forge-std/src/console.sol";
 
-contract SolvBTCV2Test is Test {
+/**
+ * @title Test for SolvBTC V3 upgrade.
+ * @notice Fork Arbitrum chain at block number 283200000 to run tests.
+ */
+contract SolvBTCV3Test is Test {
     string internal constant PRODUCT_TYPE = "Solv BTC";
     string internal constant PRODUCT_NAME = "Solv BTC";
 
     SolvBTC internal solvBTC = SolvBTC(0x3647c54c4c2C65bC7a2D63c0Da2809B399DBBDC0);
-    SolvBTCV2 internal solvBTCV2;
+    SolvBTCV3 internal solvBTCV3 = SolvBTCV3(0x3647c54c4c2C65bC7a2D63c0Da2809B399DBBDC0);
     address internal solvBTCBeacon = 0x3d209Fb3ca4fCBA1f43f3F14285e2307Db531C07;
-    address internal solvBTCV2Impl;
+    address internal solvBTCV3Impl;
 
     SolvBTCFactory internal solvBTCFactory = SolvBTCFactory(0x443628281E4f3E5b5A5D029B9a0D13900ae41578);
 
@@ -42,145 +46,144 @@ contract SolvBTCV2Test is Test {
         user2BalanceBeforeUpgrade = solvBTC.balanceOf(USER_2);
 
         vm.startPrank(OWNER);
-        solvBTCV2Impl = address(new SolvBTCV2());
-        solvBTCFactory.setImplementation(PRODUCT_TYPE, solvBTCV2Impl);
-        solvBTCV2 = SolvBTCV2(address(solvBTC));
+        solvBTCV3Impl = address(new SolvBTCV3());
+        solvBTCFactory.setImplementation(PRODUCT_TYPE, solvBTCV3Impl);
+        solvBTCV3 = SolvBTCV3(address(solvBTC));
 
-        solvBTCV2.updateBlacklistManager(BLACKLIST_MANAGER);
+        solvBTCV3.updateBlacklistManager(BLACKLIST_MANAGER);
         vm.stopPrank();
     }
 
     function test_FactoryStatus() public {
-        assertEq(solvBTCFactory.getProxy(PRODUCT_TYPE, PRODUCT_NAME), address(solvBTC));
+        assertEq(solvBTCFactory.getProxy(PRODUCT_TYPE, PRODUCT_NAME), address(solvBTCV3));
         assertEq(solvBTCFactory.getBeacon(PRODUCT_TYPE), solvBTCBeacon);
-        assertEq(solvBTCFactory.getImplementation(PRODUCT_TYPE), solvBTCV2Impl);
+        assertEq(solvBTCFactory.getImplementation(PRODUCT_TYPE), solvBTCV3Impl);
     }
 
     function test_SolvBTCStatusAfterUpgrade() public {
-        assertEq(solvBTCV2.totalSupply(), totalSupplyBeforeUpgrade);
-        assertEq(solvBTCV2.decimals(), decimalsBeforeUpgrade);
-        assertEq(solvBTCV2.balanceOf(USER_1), user1BalanceBeforeUpgrade);
-        assertEq(solvBTCV2.balanceOf(USER_2), user2BalanceBeforeUpgrade);
-        assertEq(solvBTCV2.owner(), OWNER);
-        assertEq(solvBTCV2.hasRole(solvBTC.SOLVBTC_MINTER_ROLE(), MINTER), true);
-        assertEq(solvBTCV2.blacklistManager(), BLACKLIST_MANAGER);
+        assertEq(solvBTCV3.totalSupply(), totalSupplyBeforeUpgrade);
+        assertEq(solvBTCV3.decimals(), decimalsBeforeUpgrade);
+        assertEq(solvBTCV3.balanceOf(USER_1), user1BalanceBeforeUpgrade);
+        assertEq(solvBTCV3.balanceOf(USER_2), user2BalanceBeforeUpgrade);
+        assertEq(solvBTCV3.owner(), OWNER);
+        assertEq(solvBTCV3.hasRole(solvBTC.SOLVBTC_MINTER_ROLE(), MINTER), true);
+        assertEq(solvBTCV3.blacklistManager(), BLACKLIST_MANAGER);
     }
 
     function test_ApproveWhenBlacklisted() public {
-        assertEq(solvBTCV2.isBlacklisted(USER_1), false);
-        assertEq(solvBTCV2.isBlacklisted(USER_2), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_1), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_2), false);
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.addBlacklist(USER_1);
+        solvBTCV3.addBlacklist(USER_1);
         vm.stopPrank();
 
-        assertEq(solvBTCV2.isBlacklisted(USER_1), true);
-        assertEq(solvBTCV2.isBlacklisted(USER_2), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_1), true);
+        assertEq(solvBTCV3.isBlacklisted(USER_2), false);
 
         vm.startPrank(USER_1);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.approve(USER_1, 100);
+        solvBTCV3.approve(USER_1, 100);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.approve(USER_2, 100);
+        solvBTCV3.approve(USER_2, 100);
         vm.stopPrank();
 
         vm.startPrank(USER_2);
-        solvBTCV2.approve(USER_2, 100);
+        solvBTCV3.approve(USER_2, 100);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.approve(USER_1, 100);
+        solvBTCV3.approve(USER_1, 100);
         vm.stopPrank();
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.removeBlacklist(USER_1);
+        solvBTCV3.removeBlacklist(USER_1);
         vm.stopPrank();
 
-        assertEq(solvBTCV2.isBlacklisted(USER_1), false);
-        assertEq(solvBTCV2.isBlacklisted(USER_2), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_1), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_2), false);
 
         vm.startPrank(USER_1);
-        solvBTCV2.approve(USER_1, 100);
-        solvBTCV2.approve(USER_2, 100);
+        solvBTCV3.approve(USER_1, 100);
+        solvBTCV3.approve(USER_2, 100);
         vm.stopPrank();
 
         vm.startPrank(USER_2);
-        solvBTCV2.approve(USER_2, 100);
-        solvBTCV2.approve(USER_1, 100);
+        solvBTCV3.approve(USER_2, 100);
+        solvBTCV3.approve(USER_1, 100);
         vm.stopPrank();
-
     }
 
     function test_TransferWhenBlacklisted() public {
         vm.startPrank(USER_1);
-        solvBTCV2.approve(USER_1, type(uint256).max);
+        solvBTCV3.approve(USER_1, type(uint256).max);
         vm.stopPrank();
         vm.startPrank(USER_2);
-        solvBTCV2.approve(USER_2, type(uint256).max);
+        solvBTCV3.approve(USER_2, type(uint256).max);
         vm.stopPrank();
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.addBlacklist(USER_1);
+        solvBTCV3.addBlacklist(USER_1);
         vm.stopPrank();
 
         vm.startPrank(USER_1);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.transfer(USER_2, 100);
+        solvBTCV3.transfer(USER_2, 100);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.transferFrom(USER_1, USER_2, 100);
+        solvBTCV3.transferFrom(USER_1, USER_2, 100);
         vm.stopPrank();
 
         vm.startPrank(USER_2);
-        solvBTCV2.transfer(OWNER, 100);
+        solvBTCV3.transfer(OWNER, 100);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.transfer(USER_1, 100);
+        solvBTCV3.transfer(USER_1, 100);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.transferFrom(USER_2, USER_1, 100);
+        solvBTCV3.transferFrom(USER_2, USER_1, 100);
         vm.stopPrank();
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.removeBlacklist(USER_1);
+        solvBTCV3.removeBlacklist(USER_1);
         vm.stopPrank();
 
         vm.startPrank(USER_1);
-        solvBTCV2.transfer(USER_2, 100);
-        solvBTCV2.transferFrom(USER_1, USER_2, 100);
+        solvBTCV3.transfer(USER_2, 100);
+        solvBTCV3.transferFrom(USER_1, USER_2, 100);
         vm.stopPrank();
     }
 
     function test_MintWhenBlacklisted() public {
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.addBlacklist(USER_1);
+        solvBTCV3.addBlacklist(USER_1);
         vm.stopPrank();
 
         vm.startPrank(MINTER);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.mint(USER_1, 100);
+        solvBTCV3.mint(USER_1, 100);
         vm.stopPrank();
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.removeBlacklist(USER_1);
+        solvBTCV3.removeBlacklist(USER_1);
         vm.stopPrank();
 
         vm.startPrank(MINTER);
-        solvBTCV2.mint(USER_1, 100);
+        solvBTCV3.mint(USER_1, 100);
         vm.stopPrank();
     }
 
     function test_BurnWhenBlacklisted() public {
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.addBlacklist(USER_1);
+        solvBTCV3.addBlacklist(USER_1);
         vm.stopPrank();
 
         vm.startPrank(MINTER);
         vm.expectRevert("Blacklistable: account is blacklisted");
-        solvBTCV2.burn(USER_1, 100);
+        solvBTCV3.burn(USER_1, 100);
         vm.stopPrank();
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.removeBlacklist(USER_1);
+        solvBTCV3.removeBlacklist(USER_1);
         vm.stopPrank();
 
         vm.startPrank(MINTER);
-        solvBTCV2.burn(USER_1, 100);
+        solvBTCV3.burn(USER_1, 100);
         vm.stopPrank();
     }
 
@@ -191,69 +194,69 @@ contract SolvBTCV2Test is Test {
         addList[2] = USER_3;
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.addBlacklistBatch(addList);
+        solvBTCV3.addBlacklistBatch(addList);
         vm.stopPrank();
 
-        assertEq(solvBTCV2.isBlacklisted(USER_1), true);
-        assertEq(solvBTCV2.isBlacklisted(USER_2), true);
-        assertEq(solvBTCV2.isBlacklisted(USER_3), true);
+        assertEq(solvBTCV3.isBlacklisted(USER_1), true);
+        assertEq(solvBTCV3.isBlacklisted(USER_2), true);
+        assertEq(solvBTCV3.isBlacklisted(USER_3), true);
 
         address[] memory removeList = new address[](2);
         removeList[0] = USER_1;
         removeList[1] = USER_2;
 
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.removeBlacklistBatch(removeList);
+        solvBTCV3.removeBlacklistBatch(removeList);
         vm.stopPrank();
 
-        assertEq(solvBTCV2.isBlacklisted(USER_1), false);
-        assertEq(solvBTCV2.isBlacklisted(USER_2), false);
-        assertEq(solvBTCV2.isBlacklisted(USER_3), true);
+        assertEq(solvBTCV3.isBlacklisted(USER_1), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_2), false);
+        assertEq(solvBTCV3.isBlacklisted(USER_3), true);
     }
 
     function test_DestroyBlackFunds() public {
         vm.startPrank(BLACKLIST_MANAGER);
-        solvBTCV2.addBlacklist(USER_1);
+        solvBTCV3.addBlacklist(USER_1);
         vm.stopPrank();
 
-        uint256 user1BalanceBefore = solvBTCV2.balanceOf(USER_1);
-        uint256 totalSupplyBefore = solvBTCV2.totalSupply();
+        uint256 user1BalanceBefore = solvBTCV3.balanceOf(USER_1);
+        uint256 totalSupplyBefore = solvBTCV3.totalSupply();
 
         vm.startPrank(OWNER);
-        solvBTCV2.destroyBlackFunds(USER_1, 100);
+        solvBTCV3.destroyBlackFunds(USER_1, 100);
         vm.stopPrank();
 
-        assertEq(solvBTCV2.balanceOf(USER_1), user1BalanceBefore - 100);
-        assertEq(solvBTCV2.totalSupply(), totalSupplyBefore - 100);
+        assertEq(solvBTCV3.balanceOf(USER_1), user1BalanceBefore - 100);
+        assertEq(solvBTCV3.totalSupply(), totalSupplyBefore - 100);
     }
 
     function test_RevertWhenDetroyBlackFundsByNonOwner() public {
         vm.startPrank(BLACKLIST_MANAGER);
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", BLACKLIST_MANAGER));
-        solvBTCV2.destroyBlackFunds(USER_1, 100);
+        solvBTCV3.destroyBlackFunds(USER_1, 100);
         vm.stopPrank();
     }
 
     function test_RevertWhenDetroyFundsFromNonBlacklistedUser() public {
         vm.startPrank(OWNER);
-        vm.expectRevert("SolvBTCV2: account is not blacklisted");
-        solvBTCV2.destroyBlackFunds(USER_1, 100);
+        vm.expectRevert("SolvBTCV3: account is not blacklisted");
+        solvBTCV3.destroyBlackFunds(USER_1, 100);
         vm.stopPrank();
     }
 
     function test_RevertWhenUpdateManagerByNonOwner() public {
         vm.startPrank(BLACKLIST_MANAGER);
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", BLACKLIST_MANAGER));
-        solvBTCV2.updateBlacklistManager(BLACKLIST_MANAGER);
+        solvBTCV3.updateBlacklistManager(BLACKLIST_MANAGER);
         vm.stopPrank();
     }
 
     function test_RevertWhenSetBlacklistByNonManager() public {
         vm.startPrank(USER_1);
         vm.expectRevert("Blacklistable: caller is not the blacklist manager");
-        solvBTCV2.addBlacklist(USER_1);
+        solvBTCV3.addBlacklist(USER_1);
         vm.expectRevert("Blacklistable: caller is not the blacklist manager");
-        solvBTCV2.removeBlacklist(USER_1);
+        solvBTCV3.removeBlacklist(USER_1);
         vm.stopPrank();
     }
 }

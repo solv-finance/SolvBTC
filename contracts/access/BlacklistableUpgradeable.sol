@@ -9,94 +9,125 @@ import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
  * @dev Allows accounts to be blacklisted by a "blacklist manager" role
  */
 abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
-    address public blacklistManager;
-    mapping(address => bool) internal _blacklisted;
 
-    event BlacklistAdded(address indexed _account);
-    event BlacklistRemoved(address indexed _account);
+    /// @custom:storage-location erc7201:solv.storage.Blacklistable
+    struct BlacklistableStorage {
+        mapping(address => bool) _blacklisted;
+        address _blacklistManager;
+    }
+
+    // keccak256(abi.encode(uint256(keccak256("solv.storage.Blacklistable")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant SolvBTCStorageLocation = 0x37055a6a5ad221b3685065a6f80bdaf8b5de26b2f60e82c3fbc16e3374b00c00;
+
+    event BlacklistAdded(address indexed account_);
+    event BlacklistRemoved(address indexed account_);
     event BlacklistManagerChanged(address indexed newBlacklistManager);
 
     /**
      * @dev Throws if called by any account other than the blacklist manager.
      */
     modifier onlyBlacklistManager() {
-        require(msg.sender == blacklistManager, "Blacklistable: caller is not the blacklist manager");
+        require(msg.sender == blacklistManager(), "Blacklistable: caller is not the blacklist manager");
         _;
     }
 
     /**
      * @dev Throws if argument account is blacklisted.
-     * @param _account The address to check.
+     * @param account_ The address to check.
      */
-    modifier notBlacklisted(address _account) {
-        require(!_blacklisted[_account], "Blacklistable: account is blacklisted");
+    modifier notBlacklisted(address account_) {
+        require(!isBlacklisted(account_), "Blacklistable: account is blacklisted");
         _;
+    }
+
+    function _getBlacklistableStorage() internal pure returns (BlacklistableStorage storage $) {
+        assembly {
+            $.slot := SolvBTCStorageLocation
+        }
     }
 
     /**
      * @notice Checks if account is blacklisted.
-     * @param _account The address to check.
+     * @param account_ The address to check.
      * @return True if the account is blacklisted, false if the account is not blacklisted.
      */
-    function isBlacklisted(address _account) external view returns (bool) {
-        return _blacklisted[_account];
+    function isBlacklisted(address account_) public view returns (bool) {
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        return $._blacklisted[account_];
+    }
+
+    /**
+     * @notice Get the address of the blacklist manager.
+     */
+    function blacklistManager() public view returns (address) {
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        return $._blacklistManager;
     }
 
     /**
      * @notice Adds account to blacklist.
-     * @param _account The address to blacklist.
+     * @param account_ The address to blacklist.
      */
-    function addBlacklist(address _account) external onlyBlacklistManager {
-        _addBlacklist(_account);
+    function addBlacklist(address account_) external onlyBlacklistManager {
+        _addBlacklist(account_);
     }
 
-    function addBlacklistBatch(address[] memory _accounts) external onlyBlacklistManager {
-        for (uint256 i = 0; i < _accounts.length; i++) {
-            _addBlacklist(_accounts[i]);
+    /**
+     * @notice Adds multiple accounts to the blacklist.
+     * @param accounts_ The addresses to blacklist.
+     */
+    function addBlacklistBatch(address[] memory accounts_) external onlyBlacklistManager {
+        for (uint256 i = 0; i < accounts_.length; i++) {
+            _addBlacklist(accounts_[i]);
         }
     }
 
     /**
      * @notice Removes account from blacklist.
-     * @param _account The address to remove from the blacklist.
+     * @param account_ The address to remove from the blacklist.
      */
-    function removeBlacklist(address _account) external onlyBlacklistManager {
-        _removeBlacklist(_account);
+    function removeBlacklist(address account_) external onlyBlacklistManager {
+        _removeBlacklist(account_);
     }
 
-    function removeBlacklistBatch(address[] memory _accounts) external onlyBlacklistManager {
-        for (uint256 i = 0; i < _accounts.length; i++) {
-            _removeBlacklist(_accounts[i]);
+    /**
+     * @notice Removes multiple accounts from the blacklist.
+     * @param accounts_ The addresses to remove from the blacklist.
+     */
+    function removeBlacklistBatch(address[] memory accounts_) external onlyBlacklistManager {
+        for (uint256 i = 0; i < accounts_.length; i++) {
+            _removeBlacklist(accounts_[i]);
         }
     }
 
     /**
      * @notice Updates the blacklist manager address.
-     * @param _newBlacklistManager The address of the new blacklist manager.
+     * @param newBlacklistManager_ The address of the new blacklist manager.
      */
-    function updateBlacklistManager(address _newBlacklistManager) external onlyOwner {
-        require(_newBlacklistManager != address(0), "Blacklistable: new blacklist manager is the zero address");
-        blacklistManager = _newBlacklistManager;
-        emit BlacklistManagerChanged(blacklistManager);
+    function updateBlacklistManager(address newBlacklistManager_) external onlyOwner {
+        require(newBlacklistManager_ != address(0), "Blacklistable: invalid blacklist manager");
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        $._blacklistManager = newBlacklistManager_;
+        emit BlacklistManagerChanged(newBlacklistManager_);
     }
 
     /**
      * @dev Helper method that blacklists an account.
-     * @param _account The address to blacklist.
+     * @param account_ The address to blacklist.
      */
-    function _addBlacklist(address _account) internal virtual {
-        _blacklisted[_account] = true;
-        emit BlacklistAdded(_account);
+    function _addBlacklist(address account_) internal virtual {
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        $._blacklisted[account_] = true;
+        emit BlacklistAdded(account_);
     }
 
     /**
      * @dev Helper method that unblacklists an account.
-     * @param _account The address to unblacklist.
+     * @param account_ The address to unblacklist.
      */
-    function _removeBlacklist(address _account) internal virtual {
-        _blacklisted[_account] = false;
-        emit BlacklistRemoved(_account);
+    function _removeBlacklist(address account_) internal virtual {
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        $._blacklisted[account_] = false;
+        emit BlacklistRemoved(account_);
     }
-
-    uint256[48] private __gap;
 }

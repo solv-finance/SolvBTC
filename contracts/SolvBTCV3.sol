@@ -30,7 +30,7 @@ contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
     }
 
     function destroyBlackFunds(address account, uint256 amount) external virtual onlyOwner {
-        require(isBlacklisted(account), "SolvBTCV2: account is not blacklisted");
+        require(isBlacklisted(account), "SolvBTCV3: account is not blacklisted");
         super._update(account, address(0), amount);
         emit DestroyBlackFunds(account, amount);
     }
