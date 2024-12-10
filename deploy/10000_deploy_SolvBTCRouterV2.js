@@ -57,50 +57,20 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsctest: [
       [
         "0xbFEfd7c0BB235E67E314ae65bd9C4685dBE9A45E", // currency - BTCB
-        "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", // target token - SolvBTC
-        [], // path
-      ],
-      [
-        "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", // currency - SolvBTC
-        "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad", // target token - SolvBTC.BBN
-        [], // path
-      ],
-      [
-        "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", // currency - SolvBTC
         "0xaDAe5fc8d830f86f53E20c8a39F7E12Ff6d4E87c", // target token - SolvBTC.ENA
-        [], // path
-      ],
-      [
-        "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", // currency - SolvBTC
-        "0x89E573571B6786b11643585acbCcF3Cb3ABef81e", // target token - SolvBTC.DEFI
-        [], // path
+        ["0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9"], // path
       ],
       [
         "0xbFEfd7c0BB235E67E314ae65bd9C4685dBE9A45E", // currency - BTCB
-        "0xaDAe5fc8d830f86f53E20c8a39F7E12Ff6d4E87c", // target token - SolvBTC.ENA
+        "0x89E573571B6786b11643585acbCcF3Cb3ABef81e", // target token - SolvBTC.DEFI
         ["0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9"], // path
       ],
     ],
     bsc: [
       [
         "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // currency - BTCB
-        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // target token - SolvBTC
-        [], // path
-      ],
-      [
-        "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // currency - BTCB
         "0x1346b618dC92810EC74163e4c27004c921D446a5", // target token - SolvBTC.BBN
         ["0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7"], // path - SolvBTC
-      ],
-      [
-        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
-        "0x1346b618dC92810EC74163e4c27004c921D446a5", // target token - SolvBTC.BBN
-        [], // path
-      ],
-      [
-        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
-        "0x647A50540F5a1058B206f5a3eB17f56f29127F53", // target token - SolvBTC.DeFi
-        [], //path
       ],
       [
         "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // currency - BTCB
@@ -138,38 +108,36 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       }
     );
 
-  const SolvBTCRouterV2Factory = await ethers.getContractFactory(
-    "SolvBTCRouterV2",
-    deployer
-  );
+  const SolvBTCRouterV2Factory = await ethers.getContractFactory("SolvBTCRouterV2", deployer);
   const solvBTCRouterV2 = SolvBTCRouterV2Factory.attach(proxy.address);
 
-  const setMarketTx = await solvBTCRouterV2.setOpenFundMarket(
-    market[network.name]
-  );
-  console.log(
-    `Set OpenFundMarket ${market[network.name]} at tx: ${setMarketTx.hash}`
-  );
-  await setMarketTx.wait(1);
+  const currentMarket = await solvBTCRouterV2.openFundMarket();
+  if (currentMarket.toLowerCase() != market[network.name].toLowerCase()) {
+    let setMarketTx = await solvBTCRouterV2.setOpenFundMarket(market[network.name]);
+    console.log(`Set OpenFundMarket ${market[network.name]} at tx: ${setMarketTx.hash}`);
+    await setMarketTx.wait(1);
+  }
 
   for (let poolId of poolIds[network.name]) {
-    const setPoolIdTx = await solvBTCRouterV2.setPoolId(
-      poolId[0],
-      poolId[1],
-      poolId[2]
-    );
-    console.log(`Set PoolInfo at tx: ${setPoolIdTx.hash}`);
-    await setPoolIdTx.wait(1);
+    let currentPoolId = await solvBTCRouterV2.poolIds(poolId[0], poolId[1]);
+    if (currentPoolId != poolId[2]) {
+      let setPoolIdTx = await solvBTCRouterV2.setPoolId(poolId[0], poolId[1], poolId[2]);
+      console.log(`Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`);
+      await setPoolIdTx.wait(1);
+    }
   }
 
   for (let pathInfo of pathInfos[network.name]) {
-    const setPathTx = await solvBTCRouterV2.setPath(
-      pathInfo[0],
-      pathInfo[1],
-      pathInfo[2]
-    );
-    console.log(`Set Path at tx: ${setPathTx.hash}`);
-    await setPathTx.wait(1);
+    try {
+      let currentPath = await solvBTCRouterV2.paths(pathInfo[0], pathInfo[1], 0);
+      if (currentPath.toLowerCase() != pathInfo[2][0].toLowerCase()) {
+        throw new Error("Path not match");
+      }
+    } catch (e) {
+      let setPathTx = await solvBTCRouterV2.setPath(pathInfo[0], pathInfo[1], pathInfo[2]);
+      console.log(`Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`);
+      await setPathTx.wait(1);
+    }
   }
 };
 
