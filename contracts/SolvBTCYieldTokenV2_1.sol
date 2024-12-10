@@ -13,8 +13,7 @@ contract SolvBTCYieldTokenV2_1 is SolvBTCV2_1, ISolvBTCYieldToken {
     }
 
     // keccak256(abi.encode(uint256(keccak256("solv.storage.SolvBTCYieldToken")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant SolvBTCYieldTokenStorageLocation =
-        0xf05073905b1e64f5ceda3673d2f3281ec4d80a5b81532923554d532211661500;
+    bytes32 private constant SolvBTCYieldTokenStorageLocation = 0xf05073905b1e64f5ceda3673d2f3281ec4d80a5b81532923554d532211661500;
 
     event SetOracle(address indexed oracle);
 
