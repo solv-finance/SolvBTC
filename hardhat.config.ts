@@ -164,6 +164,12 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    corn_test: {
+      url:
+        process.env.CORN_TEST_URL || `https://testnet-rpc.usecorn.com`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
