@@ -165,8 +165,7 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     corn_test: {
-      url:
-        process.env.CORN_TEST_URL || `https://testnet-rpc.usecorn.com`,
+      url: process.env.CORN_TEST_URL || `https://testnet-rpc.usecorn.com`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -247,6 +246,11 @@ const config: HardhatUserConfig = {
     },
     bitlayer: {
       url: process.env.BITLAYER_URL || `https://rpc.bitlayer-rpc.com`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+    corn: {
+      url: process.env.CORN_URL || `https://maizenet-rpc.usecorn.com`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },

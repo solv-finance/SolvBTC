@@ -38,6 +38,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     mode: version,
     linea: version,
     bitlayer: version,
+    corn: version,
   };
 
   const instance = await deploy("SolvBTC" + version, {
