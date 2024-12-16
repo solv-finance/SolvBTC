@@ -8,6 +8,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   taiko_test: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   hashkey_test: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   bera_test: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
+  bera_cArtio: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   linea_test: "0x3201A82c790A8c64187a08DC004501De5a03D1f7",
   mainnet: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   arb: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
@@ -29,6 +30,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
   avax_test: "0xb27bB271E591f8780DE74a02AA98693dC59EA96B",
   core_test: "0xb27bB271E591f8780DE74a02AA98693dC59EA96B",
   bera_test: "0xb27bB271E591f8780DE74a02AA98693dC59EA96B",
+  bera_cArtio: "0xb27bB271E591f8780DE74a02AA98693dC59EA96B",
   linea_test: "0xb27bB271E591f8780DE74a02AA98693dC59EA96B",
   mainnet: "0xb49De2a621c8540874Ae4B2Ae9a2E59C948645f1",
   arb: "0x7B375C1a95335Ec443f9b610b427e5AfC91E566D",
@@ -53,6 +55,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   taiko_test: "0xAA21bC557A806296231Bd461caEe95061123ee84",
   hashkey_test: "0xF67F05996108917DF6Bbc17714E0436EB1cb5d84",
   bera_test: "0x8a93B5e7110F406eD4164BA70588a8412c0A87A0",
+  bera_cArtio: "0x8a63D17c7d4E9Cc89562aF26052B865D41D1D00A",
   linea_test: "0x329DB5Aa10CcBCB2628A50672d6520ECD45b50bC",
   mainnet: "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
   arb: "0x0679E96f5EEDa5313099f812b558714717AEC176",
@@ -179,6 +182,18 @@ const SolvBTCYieldTokenInfos = {
       poolId:
         "0xffc7798ecbdb3596c9cd75001d9e047167763299e4341471ac33576beb1cc976",
       navOracle: "0x0036a9c8404e7f2ac574855DF2119D10950A7A58",
+      holdingValueSftId: 0,
+    },
+  },
+
+  bera_cArtio: {
+    "SolvBTC Babylon": {
+      erc20: "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
+      sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      slot: "",
+      poolId:
+        "",
+      navOracle: "0xbd0AD78C460d3E67426c5F4e470F470D071A7cA9",
       holdingValueSftId: 0,
     },
   },

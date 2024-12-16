@@ -146,6 +146,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    bera_cArtio: {
+      url: process.env.BERA_CARTIO_URL || ``,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     linea_test: {
       url:
         process.env.LINEA_TEST_URL ||
@@ -277,6 +282,7 @@ const config: HardhatUserConfig = {
       base: process.env.BASESCAN_API_KEY || "",
       taiko: process.env.TAIKOSCAN_API_KEY || "",
       linea: process.env.LINEASCAN_API_KEY || "",
+      sonic: process.env.SONICSCAN_API_KEY || "",
     },
     customChains: [
       {
@@ -336,6 +342,14 @@ const config: HardhatUserConfig = {
           browserURL: "https://lineascan.build/",
         },
       },
+      {
+        network: "sonic",
+        chainId: 146,
+        urls: {
+          apiURL: "https://api.sonicscan.org/api",
+          browserURL: "https://sonicscan.org/",
+        },
+      }
     ],
   },
 };
