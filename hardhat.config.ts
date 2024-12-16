@@ -45,6 +45,12 @@ const config: HardhatUserConfig = {
       accounts:[process.env.PRIVATE_KEY as any],
       zksync: false,
     },
+    mainnet: {
+      url: process.env.GOERLI_URL || `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      zksync: false,
+    },
     zksyncSepolia:{
       url: "https://sepolia.era.zksync.dev",
       ethNetwork: "sepolia",
@@ -52,6 +58,12 @@ const config: HardhatUserConfig = {
       zksync: true,
       verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification"
     }
+    zkSyncMainnet: {
+      url: "https://mainnet.era.zksync.io",
+      ethNetwork: "mainnet",
+      zksync: true,
+      verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
+    },
   },
   namedAccounts: {
     deployer:{
