@@ -74,6 +74,8 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       sepolia: process.env.ETHERSCAN_API_KEY as any,
+      mainnet: process.env.ETHERSCAN_API_KEY as any,
+      zkSyncMainnet: "zksync-mainnet",
     },
   },
 };
