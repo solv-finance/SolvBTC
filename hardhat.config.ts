@@ -28,7 +28,7 @@ const config: HardhatUserConfig = {
     ],
   },
   zksolc: {
-    version: "1.5.7",
+    version: "1.5.8",
     settings: {},
   },
   defaultNetwork: "hardhat",
@@ -75,7 +75,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       sepolia: process.env.ETHERSCAN_API_KEY as any,
       mainnet: process.env.ETHERSCAN_API_KEY as any,
-      zkSyncMainnet: "zksync-mainnet",
+      zkSyncMainnet: process.env.ETHERSCAN_API_KEY as any,
     },
   },
 };
