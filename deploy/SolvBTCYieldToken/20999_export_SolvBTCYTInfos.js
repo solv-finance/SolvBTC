@@ -399,6 +399,17 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 0,
     },
   },
+  sonic: {
+    "SolvBTC BBN": {
+      // only cross chain
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
+      holdingValueSftId: 0,
+    },
+  },
 };
 
 module.exports = {

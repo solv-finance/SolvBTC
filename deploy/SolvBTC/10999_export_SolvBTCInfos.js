@@ -239,6 +239,13 @@ const SolvBTCInfos = {
     slot: "",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
+  }, 
+  sonic: {
+    //only cross-chain
+    sft: "",
+    slot: "",
+    erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+    holdingValueSftId: 0,
   },
 };
 
