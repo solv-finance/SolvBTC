@@ -10,9 +10,6 @@ import "@matterlabs/hardhat-zksync-node";
 import "@matterlabs/hardhat-zksync-verify";
 import "@matterlabs/hardhat-zksync-upgradable";
 
-
-
-
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -32,43 +29,46 @@ const config: HardhatUserConfig = {
   },
   zksolc: {
     version: "1.5.7",
-    settings:{
-    }
+    settings: {},
   },
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
-      zksync: true
+      zksync: true,
     },
-    sepolia:{
+    sepolia: {
       url: "https://ethereum-sepolia-rpc.publicnode.com",
-      accounts:[process.env.PRIVATE_KEY as any],
+      accounts: [process.env.PRIVATE_KEY as any],
       zksync: false,
     },
     mainnet: {
-      url: process.env.GOERLI_URL || `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+      url:
+        process.env.GOERLI_URL ||
+        `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
       zksync: false,
     },
-    zksyncSepolia:{
+    zksyncSepolia: {
       url: "https://sepolia.era.zksync.dev",
       ethNetwork: "sepolia",
-      accounts:[process.env.PRIVATE_KEY as any],
+      accounts: [process.env.PRIVATE_KEY as any],
       zksync: true,
-      verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification"
-    }
+      verifyURL:
+        "https://explorer.sepolia.era.zksync.dev/contract_verification",
+    },
     zkSyncMainnet: {
       url: "https://mainnet.era.zksync.io",
       ethNetwork: "mainnet",
       zksync: true,
-      verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
+      verifyURL:
+        "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
     },
   },
   namedAccounts: {
-    deployer:{
+    deployer: {
       default: 0,
-    }
+    },
   },
   etherscan: {
     apiKey: {
