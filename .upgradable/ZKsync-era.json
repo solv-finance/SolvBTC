@@ -1,0 +1,409 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0x158783Ddc49aEeC921bD143992aDa27FfFF8B6FC",
+      "txHash": "0x1a1163f05a2dc3e97336cac778dcec655ee79aa802fd283035666a9d462871f6",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x76bF774102da96D1cA023DC552731e111299416E",
+      "txHash": "0x21e02ad3d4794ed03f0a557859e4a7c4424fda102fb5045a2ceac5abaaf4e0f1",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x17f9330B9C3047aeE87898482BCA52b3FE286264",
+      "txHash": "0x542cbea49c6079dc81d3312ee00d4cb019f511936a39791c4590a8785dcf9918",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "b7d66817b754580219a1c07b265bc62ae9ee3e3359bb23a96da4a1f3525b5ee4": {
+      "address": "0xD794A845f2EAC710398f1DB799354715eFC0c7EE",
+      "txHash": "0x972be3816e7718d28bd6e7058e2864091817232617a7b62165f0eae3cbc42fdc",
+      "layout": {
+        "solcVersion": "0.8.20",
+        "storage": [
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:12"
+          },
+          {
+            "label": "pendingAdmin",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:13"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_uint256)48_storage",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:45"
+          },
+          {
+            "label": "_sftSlotInfos",
+            "offset": 0,
+            "slot": "50",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_struct(SftSlotInfo)7137_storage))",
+            "contract": "SolvBTCMultiAssetPool",
+            "src": "contracts/SolvBTCMultiAssetPool.sol:21"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "SolvBTCMultiAssetPool",
+            "src": "contracts/SolvBTCMultiAssetPool.sol:161"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]",
+            "numberOfBytes": "1536"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_struct(SftSlotInfo)7137_storage))": {
+            "label": "mapping(address => mapping(uint256 => struct SolvBTCMultiAssetPool.SftSlotInfo))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(SftSlotInfo)7137_storage)": {
+            "label": "mapping(uint256 => struct SolvBTCMultiAssetPool.SftSlotInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(SftSlotInfo)7137_storage": {
+            "label": "struct SolvBTCMultiAssetPool.SftSlotInfo",
+            "members": [
+              {
+                "label": "holdingValueSftId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "erc20",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "depositAllowed",
+                "type": "t_bool",
+                "offset": 20,
+                "slot": "1"
+              },
+              {
+                "label": "withdrawAllowed",
+                "type": "t_bool",
+                "offset": 21,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.ReentrancyGuard": [
+            {
+              "contract": "ReentrancyGuardUpgradeable",
+              "label": "_status",
+              "type": "t_uint256",
+              "src": "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol:40"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:69"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:73"
+            }
+          ]
+        }
+      }
+    },
+    "379d3dcb511629c75dde8d5a57a56a16348dfa530ddadb4c94450749f656034e": {
+      "address": "0x7CE5BcFc0C33FE93eD4d3aF0cCCef47Cf0f07ae6",
+      "txHash": "0x2be0c65bb80e8c8420f5c66ac53a3d49f1e603c59a2f4fd000fa12dd85ebbb6e",
+      "layout": {
+        "solcVersion": "0.8.20",
+        "storage": [
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:12"
+          },
+          {
+            "label": "pendingAdmin",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:13"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_uint256)48_storage",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:45"
+          },
+          {
+            "label": "sftOracles",
+            "offset": 0,
+            "slot": "50",
+            "type": "t_mapping(t_address,t_struct(SFTOracleConfig)10274_storage)",
+            "contract": "SolvBTCYieldTokenOracleForSFT",
+            "src": "contracts/oracle/SolvBTCYieldTokenOracleForSFT.sol:45"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]",
+            "numberOfBytes": "1536"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(SFTOracleConfig)10274_storage)": {
+            "label": "mapping(address => struct SolvBTCYieldTokenOracleForSFT.SFTOracleConfig)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(SFTOracleConfig)10274_storage": {
+            "label": "struct SolvBTCYieldTokenOracleForSFT.SFTOracleConfig",
+            "members": [
+              {
+                "label": "poolId",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "sft",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "sftSlot",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "oracle",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:69"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:73"
+            }
+          ]
+        }
+      }
+    },
+    "10389bb72be9fef11f12555dd90cd6ce6f0b54d27c9b7b48ecb91431dcaff60c": {
+      "address": "0x6dC0e895C6a58d309cFa55Da3C125cE9650EecB6",
+      "txHash": "0x06848ada11a3b2f3ef80436b27d439465dc2a76a62bdcf25e3c1377885976613",
+      "layout": {
+        "solcVersion": "0.8.20",
+        "storage": [
+          {
+            "label": "admin",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:12"
+          },
+          {
+            "label": "pendingAdmin",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:13"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_uint256)48_storage",
+            "contract": "AdminControlUpgradeable",
+            "src": "contracts/access/AdminControlUpgradeable.sol:45"
+          },
+          {
+            "label": "_sftSlotInfos",
+            "offset": 0,
+            "slot": "50",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_struct(SftSlotInfo)7137_storage))",
+            "contract": "SolvBTCMultiAssetPool",
+            "src": "contracts/SolvBTCMultiAssetPool.sol:21"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "SolvBTCMultiAssetPool",
+            "src": "contracts/SolvBTCMultiAssetPool.sol:161"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]",
+            "numberOfBytes": "1536"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_struct(SftSlotInfo)7137_storage))": {
+            "label": "mapping(address => mapping(uint256 => struct SolvBTCMultiAssetPool.SftSlotInfo))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(SftSlotInfo)7137_storage)": {
+            "label": "mapping(uint256 => struct SolvBTCMultiAssetPool.SftSlotInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(SftSlotInfo)7137_storage": {
+            "label": "struct SolvBTCMultiAssetPool.SftSlotInfo",
+            "members": [
+              {
+                "label": "holdingValueSftId",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "erc20",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "depositAllowed",
+                "type": "t_bool",
+                "offset": 20,
+                "slot": "1"
+              },
+              {
+                "label": "withdrawAllowed",
+                "type": "t_bool",
+                "offset": 21,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.ReentrancyGuard": [
+            {
+              "contract": "ReentrancyGuardUpgradeable",
+              "label": "_status",
+              "type": "t_uint256",
+              "src": "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol:40"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:69"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:73"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

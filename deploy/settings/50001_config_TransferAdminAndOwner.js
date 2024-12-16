@@ -1,5 +1,5 @@
 const colors = require("colors");
-const { txWait } = require("../utils/deployUtils");
+const { getSigner, txWait } = require("../utils/deployUtils");
 const assert = require("assert");
 const { network } = require("hardhat");
 
@@ -74,24 +74,30 @@ const transferAdminAndOwner = async (productName, token) => {
 
 module.exports = async ({ getNamedAccounts, network }) => {
   const { deployer } = await getNamedAccounts();
+   const signer = await getSigner(deployer);
 
-  const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", deployer);
-  const solvBTCAddress = require("../SolvBTC/10999_export_SolvBTCInfos")
-    .SolvBTCInfos[network.name].erc20;
+  const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", signer);
+//  const solvBTCAddress = require("../SolvBTC/10999_export_SolvBTCInfos")
+ //   .SolvBTCInfos[network.name].erc20;
+  const solvBTCAddress = "0x092392b6aA43D008884c7687a91bEd1b1005E6f5";
   const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
 
   // SolvBTC
   await transferAdminAndOwner("SolvBTC", solvBTC);
 
   // SolvBTCYieldTokens
+  /*
   const solvBTCYieldTokenInfos =
     require("../SolvBTCYieldToken/20999_export_SolvBTCYTInfos").SolvBTCYieldTokenInfos;
   for (let productName in solvBTCYieldTokenInfos[network.name]) {
     let yieldTokenAddress =
       solvBTCYieldTokenInfos[network.name][productName].erc20;
-    let yieldToken = SolvBTCFactory.attach(yieldTokenAddress);
     await transferAdminAndOwner(productName, yieldToken);
   }
+  */
+   const yieldTokenAddress = "0x2A125A62f2F9D01843812B59A4C118b7a2eE47Ad";
+    let yieldToken = SolvBTCFactory.attach(yieldTokenAddress);
+    await transferAdminAndOwner("SolvBTC Babylon", yieldToken);
 };
 
 module.exports.tags = ["TransferAdminAndOwner"];
