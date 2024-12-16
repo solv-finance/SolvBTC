@@ -60,6 +60,7 @@ const config: HardhatUserConfig = {
     zkSyncMainnet: {
       url: "https://mainnet.era.zksync.io",
       ethNetwork: "mainnet",
+      accounts: [process.env.PRIVATE_KEY as any],
       zksync: true,
       verifyURL:
         "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
