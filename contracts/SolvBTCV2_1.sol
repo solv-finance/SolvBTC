@@ -20,7 +20,7 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     // }
 
     /**
-     * @dev Deprecated virables inherited from SolvBTC V1, the values of which have been cleared in V2.
+     * @dev Deprecated variables inherited from SolvBTC V1, the values of which have been cleared in V2.
      * Thus the declaration of these variables would be removed from V2.1.
      */
     // address public wrappedSftAddress;
