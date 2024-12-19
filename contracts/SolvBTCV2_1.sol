@@ -73,13 +73,6 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     //     holdingValueSftId = 0;
     // }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlUpgradeable, IERC165) returns (bool) {
-        return 
-            interfaceId == type(IERC3525Receiver).interfaceId || 
-            interfaceId == type(IERC721Receiver).interfaceId || 
-            super.supportsInterface(interfaceId);
-    }
-
     function onERC3525Received(
         address, /* operator_ */
         uint256 /* fromSftId_ */,
@@ -112,6 +105,13 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     function burn(address account_, uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_POOL_BURNER_ROLE) {
         require(value_ > 0, "SolvBTC: burn value cannot be 0");
         _burn(account_, value_);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlUpgradeable, IERC165) returns (bool) {
+        return 
+            interfaceId == type(IERC3525Receiver).interfaceId || 
+            interfaceId == type(IERC721Receiver).interfaceId || 
+            super.supportsInterface(interfaceId);
     }
 
     /**

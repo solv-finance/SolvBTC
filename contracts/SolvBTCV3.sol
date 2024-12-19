@@ -14,6 +14,13 @@ contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
     /// @notice Emitted when black funds are destroyed.
     event DestroyBlackFunds(address indexed account, uint256 amount);
 
+    /// @notice Destroys black funds from the specified blacklist account.
+    function destroyBlackFunds(address account, uint256 amount) external virtual onlyOwner {
+        require(isBlacklisted(account), "SolvBTCV3: account is not blacklisted");
+        super._update(account, address(0), amount);
+        emit DestroyBlackFunds(account, amount);
+    }
+
     function _approve(address owner, address spender, uint256 value, bool emitEvent)
         internal
         virtual
@@ -33,13 +40,6 @@ contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
         notBlacklisted(msg.sender)
     {
         super._update(from, to, value);
-    }
-
-    /// @notice Destroys black funds from the specified blacklist account.
-    function destroyBlackFunds(address account, uint256 amount) external virtual onlyOwner {
-        require(isBlacklisted(account), "SolvBTCV3: account is not blacklisted");
-        super._update(account, address(0), amount);
-        emit DestroyBlackFunds(account, amount);
     }
 
 }
