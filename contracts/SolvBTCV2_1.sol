@@ -115,6 +115,10 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
         _burn(account_, value_);
     }
 
+    /**
+     * @dev Deprecated function inherited from SolvBTC V2, since the empty sft ids would be removed 
+     * before upgrading to V2.1.
+     */
     // function sweepEmptySftIds(address sft_, uint256 sweepAmount_) external virtual {
     //     uint256 length = _holdingEmptySftIds.length;
     //     for (uint256 i = 0; i < length && i < sweepAmount_; i++) {
@@ -127,21 +131,22 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     //     }
     // }
 
+    /**
+     * @dev The following functions are deprecated in SolvBTC V2.1, since the value of `solvBTCMultiAssetPool`
+     * will not be used in V2.1.
+     */
     // function _getSolvBTCStorage() private pure returns (SolvBTCStorage storage $) {
     //     assembly {
     //         $.slot := SolvBTCStorageLocation
     //     }
     // }
-
     // function solvBTCMultiAssetPool() public view virtual returns (address) {
     //     SolvBTCStorage storage $ = _getSolvBTCStorage();
     //     return $._solvBTCMultiAssetPool;
     // }
-
     // function setSolvBTCMultiAssetPool(address solvBTCMultiAssetPool_) external virtual onlyOwner {
     //     _setSolvBTCMultiAssetPool(solvBTCMultiAssetPool_);
     // }
-
     // function _setSolvBTCMultiAssetPool(address solvBTCMultiAssetPool_) internal virtual {
     //     SolvBTCStorage storage $ = _getSolvBTCStorage();
     //     $._solvBTCMultiAssetPool = solvBTCMultiAssetPool_;
