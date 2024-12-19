@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
+import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 
 /**
  * @title Blacklistable
@@ -76,7 +76,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @notice Adds multiple accounts to the blacklist.
      * @param accounts_ The addresses to blacklist.
      */
-    function addBlacklistBatch(address[] memory accounts_) external onlyBlacklistManager {
+    function addBlacklistBatch(address[] calldata accounts_) external onlyBlacklistManager {
         unchecked {
             for (uint256 i; i < accounts_.length; ++i) {
                 _addBlacklist(accounts_[i]);
@@ -96,7 +96,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @notice Removes multiple accounts from the blacklist.
      * @param accounts_ The addresses to remove from the blacklist.
      */
-    function removeBlacklistBatch(address[] memory accounts_) external onlyBlacklistManager {
+    function removeBlacklistBatch(address[] calldata accounts_) external onlyBlacklistManager {
         unchecked {
             for (uint256 i; i < accounts_.length; ++i) {
                 _removeBlacklist(accounts_[i]);
@@ -120,6 +120,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param account_ The address to blacklist.
      */
     function _addBlacklist(address account_) internal virtual {
+        require(account_ != address(0), "Blacklistable: invalid account");
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklisted[account_] = true;
         emit BlacklistAdded(account_);
