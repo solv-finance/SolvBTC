@@ -11,6 +11,7 @@ import {ISolvBTC, IERC721Receiver, IERC3525Receiver, IERC165} from "./ISolvBTC.s
 /**
  * @title Implementation for SolvBTC V2.1, which is inherited from SolvBTC V2.
  * @dev This version is upgraded from SolvBTC V2 with the removal of deprecated variables and functions. 
+ * @custom:security-contact dev@solv.finance
  */
 contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, AccessControlUpgradeable {
 

@@ -7,6 +7,10 @@ import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import {IERC721Receiver} from "./external/IERC721Receiver.sol";
 import {IERC3525Receiver} from "./external/IERC3525Receiver.sol";
 
+/**
+ * @title Interface for SolvBTC.
+ * @custom:security-contact dev@solv.finance
+ */
 interface ISolvBTC is IERC20, IERC721Receiver, IERC3525Receiver, IERC165 {
 
     error ERC721NotReceivable(address token);
