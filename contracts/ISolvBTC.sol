@@ -12,9 +12,7 @@ interface ISolvBTC is IERC20, IERC721Receiver, IERC3525Receiver, IERC165 {
     error ERC721NotReceivable(address token);
     error ERC3525NotReceivable(address token);
 
-    function mint(address account, uint256 value) external;
-    function burn(address account, uint256 value) external;
-    function burn(uint256 value) external;
-
-    // function solvBTCMultiAssetPool() external view returns (address);
+    function mint(address account_, uint256 value_) external;
+    function burn(address account_, uint256 value_) external;
+    function burn(uint256 value_) external;
 }
