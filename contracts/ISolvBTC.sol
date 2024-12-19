@@ -2,10 +2,10 @@
 
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
-import "./external/IERC721Receiver.sol";
-import "./external/IERC3525Receiver.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+import {IERC721Receiver} from "./external/IERC721Receiver.sol";
+import {IERC3525Receiver} from "./external/IERC3525Receiver.sol";
 
 interface ISolvBTC is IERC20, IERC721Receiver, IERC3525Receiver, IERC165 {
 

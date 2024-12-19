@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.20;
 
-import "./SolvBTCV2_1.sol";
-import "./access/BlacklistableUpgradeable.sol";
+import {SolvBTCV2_1} from "./SolvBTCV2_1.sol";
+import {BlacklistableUpgradeable} from "./access/BlacklistableUpgradeable.sol";
 
 /**
  * @title Implementation for SolvBTC V3, which is inherited from SolvBTC V2.1 and expanded with 
