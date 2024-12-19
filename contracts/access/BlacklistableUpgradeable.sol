@@ -116,6 +116,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param account_ The address to blacklist.
      */
     function _addBlacklist(address account_) internal virtual {
+        require(account_ != address(0), "Blacklistable: invalid account");
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklisted[account_] = true;
         emit BlacklistAdded(account_);
