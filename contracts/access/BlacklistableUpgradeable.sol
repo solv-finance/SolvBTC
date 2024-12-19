@@ -77,8 +77,10 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param accounts_ The addresses to blacklist.
      */
     function addBlacklistBatch(address[] calldata accounts_) external onlyBlacklistManager {
-        for (uint256 i = 0; i < accounts_.length; i++) {
-            _addBlacklist(accounts_[i]);
+        unchecked {
+            for (uint256 i; i < accounts_.length; ++i) {
+                _addBlacklist(accounts_[i]);
+            }
         }
     }
 
@@ -95,8 +97,10 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param accounts_ The addresses to remove from the blacklist.
      */
     function removeBlacklistBatch(address[] calldata accounts_) external onlyBlacklistManager {
-        for (uint256 i = 0; i < accounts_.length; i++) {
-            _removeBlacklist(accounts_[i]);
+        unchecked {
+            for (uint256 i; i < accounts_.length; ++i) {
+                _removeBlacklist(accounts_[i]);
+            }
         }
     }
 
