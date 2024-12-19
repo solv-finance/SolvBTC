@@ -45,12 +45,12 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
         _disableInitializers();
     }
 
-    function initialize(string memory name_, string memory symbol_) external virtual initializer {
+    function initialize(string memory name_, string memory symbol_, address owner_) external virtual initializer {
         ERC20Upgradeable.__ERC20_init(name_, symbol_);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
 
-        _transferOwnership(0x55C09707Fd7aFD670e82A62FaeE312903940013E);
-        _grantRole(DEFAULT_ADMIN_ROLE, 0x55C09707Fd7aFD670e82A62FaeE312903940013E);
+        _transferOwnership(owner_);
+        _grantRole(DEFAULT_ADMIN_ROLE, owner_);
     }
 
     /**
