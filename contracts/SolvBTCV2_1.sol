@@ -8,6 +8,10 @@ import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "./ISolvBTC.sol";
 
+/**
+ * @title Implementation for SolvBTC V2.1, which is inherited from SolvBTC V2.
+ * @dev This version is upgraded from SolvBTC V2 with the removal of deprecated variables and functions. 
+ */
 contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, AccessControlUpgradeable {
 
     /// @custom:storage-location erc7201:solv.storage.SolvBTC
@@ -28,7 +32,10 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     // keccak256(abi.encode(uint256(keccak256("solv.storage.SolvBTC")) - 1)) & ~bytes32(uint256(0xff))
     // bytes32 private constant SolvBTCStorageLocation = 0x25351088c72db31d4a47cbdabb12f8d9c124b300211236164ae2941317058400;
 
+    /// @notice `SOLVBTC_MINTER` role is allowed to mint SolvBTC tokens, as well as to burn SolvBTC tokens held by itself.
     bytes32 public constant SOLVBTC_MINTER_ROLE = keccak256(abi.encodePacked("SOLVBTC_MINTER"));
+
+    /// @notice `SOLVBTC_POOL_BURNER` role is allowed to burn SolvBTC tokens from other accounts only when necessary.
     bytes32 public constant SOLVBTC_POOL_BURNER_ROLE = keccak256(abi.encodePacked("SOLVBTC_POOL_BURNER"));
 
     // event SetSolvBTCMultiAssetPool(address indexed solvBTCMultiAssetPool);
