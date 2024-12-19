@@ -7,6 +7,7 @@ import {Ownable2StepUpgradeable} from "@openzeppelin/contracts-upgradeable/acces
 /**
  * @title Blacklistable
  * @dev Allows accounts to be blacklisted by a "blacklist manager" role
+ * @custom:security-contact dev@solv.finance
  */
 abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
 
