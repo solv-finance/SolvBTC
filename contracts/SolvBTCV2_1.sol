@@ -70,7 +70,6 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
         return 
             interfaceId == type(IERC3525Receiver).interfaceId || 
             interfaceId == type(IERC721Receiver).interfaceId || 
-            interfaceId == type(IERC165).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 
