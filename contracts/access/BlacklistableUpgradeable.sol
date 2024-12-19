@@ -40,7 +40,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
         _;
     }
 
-    function _getBlacklistableStorage() internal pure returns (BlacklistableStorage storage $) {
+    function _getBlacklistableStorage() private pure returns (BlacklistableStorage storage $) {
         assembly {
             $.slot := SolvBTCStorageLocation
         }
@@ -115,7 +115,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @dev Helper method that blacklists an account.
      * @param account_ The address to blacklist.
      */
-    function _addBlacklist(address account_) internal virtual {
+    function _addBlacklist(address account_) private {
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklisted[account_] = true;
         emit BlacklistAdded(account_);
@@ -125,7 +125,7 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @dev Helper method that unblacklists an account.
      * @param account_ The address to unblacklist.
      */
-    function _removeBlacklist(address account_) internal virtual {
+    function _removeBlacklist(address account_) private {
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklisted[account_] = false;
         emit BlacklistRemoved(account_);
