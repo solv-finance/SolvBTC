@@ -25,6 +25,7 @@ contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
         override
         notBlacklisted(from)
         notBlacklisted(to)
+        notBlacklisted(msg.sender)
     {
         super._update(from, to, value);
     }
