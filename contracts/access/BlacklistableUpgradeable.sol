@@ -19,6 +19,21 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
     // keccak256(abi.encode(uint256(keccak256("solv.storage.Blacklistable")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant SolvBTCStorageLocation = 0x37055a6a5ad221b3685065a6f80bdaf8b5de26b2f60e82c3fbc16e3374b00c00;
 
+    /**
+     * @dev Operates by non blacklist manager.
+     */
+    error BlacklistableNotManager(address account);
+
+    /**
+     * @dev Account is blacklisted.
+     */
+    error BlacklistableBlacklistedAccount(address account);
+
+    /**
+     * @dev Zero address is not allowed.
+     */
+    error BlacklistableZeroAddressNotAllowed();
+
     event BlacklistAdded(address indexed account_);
     event BlacklistRemoved(address indexed account_);
     event BlacklistManagerChanged(address indexed newBlacklistManager);
@@ -27,7 +42,9 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @dev Throws if called by any account other than the blacklist manager.
      */
     modifier onlyBlacklistManager() {
-        require(msg.sender == blacklistManager(), "Blacklistable: caller is not the blacklist manager");
+        if (msg.sender != blacklistManager()) {
+            revert BlacklistableNotManager(msg.sender);
+        }
         _;
     }
 
@@ -36,7 +53,9 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param account_ The address to check.
      */
     modifier notBlacklisted(address account_) {
-        require(!isBlacklisted(account_), "Blacklistable: account is blacklisted");
+        if (isBlacklisted(account_)) {
+            revert BlacklistableBlacklistedAccount(account_);
+        }
         _;
     }
 
@@ -109,7 +128,9 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param newBlacklistManager_ The address of the new blacklist manager.
      */
     function updateBlacklistManager(address newBlacklistManager_) external onlyOwner {
-        require(newBlacklistManager_ != address(0), "Blacklistable: invalid blacklist manager");
+        if (newBlacklistManager_ == address(0)) {
+            revert BlacklistableZeroAddressNotAllowed();
+        }
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklistManager = newBlacklistManager_;
         emit BlacklistManagerChanged(newBlacklistManager_);
@@ -120,7 +141,9 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
      * @param account_ The address to blacklist.
      */
     function _addBlacklist(address account_) private {
-        require(account_ != address(0), "Blacklistable: invalid account");
+        if (account_ == address(0)) {
+            revert BlacklistableZeroAddressNotAllowed();
+        }
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklisted[account_] = true;
         emit BlacklistAdded(account_);
