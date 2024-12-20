@@ -79,13 +79,6 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     //     holdingValueSftId = 0;
     // }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlUpgradeable, IERC165) returns (bool) {
-        return 
-            interfaceId == type(IERC3525Receiver).interfaceId || 
-            interfaceId == type(IERC721Receiver).interfaceId || 
-            super.supportsInterface(interfaceId);
-    }
-
     function onERC3525Received(
         address, /* operator_ */
         uint256 /* fromSftId_ */,
@@ -124,6 +117,13 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
             revert SolvBTCZeroValueNotAllowed();
         }
         _burn(account_, value_);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlUpgradeable, IERC165) returns (bool) {
+        return 
+            interfaceId == type(IERC3525Receiver).interfaceId || 
+            interfaceId == type(IERC721Receiver).interfaceId || 
+            super.supportsInterface(interfaceId);
     }
 
     /**

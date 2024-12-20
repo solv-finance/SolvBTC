@@ -60,30 +60,6 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
         _;
     }
 
-    function _getBlacklistableStorage() private pure returns (BlacklistableStorage storage $) {
-        assembly {
-            $.slot := SolvBTCStorageLocation
-        }
-    }
-
-    /**
-     * @notice Checks if account is blacklisted.
-     * @param account_ The address to check.
-     * @return True if the account is blacklisted, false if the account is not blacklisted.
-     */
-    function isBlacklisted(address account_) public view returns (bool) {
-        BlacklistableStorage storage $ = _getBlacklistableStorage();
-        return $._blacklisted[account_];
-    }
-
-    /**
-     * @notice Get the address of the blacklist manager.
-     */
-    function blacklistManager() public view returns (address) {
-        BlacklistableStorage storage $ = _getBlacklistableStorage();
-        return $._blacklistManager;
-    }
-
     /**
      * @notice Adds account to blacklist.
      * @param account_ The address to blacklist.
@@ -135,6 +111,30 @@ abstract contract BlacklistableUpgradeable is Ownable2StepUpgradeable {
         BlacklistableStorage storage $ = _getBlacklistableStorage();
         $._blacklistManager = newBlacklistManager_;
         emit BlacklistManagerChanged(newBlacklistManager_);
+    }
+
+    /**
+     * @notice Checks if account is blacklisted.
+     * @param account_ The address to check.
+     * @return True if the account is blacklisted, false if the account is not blacklisted.
+     */
+    function isBlacklisted(address account_) public view returns (bool) {
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        return $._blacklisted[account_];
+    }
+
+    /**
+     * @notice Get the address of the blacklist manager.
+     */
+    function blacklistManager() public view returns (address) {
+        BlacklistableStorage storage $ = _getBlacklistableStorage();
+        return $._blacklistManager;
+    }
+
+    function _getBlacklistableStorage() private pure returns (BlacklistableStorage storage $) {
+        assembly {
+            $.slot := SolvBTCStorageLocation
+        }
     }
 
     /**
