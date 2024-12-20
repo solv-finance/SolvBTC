@@ -179,8 +179,7 @@ const SolvBTCYieldTokenInfos = {
       erc20: "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
       sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
       slot: "36451713141563314135976053078550681255085344236209888497397579037638163745496",
-      poolId:
-        "0xffc7798ecbdb3596c9cd75001d9e047167763299e4341471ac33576beb1cc976",
+      poolId: "0xffc7798ecbdb3596c9cd75001d9e047167763299e4341471ac33576beb1cc976",
       navOracle: "0x0036a9c8404e7f2ac574855DF2119D10950A7A58",
       holdingValueSftId: 0,
     },
@@ -188,11 +187,11 @@ const SolvBTCYieldTokenInfos = {
 
   bera_cArtio: {
     "SolvBTC Babylon": {
+      // https://fm-testnet.solv.finance/open-fund/management/136/overview
       erc20: "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
       sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
-      slot: "",
-      poolId:
-        "",
+      slot: "68865272477481821947036415518173926724430843521418643915323772076675974513704",
+      poolId: "0x73d52e22876381bcad30c6275aebb624208f79a2fe56d21ddc2698df75ed40db",
       navOracle: "0xbd0AD78C460d3E67426c5F4e470F470D071A7cA9",
       holdingValueSftId: 0,
     },
