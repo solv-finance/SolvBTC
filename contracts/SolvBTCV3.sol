@@ -8,6 +8,7 @@ import {BlacklistableUpgradeable} from "./access/BlacklistableUpgradeable.sol";
 /**
  * @title Implementation for SolvBTC V3, which is inherited from SolvBTC V2.1 and expanded with 
  * blacklist functionality.
+ * @custom:security-contact dev@solv.finance
  */
 contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
 
