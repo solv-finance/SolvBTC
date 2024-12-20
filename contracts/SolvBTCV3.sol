@@ -8,15 +8,23 @@ import {BlacklistableUpgradeable} from "./access/BlacklistableUpgradeable.sol";
 /**
  * @title Implementation for SolvBTC V3, which is inherited from SolvBTC V2.1 and expanded with 
  * blacklist functionality.
+ * @custom:security-contact dev@solv.finance
  */
 contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
+
+    /**
+     * @dev Account is not blacklisted.
+     */
+    error SolvBTCNotBlacklisted(address account);
 
     /// @notice Emitted when black funds are destroyed.
     event DestroyBlackFunds(address indexed account, uint256 amount);
 
     /// @notice Destroys black funds from the specified blacklist account.
     function destroyBlackFunds(address account, uint256 amount) external virtual onlyOwner {
-        require(isBlacklisted(account), "SolvBTCV3: account is not blacklisted");
+        if (!isBlacklisted(account)) {
+            revert SolvBTCNotBlacklisted(account);
+        }
         super._update(account, address(0), amount);
         emit DestroyBlackFunds(account, amount);
     }
@@ -41,5 +49,4 @@ contract SolvBTCV3 is SolvBTCV2_1, BlacklistableUpgradeable {
     {
         super._update(from, to, value);
     }
-
 }

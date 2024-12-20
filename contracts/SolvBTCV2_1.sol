@@ -11,6 +11,7 @@ import {ISolvBTC, IERC721Receiver, IERC3525Receiver, IERC165} from "./ISolvBTC.s
 /**
  * @title Implementation for SolvBTC V2.1, which is inherited from SolvBTC V2.
  * @dev This version is upgraded from SolvBTC V2 with the removal of deprecated variables and functions. 
+ * @custom:security-contact dev@solv.finance
  */
 contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, AccessControlUpgradeable {
 
@@ -39,6 +40,11 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     bytes32 public constant SOLVBTC_POOL_BURNER_ROLE = keccak256(abi.encodePacked("SOLVBTC_POOL_BURNER"));
 
     // event SetSolvBTCMultiAssetPool(address indexed solvBTCMultiAssetPool);
+
+    /**
+     * @dev Mint or burn zero value is not allowed.
+     */
+    error SolvBTCZeroValueNotAllowed();
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -93,17 +99,23 @@ contract SolvBTCV2_1 is ISolvBTC, ERC20Upgradeable, ReentrancyGuardUpgradeable, 
     }
 
     function mint(address account_, uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_MINTER_ROLE) {
-        require(value_ > 0, "SolvBTC: mint value cannot be 0");
+        if (value_ == 0) {
+            revert SolvBTCZeroValueNotAllowed();
+        }
         _mint(account_, value_);
     }
 
     function burn(uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_MINTER_ROLE) {
-        require(value_ > 0, "SolvBTC: burn value cannot be 0");
+        if (value_ == 0) {
+            revert SolvBTCZeroValueNotAllowed();
+        }
         _burn(msg.sender, value_);
     }
 
     function burn(address account_, uint256 value_) external virtual nonReentrant onlyRole(SOLVBTC_POOL_BURNER_ROLE) {
-        require(value_ > 0, "SolvBTC: burn value cannot be 0");
+        if (value_ == 0) {
+            revert SolvBTCZeroValueNotAllowed();
+        }
         _burn(account_, value_);
     }
 
