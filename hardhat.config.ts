@@ -269,6 +269,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    sei: {
+      url: process.env.SEI_URL || `https://evm-rpc.sei-apis.com/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {
@@ -349,7 +354,7 @@ const config: HardhatUserConfig = {
           apiURL: "https://api.sonicscan.org/api",
           browserURL: "https://sonicscan.org/",
         },
-      }
+      },
     ],
   },
 };
