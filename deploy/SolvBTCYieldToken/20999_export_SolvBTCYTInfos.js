@@ -403,7 +403,7 @@ const SolvBTCYieldTokenInfos = {
     },
   },
   corn: {
-    "SolvBTC BBN": {
+    "SolvBTC Babylon": {
       // only cross chain
       erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
       sft: "",
@@ -414,7 +414,18 @@ const SolvBTCYieldTokenInfos = {
     },
   },
   sonic: {
-    "SolvBTC BBN": {
+    "SolvBTC Babylon": {
+      // only cross chain
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
+      holdingValueSftId: 0,
+    },
+  },
+  sei: {
+    "SolvBTC Babylon": {
       // only cross chain
       erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
       sft: "",
