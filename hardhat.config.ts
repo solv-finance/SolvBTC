@@ -288,6 +288,7 @@ const config: HardhatUserConfig = {
       taiko: process.env.TAIKOSCAN_API_KEY || "",
       linea: process.env.LINEASCAN_API_KEY || "",
       sonic: process.env.SONICSCAN_API_KEY || "",
+      sei: process.env.SEITRACE_API_KEY || "sei",
     },
     customChains: [
       {
@@ -355,6 +356,14 @@ const config: HardhatUserConfig = {
           browserURL: "https://sonicscan.org/",
         },
       },
+      {
+        network: "sei",
+        chainId: 1329,
+        urls: {
+          apiURL: "https://seitrace.com/pacific-1/api",
+          browserURL: "https://seitrace.com",
+        },
+      }
     ],
   },
 };
