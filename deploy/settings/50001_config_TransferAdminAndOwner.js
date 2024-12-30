@@ -4,7 +4,7 @@ const assert = require("assert");
 const { network } = require("hardhat");
 
 const oldAdmin = "0x55C09707Fd7aFD670e82A62FaeE312903940013E";
-const newAdmin = "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D";
+const newAdmin = "0xdA716Ac03684a325122FF760A6300309fd23c598";
 
 const isAdmin = async (contract, wallet) => {
   const adminRole = await contract.DEFAULT_ADMIN_ROLE();
@@ -79,7 +79,7 @@ module.exports = async ({ getNamedAccounts, network }) => {
   const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", signer);
 //  const solvBTCAddress = require("../SolvBTC/10999_export_SolvBTCInfos")
  //   .SolvBTCInfos[network.name].erc20;
-  const solvBTCAddress = "0x092392b6aA43D008884c7687a91bEd1b1005E6f5";
+  const solvBTCAddress = "0x74eD17608cc2B5f30a59d6aF07C9aD1B1aB3A5b1";
   const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
 
   // SolvBTC
@@ -95,7 +95,7 @@ module.exports = async ({ getNamedAccounts, network }) => {
     await transferAdminAndOwner(productName, yieldToken);
   }
   */
-   const yieldTokenAddress = "0x2A125A62f2F9D01843812B59A4C118b7a2eE47Ad";
+   const yieldTokenAddress = "0x2878295D69Aa3BDcf9004FCf362F0959992D801c";
     let yieldToken = SolvBTCFactory.attach(yieldTokenAddress);
     await transferAdminAndOwner("SolvBTC Babylon", yieldToken);
 };
