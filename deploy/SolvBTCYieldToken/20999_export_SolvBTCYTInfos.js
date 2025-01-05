@@ -179,7 +179,8 @@ const SolvBTCYieldTokenInfos = {
       erc20: "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
       sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
       slot: "36451713141563314135976053078550681255085344236209888497397579037638163745496",
-      poolId: "0xffc7798ecbdb3596c9cd75001d9e047167763299e4341471ac33576beb1cc976",
+      poolId:
+        "0xffc7798ecbdb3596c9cd75001d9e047167763299e4341471ac33576beb1cc976",
       navOracle: "0x0036a9c8404e7f2ac574855DF2119D10950A7A58",
       holdingValueSftId: 0,
     },
@@ -191,7 +192,8 @@ const SolvBTCYieldTokenInfos = {
       erc20: "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
       sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
       slot: "68865272477481821947036415518173926724430843521418643915323772076675974513704",
-      poolId: "0x73d52e22876381bcad30c6275aebb624208f79a2fe56d21ddc2698df75ed40db",
+      poolId:
+        "0x73d52e22876381bcad30c6275aebb624208f79a2fe56d21ddc2698df75ed40db",
       navOracle: "0xbd0AD78C460d3E67426c5F4e470F470D071A7cA9",
       holdingValueSftId: 0,
     },
@@ -215,6 +217,16 @@ const SolvBTCYieldTokenInfos = {
       slot: "69967604453435411887182567130316797880284649445056338117915549089269498614313",
       poolId:
         "0x5bd198d0d81b1055dc9f6828678e5ec6edfe49b858a86624ee99adf755f6c39d",
+      navOracle: "0x8c29858319614380024093dbee553f9337665756",
+      holdingValueSftId: 0,
+    },
+    "SolvBTC Bera Vault": {
+      //https://fund-management.solv.finance/open-fund/management/241/overview
+      erc20: "",
+      sft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
+      slot: "14373501204713645571429805632318849823719301554473645038877008124244216272236",
+      poolId:
+        "0xa336828fb006403bd08709b3dd2fa7f1b142d9ec46c7a8b380bdf2f3deb4ee41",
       navOracle: "0x8c29858319614380024093dbee553f9337665756",
       holdingValueSftId: 0,
     },
