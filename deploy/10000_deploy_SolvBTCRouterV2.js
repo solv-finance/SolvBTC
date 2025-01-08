@@ -5,12 +5,25 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const owner = deployer;
 
   const market = {
+    dev_sepolia: "0x109198Eb8BD3064Efa5d0711b505f59cFd77de18",
     bsctest: "0x929b1B405714ef93CdFFFd6492009baff351f788",
     bsc: "0xaE050694c137aD777611286C316E5FDda58242F3",
   };
 
   // target token, currency, poolId
   const poolIds = {
+    dev_sepolia: [
+      [
+        "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", // target token - SolvBTC
+        "0x1418511884942f7Da13f3C2B19088a4E3B36CCD0", // currency - SBTC
+        "0x5f3b1c93ef16dcf5a6186a5930bef5424f4e9fc7ffeeb426197553372f3a1e7f", // pool ID
+      ],
+      [
+        "0x49aFCf847193c48091969bdB20852ef4c5A534D7", // target token - SolvBTC.BERA
+        "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", // currency - SolvBTC
+        "0x29c9b799129420fe495748aa21383cd8447ec27ec37d1baa3b105a38a869c9e0", // pool ID
+      ],
+    ],
     bsctest: [
       [
         "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", // target token - SolvBTC
@@ -54,6 +67,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   // currency, target token, path
   const pathInfos = {
+    dev_sepolia: [
+      [
+        "0x1418511884942f7Da13f3C2B19088a4E3B36CCD0", // currency - SBTC
+        "0x49aFCf847193c48091969bdB20852ef4c5A534D7", // target token - SolvBTC.BERA
+        ["0xe8C3edB09D1d155292BE0453d57bC3250a0084B6"], // path
+      ],
+    ],
     bsctest: [
       [
         "0xbFEfd7c0BB235E67E314ae65bd9C4685dBE9A45E", // currency - BTCB
