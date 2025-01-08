@@ -232,7 +232,7 @@ const SolvBTCYieldTokenInfos = {
     },
     "SolvBTC Bera Vault": {
       //https://fund-management.solv.finance/open-fund/management/241/overview
-      erc20: "",
+      erc20: "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50",
       sft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
       slot: "14373501204713645571429805632318849823719301554473645038877008124244216272236",
       poolId:
