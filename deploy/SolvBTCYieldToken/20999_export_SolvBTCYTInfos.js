@@ -233,7 +233,7 @@ const SolvBTCYieldTokenInfos = {
     "SolvBTC Ethena": {
       // https://fund-management.solv.finance/open-fund/management/184/overview
       erc20: "0x325DC9EBceC31940C658aCACa45f8293418d811E",
-      sft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
+      sft: "0x982D50f8557D57B748733a3fC3d55AeF40C46756",
       slot: "69967604453435411887182567130316797880284649445056338117915549089269498614313",
       poolId:
         "0x5bd198d0d81b1055dc9f6828678e5ec6edfe49b858a86624ee99adf755f6c39d",
@@ -241,12 +241,12 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 0,
     },
     "SolvBTC Bera Vault": {
-      //https://fund-management.solv.finance/open-fund/management/241/overview
+      // https://fund-management.solv.finance/open-fund/management/298/overview
       erc20: "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50",
-      sft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
-      slot: "14373501204713645571429805632318849823719301554473645038877008124244216272236",
+      sft: "0x982D50f8557D57B748733a3fC3d55AeF40C46756",
+      slot: "32030870374811907794649220857327593169746590509367059349803313767026049122191",
       poolId:
-        "0xa336828fb006403bd08709b3dd2fa7f1b142d9ec46c7a8b380bdf2f3deb4ee41",
+        "0xc63f3d6660f19445e108061adf74e0471a51a33dad30fe9b4815140168fd6136",
       navOracle: "0x8c29858319614380024093dbee553f9337665756",
       holdingValueSftId: 0,
     },
