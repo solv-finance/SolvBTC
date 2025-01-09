@@ -6,6 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const market = {
     dev_sepolia: "0x109198Eb8BD3064Efa5d0711b505f59cFd77de18",
+    sepolia: "0x91967806F47e2c6603C9617efd5cc91Bc2A7473E",
     bsctest: "0x929b1B405714ef93CdFFFd6492009baff351f788",
     bsc: "0xaE050694c137aD777611286C316E5FDda58242F3",
   };
@@ -22,6 +23,28 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x49aFCf847193c48091969bdB20852ef4c5A534D7", // target token - SolvBTC.BERA
         "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", // currency - SolvBTC
         "0x29c9b799129420fe495748aa21383cd8447ec27ec37d1baa3b105a38a869c9e0", // pool ID
+      ],
+    ],
+    sepolia: [
+      [
+        "0xE33109766662932a26d978123383ff9E7bdeF346", // target token - SolvBTC
+        "0x7A9689202fddE4C2091B480c70513184b2F8555C", // currency - WBTC
+        "0x333be9604463a7be6dd9bb5b05b03b53faf112b8eb016f844f301fc9944b598b", // pool ID
+      ],
+      [
+        "0xE33109766662932a26d978123383ff9E7bdeF346", // target token - SolvBTC
+        "0x1418511884942f7Da13f3C2B19088a4E3B36CCD0", // currency - SBTC
+        "0x21c6ca98740d2bcda57f1fe2089df30a85090953b4ab33ebcd16da8e9a681d5d", // pool ID
+      ],
+      [
+        "0xf44c01111C54C550d044025099220D79B9559EB9", // target token - SolvBTC.BBN
+        "0xE33109766662932a26d978123383ff9E7bdeF346", // currency - SolvBTC
+        "0x64a66ad214a02b4136f8ab710e690b31fdbf359c82ecc7814034a5b60287968b", // pool ID
+      ],
+      [
+        "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0", // target token - SolvBTC.BERA
+        "0xf44c01111C54C550d044025099220D79B9559EB9", // currency - SolvBTC.BBN
+        "0xcc9d13a3a88543ca12b37f4d9592f3a3dd62ae17dee34bf82e4eb6cb0f4a2ce2", // pool ID
       ],
     ],
     bsctest: [
@@ -72,6 +95,23 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x1418511884942f7Da13f3C2B19088a4E3B36CCD0", // currency - SBTC
         "0x49aFCf847193c48091969bdB20852ef4c5A534D7", // target token - SolvBTC.BERA
         ["0xe8C3edB09D1d155292BE0453d57bC3250a0084B6"], // path
+      ],
+    ],
+    sepolia: [
+      [
+        "0x7A9689202fddE4C2091B480c70513184b2F8555C", // currency - WBTC
+        "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0", // target token - SolvBTC.BERA
+        ["0xE33109766662932a26d978123383ff9E7bdeF346", "0xf44c01111C54C550d044025099220D79B9559EB9"], // path: WBTC -> SolvBTC -> SolvBTC.BBN -> SolvBTC.BERA
+      ],
+      [
+        "0x1418511884942f7Da13f3C2B19088a4E3B36CCD0", // currency - SBTC
+        "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0", // target token - SolvBTC.BERA
+        ["0xE33109766662932a26d978123383ff9E7bdeF346", "0xf44c01111C54C550d044025099220D79B9559EB9"], // path: SBTC -> SolvBTC -> SolvBTC.BBN -> SolvBTC.BERA
+      ],
+      [
+        "0xE33109766662932a26d978123383ff9E7bdeF346", // currency - SolvBTC
+        "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0", // target token - SolvBTC.BERA
+        ["0xf44c01111C54C550d044025099220D79B9559EB9"], // path: SolvBTC -> SolvBTC.BBN -> SolvBTC.BERA
       ],
     ],
     bsctest: [

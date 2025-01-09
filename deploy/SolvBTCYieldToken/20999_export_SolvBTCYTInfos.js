@@ -125,6 +125,16 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x2271d9FB0A45b63c781D038d0F44596e865dbc2b",
       holdingValueSftId: 152,
     },
+    "SolvBTC Bera Vault": {
+      // https://fm-testnet.solv.finance/open-fund/management/143/overview
+      erc20: "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0",
+      sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      slot: "101349867720403505928711204414077349140087647169882097276821103610300499382478",
+      poolId:
+        "0xcc9d13a3a88543ca12b37f4d9592f3a3dd62ae17dee34bf82e4eb6cb0f4a2ce2",
+      navOracle: "0x2271d9FB0A45b63c781D038d0F44596e865dbc2b",
+      holdingValueSftId: 0,
+    },
   },
 
   bsctest: {
