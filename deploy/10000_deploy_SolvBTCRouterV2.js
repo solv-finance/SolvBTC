@@ -23,7 +23,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0x49aFCf847193c48091969bdB20852ef4c5A534D7", // target token - SolvBTC.BERA
         "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", // currency - SolvBTC
-        "0x29c9b799129420fe495748aa21383cd8447ec27ec37d1baa3b105a38a869c9e0", // pool ID
+        "0xe96aa35e6c50231467ae2d976068203e84c941f75607ccc7e86812fc302e7c5b", // pool ID
       ],
     ],
     sepolia: [
