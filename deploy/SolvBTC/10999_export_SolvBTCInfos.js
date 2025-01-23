@@ -16,7 +16,7 @@ const OpenFundMarketAddresses = {
   ailayer: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   avax: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf",
   bob: "0xf5a247157656678398B08d3eFa1673358C611A3f",
-  base: "0xf5a247157656678398B08d3eFa1673358C611A3f", 
+  base: "0xf5a247157656678398B08d3eFa1673358C611A3f",
   core: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
   linea: "0xf5a247157656678398B08d3eFa1673358C611A3f",
 };
@@ -42,7 +42,7 @@ const SolvBTCFactoryAddresses = {
   merlin: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   mantle: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   bob: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
-  avax: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578", 
+  avax: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   ailayer: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   base: "0x58803103db1aFE4b78Dfd1A4dEC732463DC2330F",
   taiko: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
@@ -222,7 +222,7 @@ const SolvBTCInfos = {
     erc20: "0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f",
     holdingValueSftId: 0,
   },
- taiko: {
+  taiko: {
     //only cross-chain
     sft: "",
     slot: "",
@@ -249,7 +249,7 @@ const SolvBTCInfos = {
     slot: "",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
-  }, 
+  },
   sonic: {
     //only cross-chain
     sft: "",
@@ -258,6 +258,13 @@ const SolvBTCInfos = {
     holdingValueSftId: 0,
   },
   sei: {
+    //only cross-chain
+    sft: "",
+    slot: "",
+    erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+    holdingValueSftId: 0,
+  },
+  bera: {
     //only cross-chain
     sft: "",
     slot: "",
