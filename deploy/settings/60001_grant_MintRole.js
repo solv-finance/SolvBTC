@@ -83,10 +83,30 @@ module.exports = async ({ getNamedAccounts, network }) => {
   const grantTx = await solvBTC.grantRole(SOLVBTC_MINTER_ROLE, bridgeAddress);
   console.log(
     `* ${colors.yellow(
-      productName
-    )}: Granting admin role to ${bridgeAddress} at tx ${grantTx.hash}`
+      "SolvBTC"
+    )}: Granting mint role to ${bridgeAddress} at tx ${grantTx.hash}`
   );
   await txWait(grantTx);
+
+  // SolvBTCYieldTokens
+  const solvBTCYieldTokenInfos =
+    require("../SolvBTCYieldToken/20999_export_SolvBTCYTInfos").SolvBTCYieldTokenInfos;
+  for (let productName in solvBTCYieldTokenInfos[network.name]) {
+    let yieldTokenAddress =
+      solvBTCYieldTokenInfos[network.name][productName].erc20;
+    let yieldToken = SolvBTCFactory.attach(yieldTokenAddress);
+    const SOLVBTC_MINTER_ROLE = await yieldToken.SOLVBTC_MINTER_ROLE();
+    const grantTx = await yieldToken.grantRole(
+      SOLVBTC_MINTER_ROLE,
+      bridgeAddress
+    );
+    console.log(
+      `* ${colors.yellow(
+        productName
+      )}: Granting mint role to ${bridgeAddress} at tx ${grantTx.hash}`
+    );
+    await txWait(grantTx);
+  }
 };
 
 module.exports.tags = ["GrantMintRole"];
