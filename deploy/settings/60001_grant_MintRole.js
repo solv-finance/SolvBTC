@@ -71,7 +71,7 @@ const transferAdminAndOwner = async (productName, token) => {
 module.exports = async ({ getNamedAccounts, network }) => {
   const { deployer } = await getNamedAccounts();
   // TODO: change to bridge address
-  const bridgeAddress = "0x0000000000000000000000000000000000000000";
+  const solvBTCBridge = "0xB12979Ff302Ac903849948037A51792cF7186E8e"; // layer zero on bera
 
   const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", deployer);
   const solvBTCAddress = require("../SolvBTC/10999_export_SolvBTCInfos")
@@ -80,15 +80,16 @@ module.exports = async ({ getNamedAccounts, network }) => {
 
   const SOLVBTC_MINTER_ROLE = await solvBTC.SOLVBTC_MINTER_ROLE();
 
-  const grantTx = await solvBTC.grantRole(SOLVBTC_MINTER_ROLE, bridgeAddress);
+  const grantTx = await solvBTC.grantRole(SOLVBTC_MINTER_ROLE, solvBTCBridge);
   console.log(
     `* ${colors.yellow(
       "SolvBTC"
-    )}: Granting mint role to ${bridgeAddress} at tx ${grantTx.hash}`
+    )}: Granting mint role to ${solvBTCBridge} at tx ${grantTx.hash}`
   );
   await txWait(grantTx);
 
   // SolvBTCYieldTokens
+  const solvBTCYieldTokenBridge = "0x94DaBd84Cd36c4D364FcDD5CdABf41E73dBc99e6"; // layer zero on bera
   const solvBTCYieldTokenInfos =
     require("../SolvBTCYieldToken/20999_export_SolvBTCYTInfos").SolvBTCYieldTokenInfos;
   for (let productName in solvBTCYieldTokenInfos[network.name]) {
@@ -98,12 +99,14 @@ module.exports = async ({ getNamedAccounts, network }) => {
     const SOLVBTC_MINTER_ROLE = await yieldToken.SOLVBTC_MINTER_ROLE();
     const grantTx = await yieldToken.grantRole(
       SOLVBTC_MINTER_ROLE,
-      bridgeAddress
+      solvBTCYieldTokenBridge
     );
     console.log(
       `* ${colors.yellow(
         productName
-      )}: Granting mint role to ${bridgeAddress} at tx ${grantTx.hash}`
+      )}: Granting mint role to ${solvBTCYieldTokenBridge} at tx ${
+        grantTx.hash
+      }`
     );
     await txWait(grantTx);
   }
