@@ -43,6 +43,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     sonic: version,
     zksync: version,
     sei: version,
+    bera: version,
   };
 
   const instance = await deploy("SolvBTC" + version, {

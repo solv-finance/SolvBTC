@@ -274,6 +274,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    bera: {
+      url: process.env.BERA_URL || `https://bartio.rpc.berachain.com/`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {
@@ -363,7 +368,7 @@ const config: HardhatUserConfig = {
           apiURL: "https://seitrace.com/pacific-1/api",
           browserURL: "https://seitrace.com",
         },
-      }
+      },
     ],
   },
 };
