@@ -45,6 +45,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     zksync: version,
     sei: version,
     bera: version,
+    rootstock: version,
   };
 
   const admin = deployer;
