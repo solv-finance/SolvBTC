@@ -3,7 +3,6 @@ const { txWait } = require("../utils/deployUtils");
 const assert = require("assert");
 const { network } = require("hardhat");
 
-const SOLVBTC_MINTER_ROLE = await contract.SOLVBTC_MINTER_ROLE();
 
 const transferAdminAndOwner = async (productName, token) => {
   console.log(
