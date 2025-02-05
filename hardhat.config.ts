@@ -304,6 +304,7 @@ const config: HardhatUserConfig = {
       linea: process.env.LINEASCAN_API_KEY || "",
       sonic: process.env.SONICSCAN_API_KEY || "",
       sei: process.env.SEITRACE_API_KEY || "sei",
+      rootstock: process.env.ROOTSTOCKSCAN_API_KEY || "rootstock",
     },
     customChains: [
       {
@@ -377,6 +378,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://seitrace.com/pacific-1/api",
           browserURL: "https://seitrace.com",
+        },
+      },
+      {
+        network: "rootstock",
+        chainId: 30,
+        urls: {
+          apiURL: "https://rootstock.blockscout.com/api/",
+          browserURL: "https://rootstock.blockscout.com/",
         },
       },
     ],
