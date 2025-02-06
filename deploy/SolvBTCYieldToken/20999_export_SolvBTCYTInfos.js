@@ -21,6 +21,8 @@ const SolvBTCYieldTokenFactoryAddresses = {
   core: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   taiko: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   linea: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
+  rootstock: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
+  soneium: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
 const SolvBTCYieldTokenBeaconAddresses = {
@@ -43,6 +45,8 @@ const SolvBTCYieldTokenBeaconAddresses = {
   core: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   taiko: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   linea: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+  rootstock: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+  soneium: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -68,6 +72,8 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   core: "0xA29aC443560Ef79732A6d444e73a585416676d1e",
   taiko: "0x689020287883DfeBa3382158Ade309a5963952BA",
   linea: "0x5b60F7e24Ac48C1146d1aedb6a72B62c83378730",
+  rootstock: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+  soneium: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -480,7 +486,16 @@ const SolvBTCYieldTokenInfos = {
   },
   soneium: {
     "SolvBTC Babylon": {
-      // only cross-chain
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
+      holdingValueSftId: 0,
+    },
+  },
+  rootstock: {
+    "SolvBTC Babylon": {
       erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
       sft: "",
       slot: "",
