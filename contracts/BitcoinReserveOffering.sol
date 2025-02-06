@@ -69,8 +69,10 @@ contract BitcoinReserveOffering is ISftWrappedToken, ERC20Upgradeable, Reentranc
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IERC3525Receiver).interfaceId || interfaceId == type(IERC721Receiver).interfaceId
-            || interfaceId == type(IERC165).interfaceId;
+        return 
+            interfaceId == type(IERC3525Receiver).interfaceId || 
+            interfaceId == type(IERC721Receiver).interfaceId || 
+            interfaceId == type(IERC165).interfaceId;
     }
 
     function decimals() public view virtual override returns (uint8) {
@@ -160,7 +162,7 @@ contract BitcoinReserveOffering is ISftWrappedToken, ERC20Upgradeable, Reentranc
         require(amount_ > 0, "SftWrappedToken: burn amount cannot be 0");
         _burn(msg.sender, amount_);
 
-        uint256 sftValue = amount_ * exchangeRate / (10 ** decimals());
+        uint256 sftValue = amount_ * (10 ** decimals()) / exchangeRate;
 
         if (sftId_ == 0) {
             if (_holdingEmptySftIds.length == 0) {
