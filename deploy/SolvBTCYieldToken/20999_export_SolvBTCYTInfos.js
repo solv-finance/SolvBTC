@@ -490,20 +490,20 @@ const SolvBTCYieldTokenInfos = {
   soneium: {
     "SolvBTC Babylon": {
       erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
-      sft: "",
-      slot: "",
-      poolId: "",
-      navOracle: "",
+      sft: "0x788dc3af7b62708b752d483a6e30d1cf23c3eaae",
+      slot: "61223509085126765638810124921947600293064955381636991311628229057592425317222",
+      poolId: "0xe113124e2542b5cb27e3df96660a271de3d7d4b52ff63d8bc5afaf35337a3d37",
+      navOracle: "0x6c8da184b019e6c4baa710113c0d9de68a693b1f",
       holdingValueSftId: 0,
     },
   },
   rootstock: {
     "SolvBTC Babylon": {
       erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
-      sft: "",
-      slot: "",
-      poolId: "",
-      navOracle: "",
+      sft: "0x29f870ed75b4632301946bb935433605f39d515e",
+      slot: "62817733643116395134583342160513164074164336605273283322054884601625839828996",
+      poolId: "0xaa95765bbab39e03ab9984f57669a5ca95fd3091b0f93623cc74d20497eaa338",
+      navOracle: "0x443e5e0434e51db27717db447af2631f0355e7f8",
       holdingValueSftId: 0,
     },
   },

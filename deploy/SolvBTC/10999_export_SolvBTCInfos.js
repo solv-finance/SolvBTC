@@ -284,14 +284,14 @@ const SolvBTCInfos = {
     holdingValueSftId: 0,
   },
   soneium: {
-    sft: "",
-    slot: "",
+    sft: "0x1f4d23513c3ef0d63b97bbd2ce7c845ebb1cf1ce",
+    slot: "40989443386019579898724912618607528435545240995403286250037960199142042936137",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
   },
   rootstock: {
-    sft: "",
-    slot: "",
+    sft: "0x6b2e555b6c17bfbba251cc3cde084071f4a7ef38",
+    slot: "55361743739428405949387153615309411651573939533932222603446848168374736418754",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
   },
