@@ -30,17 +30,19 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;
 
-  const instance = await deploy("SolvBTC" + version, {
-    contract: "SolvBTCV3",
+  const instance = await deploy("SolvBTCYieldToken" + version, {
+    contract: "SolvBTCYieldTokenV3",
     from: deployer,
     log: true,
     deterministicDeployment: ethers.utils.keccak256(
-      ethers.utils.toUtf8Bytes("SolvBTC" + deterministicSuffix)
+      ethers.utils.toUtf8Bytes("SolvBTCYieldToken" + deterministicSuffix)
     ),
   });
   console.log(
-    `* INFO: ${colors.yellow(`SolvBTCImpl_V3`)} deployed at ${colors.green(instance.address)} on ${colors.red(network.name)}`
+    `* INFO: ${colors.yellow(`SolvBTCYieldTokenImpl_V3`)} deployed at ${colors.green(
+      instance.address
+    )} on ${colors.red(network.name)}`
   );
 };
 
-module.exports.tags = ["SolvBTCImpl_V3"];
+module.exports.tags = ["SolvBTCYTImpl_V3"];
