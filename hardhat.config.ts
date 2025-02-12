@@ -174,6 +174,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    soneium_test: {
+      url: process.env.SONEIUM_TEST_URL || `https://rpc.minato.soneium.org`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
