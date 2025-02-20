@@ -179,6 +179,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    monad_test: {
+      url: process.env.MONAD_TEST_RPC_URL || `https://rpc.monad.network`,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:

@@ -23,6 +23,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bera_cArtio: "_tnt" + version,
     linea_test: "_tnt" + version,
     soneium_test: "_tnt" + version,
+    monad_test: "_tnt" + version,
 
     mainnet: version,
     arb: version,
