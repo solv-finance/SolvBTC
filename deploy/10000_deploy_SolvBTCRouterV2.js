@@ -25,6 +25,11 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", // currency - SolvBTC
         "0xe96aa35e6c50231467ae2d976068203e84c941f75607ccc7e86812fc302e7c5b", // pool ID
       ],
+      [
+        "0x7157D9B6bEF77BDC9e8162659239252DD9FB875C", // target token - SolvBTC.BNB
+        "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", // currency - SolvBTC
+        "0x99c41e9ff1f784188aed35e866b6888c11593ea6b61db4ae721f699ca316c463", // pool ID
+      ],
     ],
     sepolia: [
       [
@@ -124,6 +129,11 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x49aFCf847193c48091969bdB20852ef4c5A534D7", // target token - SolvBTC.BERA
         ["0xe8C3edB09D1d155292BE0453d57bC3250a0084B6"], // path
       ],
+      [
+        "0x1418511884942f7Da13f3C2B19088a4E3B36CCD0", // currency - SBTC
+        "0x7157D9B6bEF77BDC9e8162659239252DD9FB875C", // target token - SolvBTC.BNB
+        ["0xe8C3edB09D1d155292BE0453d57bC3250a0084B6"], // path
+      ],
     ],
     sepolia: [
       [
@@ -202,15 +212,22 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ],
   };
 
+  const multiAssetPools = {
+    dev_sepolia: [
+      [ "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", "0xBdF15396e8A49773386fBA396D74dbbB8ED993f2" ], // SolvBTC
+      [ "0x49aFCf847193c48091969bdB20852ef4c5A534D7", "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce" ], // SolvBTC.BERA
+      [ "0x7157D9B6bEF77BDC9e8162659239252DD9FB875C", "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce" ], // SolvBTC.BNB
+    ]
+  };
+
   const contractName = "SolvBTCRouterV2";
   const firstImplName = contractName + "Impl";
   const proxyName = contractName + "Proxy";
 
-  const versions = {};
-  const upgrades =
-    versions[network.name]?.map((v) => {
-      return firstImplName + "_" + v;
-    }) || [];
+  const versions = {
+    dev_sepolia: ["v2.1"],
+  };
+  const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
 
   const { proxy, newImpl, newImplName } =
     await transparentUpgrade.deployOrUpgrade(
@@ -230,60 +247,47 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       }
     );
 
-  const SolvBTCRouterV2Factory = await ethers.getContractFactory(
-    "SolvBTCRouterV2",
-    deployer
-  );
+  const SolvBTCRouterV2Factory = await ethers.getContractFactory("SolvBTCRouterV2", deployer);
   const solvBTCRouterV2 = SolvBTCRouterV2Factory.attach(proxy.address);
 
   const currentMarket = await solvBTCRouterV2.openFundMarket();
   if (currentMarket.toLowerCase() != market[network.name].toLowerCase()) {
-    let setMarketTx = await solvBTCRouterV2.setOpenFundMarket(
-      market[network.name]
-    );
-    console.log(
-      `Set OpenFundMarket ${market[network.name]} at tx: ${setMarketTx.hash}`
-    );
+    let setMarketTx = await solvBTCRouterV2.setOpenFundMarket(market[network.name]);
+    console.log(`Set OpenFundMarket ${market[network.name]} at tx: ${setMarketTx.hash}`);
     await setMarketTx.wait(1);
   }
 
   for (let poolId of poolIds[network.name]) {
     let currentPoolId = await solvBTCRouterV2.poolIds(poolId[0], poolId[1]);
     if (currentPoolId != poolId[2]) {
-      let setPoolIdTx = await solvBTCRouterV2.setPoolId(
-        poolId[0],
-        poolId[1],
-        poolId[2]
-      );
-      console.log(
-        `Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`
-      );
+      let setPoolIdTx = await solvBTCRouterV2.setPoolId(poolId[0], poolId[1], poolId[2]);
+      console.log(`Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`);
       await setPoolIdTx.wait(1);
     }
   }
 
   for (let pathInfo of pathInfos[network.name]) {
     try {
-      let currentPath = await solvBTCRouterV2.paths(
-        pathInfo[0],
-        pathInfo[1],
-        0
-      );
+      let currentPath = await solvBTCRouterV2.paths(pathInfo[0], pathInfo[1], 0);
       if (currentPath.toLowerCase() != pathInfo[2][0].toLowerCase()) {
         throw new Error("Path not match");
       }
     } catch (e) {
-      let setPathTx = await solvBTCRouterV2.setPath(
-        pathInfo[0],
-        pathInfo[1],
-        pathInfo[2]
-      );
-      console.log(
-        `Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`
-      );
+      let setPathTx = await solvBTCRouterV2.setPath(pathInfo[0], pathInfo[1], pathInfo[2]);
+      console.log(`Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`);
       await setPathTx.wait(1);
     }
   }
+
+  for (let multiAssetPool of multiAssetPools[network.name]) {
+    let currentPool = await solvBTCRouterV2.multiAssetPools(multiAssetPool[0]);
+    if (currentPool != multiAssetPool[1]) {
+      let setPoolTx = await solvBTCRouterV2.setMultiAssetPool(multiAssetPool[0], multiAssetPool[1]);
+      console.log(`Set MultiAssetPool for token ${multiAssetPool[0]} at tx: ${setPoolTx.hash}`);
+      await setPoolTx.wait(1);
+    }
+  }
+
 };
 
 module.exports.tags = ["SolvBTCRouterV2"];
