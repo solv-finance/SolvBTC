@@ -11,6 +11,10 @@ import "../contracts/SftWrapRouter.sol";
 import "../contracts/SolvBTC.sol";
 import "../contracts/SolvBTCMultiAssetPool.sol";
 
+/**
+ * @title Test for SolvBTC V2 upgrade.
+ * @notice Fork Arbitrum chain at block number 235840000 to run tests.
+ */
 contract SolvBTCTest is Test {
     string internal constant PRODUCT_TYPE = "Open-end Fund Share Wrapped Token";
     string internal constant PRODUCT_NAME = "Solv BTC";
@@ -83,6 +87,18 @@ contract SolvBTCTest is Test {
         _upgradeAndSetup();
         vm.expectRevert(abi.encodeWithSignature("InvalidInitialization()"));
         solvBTC.initializeV2(address(solvBTCMultiAssetPool));
+    }
+
+    function test_SweepEmptySftIds() public {
+        _upgradeAndSetup();
+        uint256 holdingSftAmountBefore = IERC3525(SOLVBTC_SFT).balanceOf(address(solvBTC));
+        uint256 deadSftAmountBefore = IERC3525(SOLVBTC_SFT).balanceOf(0x000000000000000000000000000000000000dEaD);
+        solvBTC.sweepEmptySftIds(SOLVBTC_SFT, 100);
+        solvBTC.sweepEmptySftIds(SOLVBTC_SFT, 100);
+        uint256 holdingSftAmountAfter = IERC3525(SOLVBTC_SFT).balanceOf(address(solvBTC));
+        uint256 deadSftAmountAfter = IERC3525(SOLVBTC_SFT).balanceOf(0x000000000000000000000000000000000000dEaD);
+        console.log(holdingSftAmountBefore, holdingSftAmountAfter);
+        assertEq(holdingSftAmountBefore - holdingSftAmountAfter, deadSftAmountAfter - deadSftAmountBefore);
     }
 
     /** Tests for mint/burn functions */
