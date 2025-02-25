@@ -11,7 +11,6 @@ import {IERC3525} from "./external/IERC3525.sol";
 import {ERC20TransferHelper} from "./utils/ERC20TransferHelper.sol";
 import {ERC3525TransferHelper} from "./utils/ERC3525TransferHelper.sol";
 import {ISolvBTCMultiAssetPool} from "./ISolvBTCMultiAssetPool.sol";
-import {SolvBTC} from "./SolvBTC.sol";
 
 contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
 
@@ -45,6 +44,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
     event RemoveKycSBTVerifier(address indexed verifier);
     event SetPath(address indexed currency, address indexed targetToken, address[] path);
     event SetPoolId(address indexed targetToken, address indexed currency, bytes32 indexed poolId);
+    event SetMultiAssetPool(address indexed token, address indexed multiAssetPool);
 
     address public openFundMarket;
 
@@ -55,6 +55,9 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
     // target ERC20 (SolvBTC or LSTs) => currency => poolId
     mapping(address => mapping(address => bytes32)) public poolIds;
+
+    // ERC20 => multiAssetPool
+    mapping(address => address) public multiAssetPools;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -103,7 +106,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address multiAssetPool = SolvBTC(targetToken_).solvBTCMultiAssetPool();
+        address multiAssetPool = multiAssetPools[targetToken_];
         require(
             targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
             "SolvBTCRouterV2: target token not match"
@@ -138,7 +141,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         IERC3525 redemption = IERC3525(poolInfo.poolSFTInfo.openFundRedemption);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address multiAssetPool = SolvBTC(targetToken_).solvBTCMultiAssetPool();
+        address multiAssetPool = multiAssetPools[targetToken_];
         require(
             targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
             "SolvBTCRouterV2: target token not match"
@@ -173,7 +176,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address multiAssetPool = SolvBTC(targetToken_).solvBTCMultiAssetPool();
+        address multiAssetPool = multiAssetPools[targetToken_];
         require(
             targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
             "SolvBTCRouterV2: target token not match"
@@ -264,5 +267,12 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         emit SetPath(currency_, targetToken_, path_);
     }
 
-    uint256[46] private __gap;
+    function setMultiAssetPool(address token_, address multiAssetPool_) external onlyOwner {
+        require(token_ != address(0), "SolvBTCRouterV2: invalid token");
+        require(multiAssetPool_ != address(0), "SolvBTCRouterV2: invalid multiAssetPool");
+        multiAssetPools[token_] = multiAssetPool_;
+        emit SetMultiAssetPool(token_, multiAssetPool_);
+    }
+
+    uint256[45] private __gap;
 }
