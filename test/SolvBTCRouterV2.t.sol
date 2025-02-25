@@ -53,6 +53,9 @@ contract SolvBTCRouterV2Test is Test {
         address[] memory path = new address[](1);
         path[0] = SOLVBTC;
         solvBTCRouterV2.setPath(WBTC, SOLVBTCBBN, path);
+
+        solvBTCRouterV2.setMultiAssetPool(SOLVBTC, SOLVBTC_MULTI_ASSET_POOL_ADDRESS);
+        solvBTCRouterV2.setMultiAssetPool(SOLVBTCBBN, SOLVBTC_YIELD_TOKEN_MULTI_ASSET_POOL_ADDRESS);
         vm.stopPrank();
     }
 
