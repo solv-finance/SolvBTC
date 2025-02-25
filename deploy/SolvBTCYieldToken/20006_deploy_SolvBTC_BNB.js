@@ -15,7 +15,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     solvBTCYieldTokenFactoryAddress
   );
 
-  const productType = "SolvBTC BNB";
+  const productType = "SolvBTC Yield Token";
   const productName = "SolvBTC BNB";
   const tokenName = "SolvBTC.BNB";
   const tokenSymbol = "SolvBTC.BNB";
