@@ -285,7 +285,7 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     bera: {
-      url: process.env.BERA_URL || `https://bartio.rpc.berachain.com/`,
+      url: process.env.BERA_URL || `https://rpc.berachain.com/`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -314,6 +314,7 @@ const config: HardhatUserConfig = {
       linea: process.env.LINEASCAN_API_KEY || "",
       sonic: process.env.SONICSCAN_API_KEY || "",
       sei: process.env.SEITRACE_API_KEY || "sei",
+      bera: process.env.BERASCAN_API_KEY || "",
       rootstock: process.env.ROOTSTOCKSCAN_API_KEY || "rootstock",
     },
     customChains: [
@@ -388,6 +389,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://seitrace.com/pacific-1/api",
           browserURL: "https://seitrace.com",
+        },
+      },
+      {
+        network: "bera",
+        chainId: 80094,
+        urls: {
+          apiURL: "https://api.berascan.com/api",
+          browserURL: "https://berascan.com/",
         },
       },
       {
