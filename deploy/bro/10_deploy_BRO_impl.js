@@ -8,6 +8,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const deterministicSuffixes = {
     dev_sepolia: "_devs" + version,
+    sepolia: "_tnt" + version,
   }
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;

@@ -12,7 +12,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     from: deployer,
     log: true,
     args: [ implAddress, deployer ],
-    deterministicDeployment: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BROBeacon-devs"))
+    deterministicDeployment: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BROBeacon"))
   });
   console.log(`* INFO: ${colors.yellow(`BROBeacon`)} deployed at ${colors.green(instance.address)} on ${colors.red(network.name)}`);
 

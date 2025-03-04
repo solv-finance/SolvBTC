@@ -7,6 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const governor = deployer;
   const market = {
     dev_sepolia: '0x109198Eb8BD3064Efa5d0711b505f59cFd77de18',
+    sepolia: '0x91967806F47e2c6603C9617efd5cc91Bc2A7473E',
   };
 
   const contractName = 'BRORouter';
