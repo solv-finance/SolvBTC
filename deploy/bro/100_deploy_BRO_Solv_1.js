@@ -14,6 +14,14 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       wrappedSlot: "77490893808118283831741446642904681173330829094617591694418336651036418175900",
       exchangeRate: ethers.utils.parseEther("1.05"),
       solvBTCAddress: "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6",
+    },
+    sepolia: {
+      name: "BRO Solv 06MAR2026",
+      symbol: "BRO-Solv-06MAR2026",
+      wrappedSft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      wrappedSlot: "72110313783316139196413968141577714773041221224557351580978746098402329850088",
+      exchangeRate: ethers.utils.parseEther("2884721"),
+      solvBTCAddress: "0xE33109766662932a26d978123383ff9E7bdeF346",
     }
   }
 
@@ -26,15 +34,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     broInfo.exchangeRate, broInfo.solvBTCAddress
   );
 
-  const instance = await deploy('BRO-SolvBTC-01MAR2026', {
+  const instance = await deploy(broInfo.symbol, {
     contract: BeaconProxy,
     from: deployer,
     log: true,
     args: [ beaconAddress, initData.data ],
-    deterministicDeployment: ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BRO-SolvBTC-01MAR2026-devs"))
+    deterministicDeployment: ethers.utils.keccak256(ethers.utils.toUtf8Bytes(broInfo.symbol))
   });
-  console.log(`* INFO: ${colors.yellow(`BRO-SolvBTC-01MAR2026`)} deployed at ${colors.green(instance.address)} on ${colors.red(network.name)}`);
+  console.log(`* INFO: ${colors.yellow(broInfo.symbol)} deployed at ${colors.green(instance.address)} on ${colors.red(network.name)}`);
 
 };
 
-module.exports.tags = ['BRO-SolvBTC-01MAR2026']
+module.exports.tags = ['BRO-Solv-1']
