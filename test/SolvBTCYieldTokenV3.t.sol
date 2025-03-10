@@ -81,15 +81,15 @@ contract SolvBTCYieldTokenV3Test is Test {
         assertEq(solvBTCYieldTokenV3.isBlacklisted(USER_2), false);
 
         vm.startPrank(USER_1);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.approve(USER_1, 100);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.approve(USER_2, 100);
         vm.stopPrank();
 
         vm.startPrank(USER_2);
         solvBTCYieldTokenV3.approve(USER_2, 100);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.approve(USER_1, 100);
         vm.stopPrank();
 
@@ -125,17 +125,17 @@ contract SolvBTCYieldTokenV3Test is Test {
         vm.stopPrank();
 
         vm.startPrank(USER_1);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.transfer(USER_2, 100);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.transferFrom(USER_1, USER_2, 100);
         vm.stopPrank();
 
         vm.startPrank(USER_2);
         solvBTCYieldTokenV3.transfer(OWNER, 100);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.transfer(USER_1, 100);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.transferFrom(USER_2, USER_1, 100);
         vm.stopPrank();
 
@@ -155,7 +155,7 @@ contract SolvBTCYieldTokenV3Test is Test {
         vm.stopPrank();
 
         vm.startPrank(MINTER);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.mint(USER_1, 100);
         vm.stopPrank();
 
@@ -174,7 +174,7 @@ contract SolvBTCYieldTokenV3Test is Test {
         vm.stopPrank();
 
         vm.startPrank(MINTER);
-        vm.expectRevert("Blacklistable: account is blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableBlacklistedAccount(address)", USER_1));
         solvBTCYieldTokenV3.burn(USER_1, 100);
         vm.stopPrank();
 
@@ -239,7 +239,7 @@ contract SolvBTCYieldTokenV3Test is Test {
 
     function test_RevertWhenDetroyFundsFromNonBlacklistedUser() public {
         vm.startPrank(OWNER);
-        vm.expectRevert("SolvBTCV3: account is not blacklisted");
+        vm.expectRevert(abi.encodeWithSignature("SolvBTCNotBlacklisted(address)", USER_1));
         solvBTCYieldTokenV3.destroyBlackFunds(USER_1, 100);
         vm.stopPrank();
     }
@@ -253,9 +253,9 @@ contract SolvBTCYieldTokenV3Test is Test {
 
     function test_RevertWhenSetBlacklistByNonManager() public {
         vm.startPrank(USER_1);
-        vm.expectRevert("Blacklistable: caller is not the blacklist manager");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableNotManager(address)", USER_1));
         solvBTCYieldTokenV3.addBlacklist(USER_1);
-        vm.expectRevert("Blacklistable: caller is not the blacklist manager");
+        vm.expectRevert(abi.encodeWithSignature("BlacklistableNotManager(address)", USER_1));
         solvBTCYieldTokenV3.removeBlacklist(USER_1);
         vm.stopPrank();
     }
