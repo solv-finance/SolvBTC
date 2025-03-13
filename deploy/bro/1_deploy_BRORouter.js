@@ -16,7 +16,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const versions = {
     dev_sepolia: ["v1.0"],
-    mainnet: ["v1.0"],
   };
   const upgrades =
     versions[network.name]?.map((v) => {
