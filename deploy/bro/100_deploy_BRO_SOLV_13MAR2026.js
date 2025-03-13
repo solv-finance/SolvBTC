@@ -17,8 +17,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       solvBTCAddress: "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6",
     },
     mainnet: {
-      name: "BRO SolvBTC 13MAR2026",
-      symbol: "BRO-SolvBTC-13MAR2026",
+      name: "BRO SOLV 13MAR2026",
+      symbol: "BRO-SOLV-13MAR2026",
       wrappedSft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
       wrappedSlot:
         "73231647582029612737074404226959872200187963607849152869643358116207496900469",
@@ -42,22 +42,20 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     broInfo.solvBTCAddress
   );
 
-  const instance = await deploy("BRO-SolvBTC-13MAR2026", {
+  const instance = await deploy("BRO-SOLV-13MAR2026", {
     contract: BeaconProxy,
     from: deployer,
     log: true,
     args: [beaconAddress, initData.data],
     deterministicDeployment: ethers.utils.keccak256(
-      ethers.utils.toUtf8Bytes("BRO-SolvBTC-13MAR2026")
+      ethers.utils.toUtf8Bytes("BRO-SOLV-13MAR2026")
     ),
   });
   console.log(
-    `* INFO: ${colors.yellow(
-      `BRO-SolvBTC-13MAR2026`
-    )} deployed at ${colors.green(instance.address)} on ${colors.red(
-      network.name
-    )}`
+    `* INFO: ${colors.yellow(`BRO-SOLV-13MAR2026`)} deployed at ${colors.green(
+      instance.address
+    )} on ${colors.red(network.name)}`
   );
 };
 
-module.exports.tags = ["BRO-SolvBTC-13MAR2026"];
+module.exports.tags = ["BRO-SOLV-13MAR2026"];

@@ -24,7 +24,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "72110313783316139196413968141577714773041221224557351580978746098402329850088",
     },
     mainnet: {
-      symbol: "BRO-SolvBTC-13MAR2026",
+      symbol: "BRO-SOLV-13MAR2026",
       wrappedSft: "0x982d50f8557d57b748733a3fc3d55aef40c46756",
       wrappedSlot:
         "73231647582029612737074404226959872200187963607849152869643358116207496900469",
