@@ -1,9 +1,11 @@
-const colors = require('colors');
-const { getSigner } = require('./deployUtils');
-const { makeValidateImplementation } = require('@openzeppelin/hardhat-upgrades/dist/validate-implementation');
+const colors = require("colors");
+const { getSigner } = require("./deployUtils");
+const {
+  makeValidateImplementation,
+} = require("@openzeppelin/hardhat-upgrades/dist/validate-implementation");
 
-const ProxyAdmin = require('@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json');
-const TransparentUpgradeableProxy = require('@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json');
+const ProxyAdmin = require("@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol/ProxyAdmin.json");
+const TransparentUpgradeableProxy = require("@openzeppelin/upgrades-core/artifacts/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol/TransparentUpgradeableProxy.json");
 
 const deployProxyAdmin = async (opts) => {
   const { deployments } = hre;
@@ -16,43 +18,59 @@ const deployProxyAdmin = async (opts) => {
   });
 };
 
-const deployOrUpgrade = async (firstImplName, proxyName, opts, { initializer, postUpgrade, upgrades }) => {
-  const newImpl = await deployOrUpgradeImplemention(
-    firstImplName,
-    opts,
-    {
-      upgrades: upgrades.slice(0),
-    }
+const deployOrUpgrade = async (
+  firstImplName,
+  proxyName,
+  opts,
+  { initializer, postUpgrade, upgrades }
+) => {
+  const newImpl = await deployOrUpgradeImplemention(firstImplName, opts, {
+    upgrades: upgrades.slice(0),
+  });
+  const newImplName =
+    upgrades && upgrades.length > 0
+      ? upgrades[upgrades.length - 1]
+      : firstImplName;
+
+  const { proxy } = await deployOrUpgradeProxy(firstImplName, proxyName, opts, {
+    initializer: initializer,
+    postUpgrade: postUpgrade,
+    upgrades: upgrades.slice(0),
+  });
+  console.log(
+    ` INFO: ${colors.yellow(proxyName)} deployed at ${colors.green(
+      proxy.address
+    )} point to ${colors.yellow(newImplName)} at ${colors.green(
+      newImpl.address
+    )} on ${colors.red(network.name)}`
   );
-  const newImplName = upgrades && upgrades.length > 0 ? upgrades[upgrades.length - 1] : firstImplName;
-
-  const { proxy,  } = await deployOrUpgradeProxy(
-    firstImplName,
-    proxyName,
-    opts,
-    {
-      initializer: initializer,
-      postUpgrade: postUpgrade,
-      upgrades: upgrades.slice(0),
-    });
-  console.log(` INFO: ${colors.yellow(proxyName)} deployed at ${colors.green(proxy.address)} point to ${colors.yellow(newImplName)} at ${colors.green(newImpl.address)} on ${colors.red(network.name)}`);
   return { proxy, newImpl, newImplName };
-}
+};
 
-const deployOrUpgradeImplemention = async (firstImplName, opts, { upgrades }) => {
+const deployOrUpgradeImplemention = async (
+  firstImplName,
+  opts,
+  { upgrades }
+) => {
   const { deployments } = hre;
   const { deploy } = deployments;
 
   let firstImpl = await deployments.getOrNull(firstImplName);
   if (!firstImpl) {
     firstImpl = await deploy(firstImplName, opts);
-    console.log(` INFO: ${colors.yellow(`${firstImplName}`)} deployed at ${colors.green(firstImpl.address)} on ${colors.red(network.name)}`);
+    console.log(
+      ` INFO: ${colors.yellow(`${firstImplName}`)} deployed at ${colors.green(
+        firstImpl.address
+      )} on ${colors.red(network.name)}`
+    );
   }
 
   let lastImpl = firstImpl;
   if (upgrades && upgrades.length > 0) {
     let newImplName = upgrades.pop();
-    upgrades.forEach(async(upgrade) => { await deployments.get(upgrade) });
+    upgrades.forEach(async (upgrade) => {
+      await deployments.get(upgrade);
+    });
 
     // const contractFactory = await ethers.getContractFactory(opts.contract);
     // const validateImplementation = makeValidateImplementation(hre);
@@ -63,20 +81,33 @@ const deployOrUpgradeImplemention = async (firstImplName, opts, { upgrades }) =>
     // });
 
     const newImpl = await deploy(newImplName, opts);
-    console.log(` INFO: ${colors.yellow(`${newImplName}`)} deployed at ${colors.green(newImpl.address)} on ${colors.red(network.name)}`);
+    console.log(
+      ` INFO: ${colors.yellow(`${newImplName}`)} deployed at ${colors.green(
+        newImpl.address
+      )} on ${colors.red(network.name)}`
+    );
     lastImpl = newImpl;
   }
   return lastImpl;
-}
+};
 
-const deployOrUpgradeProxy = async (firstImplName, proxyName, opts, { initializer, postUpgrade, upgrades }) => {
+const deployOrUpgradeProxy = async (
+  firstImplName,
+  proxyName,
+  opts,
+  { initializer, postUpgrade, upgrades }
+) => {
   const { deployments } = hre;
   const { deploy } = deployments;
 
   let proxyAdmin = await deployments.getOrNull("ProxyAdmin");
   if (!proxyAdmin) {
     proxyAdmin = await deployProxyAdmin(opts);
-    console.log(` INFO: ${colors.yellow(`ProxyAdmin`)} deployed at ${colors.green(proxyAdmin.address)} on ${colors.red(network.name)}`);
+    console.log(
+      ` INFO: ${colors.yellow(`ProxyAdmin`)} deployed at ${colors.green(
+        proxyAdmin.address
+      )} on ${colors.red(network.name)}`
+    );
   }
 
   let firstImpl = await deployments.get(firstImplName);
@@ -89,15 +120,16 @@ const deployOrUpgradeProxy = async (firstImplName, proxyName, opts, { initialize
       initializer && initializer.args ? initializer.args : [],
       initializer ? initializer.method : false
     );
+    console.log(`initData: ${initData}`);
 
     proxy = await deploy(proxyName, {
       contract: TransparentUpgradeableProxy,
       from: opts.from,
       gasPrice: opts.gasPrice,
       log: true,
-      args: [ firstImpl.address, proxyAdmin.address, initData ],
+      args: [firstImpl.address, proxyAdmin.address, initData],
     });
-  };
+  }
 
   if (upgrades && upgrades.length > 0) {
     let newImplName = upgrades.pop();
@@ -108,19 +140,38 @@ const deployOrUpgradeProxy = async (firstImplName, proxyName, opts, { initialize
     }
 
     const signer = await getSigner(opts.from);
-    const proxyAdminContract = await ethers.getContractAt(proxyAdmin.abi, proxyAdmin.address, signer);
-    const actualImpl = await proxyAdminContract.getProxyImplementation(proxy.address);
+    const proxyAdminContract = await ethers.getContractAt(
+      proxyAdmin.abi,
+      proxyAdmin.address,
+      signer
+    );
+    const actualImpl = await proxyAdminContract.getProxyImplementation(
+      proxy.address
+    );
     const previousImpl = await deployments.get(previousImplName);
     newImpl = await deployments.get(newImplName);
-    console.log(`actualImpl: ${actualImpl}, previousImpl ${previousImpl.address}, newImpl: ${newImpl.address}`);
+    console.log(
+      `actualImpl: ${actualImpl}, previousImpl ${previousImpl.address}, newImpl: ${newImpl.address}`
+    );
 
     if (actualImpl == previousImpl.address) {
       console.log(`Upgrading from ${previousImplName} to ${newImplName}`);
       if (postUpgrade && postUpgrade.method && postUpgrade.args) {
-        const upgradeData = getInitializerData(await ethers.getContractFactory(opts.contract), postUpgrade.args, postUpgrade.method);
-        await proxyAdminContract.upgradeAndCall(proxy.address, newImpl.address, upgradeData, { gasPrice: opts.gasPrice });
+        const upgradeData = getInitializerData(
+          await ethers.getContractFactory(opts.contract),
+          postUpgrade.args,
+          postUpgrade.method
+        );
+        await proxyAdminContract.upgradeAndCall(
+          proxy.address,
+          newImpl.address,
+          upgradeData,
+          { gasPrice: opts.gasPrice }
+        );
       } else {
-        await proxyAdminContract.upgrade(proxy.address, newImpl.address, { gasPrice: opts.gasPrice });
+        await proxyAdminContract.upgrade(proxy.address, newImpl.address, {
+          gasPrice: opts.gasPrice,
+        });
       }
     } else if (actualImpl == newImpl.address) {
       console.log("Implementation not changed, IGNORE");
@@ -129,7 +180,7 @@ const deployOrUpgradeProxy = async (firstImplName, proxyName, opts, { initialize
     }
   }
   return { proxy, newImpl };
-}
+};
 
 const getInitializerData = (ImplFactory, args = [], initializer) => {
   if (initializer === false) {
@@ -148,10 +199,10 @@ const getInitializerData = (ImplFactory, args = [], initializer) => {
     }
     throw e;
   }
-}
+};
 
 module.exports = {
   deployOrUpgrade,
   deployOrUpgradeImplemention,
-  deployOrUpgradeProxy
-}
+  deployOrUpgradeProxy,
+};
