@@ -124,6 +124,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x6255a8d0485659E7f45D97c3D61e532B3fb01877",
       holdingValueSftId: 0,
     },
+    "SolvBTC JUP": {
+      erc20: "0x3c340e8A31E8bA57193D21A43Ff005999F191551",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
+      holdingValueSftId: 0,
+    },
   },
 
   sepolia: {
