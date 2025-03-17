@@ -30,7 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 
   const SolvBTCV3Factory_ = await ethers.getContractFactory('SolvBTCV3', deployer);
-  const solvBTCV3Address = await solvBTCV3Factory.getProxy(productType, productName);
+  const solvBTCV3Address = await solvBTCFactoryV3.getProxy(productType, productName);
   const solvBTCV3 = SolvBTCV3Factory_.attach(solvBTCV3Address);
 
   const currentBlacklistManager = await solvBTCV3.blacklistManager();
