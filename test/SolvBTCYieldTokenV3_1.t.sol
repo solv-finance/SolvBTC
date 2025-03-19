@@ -30,6 +30,7 @@ contract SolvBTCYieldTokenV3_1Test is Test {
     ProxyAdmin internal proxyAdmin = ProxyAdmin(0xEcb7d6497542093b25835fE7Ad1434ac8b0bce40);
 
     address internal OWNER = 0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D;
+    address internal PAUSER = makeAddr("PAUSER");
     address internal MINTER = 0x0679E96f5EEDa5313099f812b558714717AEC176;
     address internal USER_1 = 0x3D64cFEEf2B66AdD5191c387E711AF47ab01e296;
     address internal USER_2 = 0xEE88442E9D2D3764ac7Ab60B618CD73cd9a5fA51;
@@ -270,6 +271,10 @@ contract SolvBTCYieldTokenV3_1Test is Test {
      */
     function test_Pause1() public {
         vm.startPrank(OWNER);
+        solvBTCYieldTokenV3_1.setPauser(PAUSER);
+        vm.stopPrank();
+
+        vm.startPrank(PAUSER);
         solvBTCYieldTokenV3_1.pause();
         vm.stopPrank();
 
@@ -290,10 +295,14 @@ contract SolvBTCYieldTokenV3_1Test is Test {
 
     function test_Unpause() public {
         vm.startPrank(OWNER);
+        solvBTCYieldTokenV3_1.setPauser(PAUSER);
+        vm.stopPrank();
+
+        vm.startPrank(PAUSER);
         solvBTCYieldTokenV3_1.pause();
         vm.stopPrank();
 
-        vm.startPrank(OWNER);
+        vm.startPrank(PAUSER);
         solvBTCYieldTokenV3_1.unpause();
         vm.stopPrank();
 
@@ -309,12 +318,25 @@ contract SolvBTCYieldTokenV3_1Test is Test {
         vm.stopPrank();
     }
 
-    function test_SetPauseByNonOwner() public {
+    function test_TransferWhenNotPaused() public {
+        vm.startPrank(USER_1);
+        solvBTCYieldTokenV3_1.transfer(USER_2, 100);
+        vm.stopPrank();
+    }
+
+    function test_SetPauseByNonPauser() public {
+        vm.startPrank(USER_1);
+        vm.expectRevert(abi.encodeWithSignature("PausablePauser(address)", USER_1));
+        solvBTCYieldTokenV3_1.pause();
+        vm.expectRevert(abi.encodeWithSignature("PausablePauser(address)", USER_1));
+        solvBTCYieldTokenV3_1.unpause();
+        vm.stopPrank();
+    }
+
+    function test_setPauserByNonOwner() public {
         vm.startPrank(USER_1);
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", USER_1));
-        solvBTCYieldTokenV3_1.pause();
-        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", USER_1));
-        solvBTCYieldTokenV3_1.unpause();
+        solvBTCYieldTokenV3_1.setPauser(USER_1);
         vm.stopPrank();
     }
 
