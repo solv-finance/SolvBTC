@@ -20,7 +20,6 @@ function getMasterKey() {
       encoding: "utf8",
     });
     const masterKey = result.stdout.trim();
-    console.log("\nMaster Password:", masterKey);
     return masterKey;
   } catch (error) {
     console.error("Error getting master password:", error);
