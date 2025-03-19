@@ -6,7 +6,6 @@ import "./SolvBTCYieldTokenV3.sol";
 import "./SolvBTCV3_1.sol";
 
 contract SolvBTCYieldTokenV3_1 is SolvBTCYieldTokenV3, SolvBTCV3_1 {
-
     struct AliasStorage {
         string _name;
         string _symbol;
@@ -26,6 +25,9 @@ contract SolvBTCYieldTokenV3_1 is SolvBTCYieldTokenV3, SolvBTCV3_1 {
      */
     function name() public view virtual override returns (string memory) {
         AliasStorage storage $ = _getAliasStorage();
+        if (bytes($._name).length == 0) {
+            return super.name();
+        }
         return $._name;
     }
 
@@ -35,6 +37,9 @@ contract SolvBTCYieldTokenV3_1 is SolvBTCYieldTokenV3, SolvBTCV3_1 {
      */
     function symbol() public view virtual override returns (string memory) {
         AliasStorage storage $ = _getAliasStorage();
+        if (bytes($._symbol).length == 0) {
+            return super.symbol();
+        }
         return $._symbol;
     }
 
@@ -61,6 +66,5 @@ contract SolvBTCYieldTokenV3_1 is SolvBTCYieldTokenV3, SolvBTCV3_1 {
         override(SolvBTCYieldTokenV3, SolvBTCV3_1)
     {
         SolvBTCV3_1._update(from, to, value);
-    } 
-
+    }
 }

@@ -20,7 +20,8 @@ contract SolvBTCYieldTokenV3_1Test is Test {
     string internal constant PRODUCT_NAME = "SolvBTC Babylon";
 
     SolvBTCYieldTokenV3 internal solvBTCYieldToken = SolvBTCYieldTokenV3(0x346c574C56e1A4aAa8dc88Cda8F7EB12b39947aB);
-    SolvBTCYieldTokenV3_1 internal solvBTCYieldTokenV3_1 = SolvBTCYieldTokenV3_1(0x346c574C56e1A4aAa8dc88Cda8F7EB12b39947aB);
+    SolvBTCYieldTokenV3_1 internal solvBTCYieldTokenV3_1 =
+        SolvBTCYieldTokenV3_1(0x346c574C56e1A4aAa8dc88Cda8F7EB12b39947aB);
     address internal solvBTCYieldTokenBeacon = 0x7B375C1a95335Ec443f9b610b427e5AfC91E566D;
     address internal solvBTCYieldTokenV3_1Impl;
 
@@ -315,6 +316,14 @@ contract SolvBTCYieldTokenV3_1Test is Test {
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", USER_1));
         solvBTCYieldTokenV3_1.unpause();
         vm.stopPrank();
+    }
+
+    /**
+     * Tests for not set name and symbol
+     */
+    function test_NotSetAlias() public {
+        assertEq(solvBTCYieldTokenV3_1.name(), "SolvBTC Babylon");
+        assertEq(solvBTCYieldTokenV3_1.symbol(), "SolvBTC.BBN");
     }
 
     /**
