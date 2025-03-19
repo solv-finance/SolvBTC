@@ -4,8 +4,46 @@ import "@nomicfoundation/hardhat-foundry";
 import "hardhat-deploy";
 import "hardhat-tracer";
 
+import { execSync } from "child_process";
+
 import * as dotenv from "dotenv";
 dotenv.config();
+
+// Get master password using synchronous method
+function getMasterKey() {
+  try {
+    process.stdout.write("Enter your master password: ");
+    // Use spawnSync instead of execSync
+    const { spawnSync } = require("child_process");
+    const result = spawnSync("bash", ["-c", "read -s line && echo $line"], {
+      stdio: ["inherit", "pipe", "inherit"],
+      encoding: "utf8",
+    });
+    const masterKey = result.stdout.trim();
+    console.log("\nMaster Password:", masterKey);
+    return masterKey;
+  } catch (error) {
+    console.error("Error getting master password:", error);
+    process.exit(1);
+  }
+}
+
+function getPrivateKey() {
+  try {
+    const masterKey = getMasterKey();
+    return execSync(
+      `export MASTER_KEY=${masterKey} && /usr/local/bin/solv-key dec`,
+      { encoding: "utf8" } // Add encoding option
+    )
+      .split("=")[0]
+      .trim();
+  } catch (error) {
+    console.error("Error getting private key:", error);
+    process.exit(1);
+  }
+}
+
+const PRIVATE_KEY = getPrivateKey();
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -200,7 +238,9 @@ const config: HardhatUserConfig = {
     bsc: {
       url: process.env.BSC_URL || `https://bsc-dataseed.binance.org/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     arb: {
       url:
