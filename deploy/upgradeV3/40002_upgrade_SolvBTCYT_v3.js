@@ -9,10 +9,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCFactory = SolvBTCFactoryFactory.attach(solvBTCFactoryAddress);
 
   const productType = 'SolvBTC Yield Token';
-  const implementation = (await deployments.get('SolvBTCYieldToken_v3.0')).address;
+  const implementation = (await deployments.get('SolvBTCYieldToken_v3.1')).address;
 
-  const beaconInSolvBTCFactory = await solvBTCFactory.getImplementation(productType);
-  if (beaconInSolvBTCFactory != implementation) {
+  const implInSolvBTCFactory = await solvBTCFactory.getImplementation(productType);
+  if (implInSolvBTCFactory != implementation) {
     const upgradeBeaconTx = await solvBTCFactory.setImplementation(productType, implementation);
     console.log(`* INFO: Upgrade SolvBTCYieldToken beacon at ${upgradeBeaconTx.hash}`);
     await txWait(upgradeBeaconTx);

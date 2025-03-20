@@ -102,7 +102,7 @@ const config: HardhatUserConfig = {
     bsctest: {
       url:
         process.env.BSC_TESTNET_URL ||
-        `https://rpc.ankr.com/bsc_testnet_chapel`,
+        `https://bsc-testnet-rpc.publicnode.com`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
