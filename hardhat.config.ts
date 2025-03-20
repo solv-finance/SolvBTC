@@ -42,7 +42,7 @@ function getPrivateKey() {
   }
 }
 
-const PRIVATE_KEY = getPrivateKey();
+const PRIVATE_KEY = process.env.PRIVATE_KEY || getPrivateKey();
 
 const config: HardhatUserConfig = {
   solidity: {
