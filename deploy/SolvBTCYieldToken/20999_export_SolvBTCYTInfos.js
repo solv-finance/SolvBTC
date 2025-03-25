@@ -27,6 +27,13 @@ const SolvBTCYieldTokenFactoryAddresses = {
   soneium: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
+const SolvBTCYieldTokenFactoryV3Addresses = {
+  dev_sepolia: "0x197cfd48184ADCCa3b061851118c624c22EE59b2",
+  sepolia: "0x197cfd48184ADCCa3b061851118c624c22EE59b2",
+  mainnet: "",
+  soneium: "0xF233c5cac3177c70a554C0178cFA85f61D97622B",
+};
+
 const SolvBTCYieldTokenBeaconAddresses = {
   dev_sepolia: "0x0C62BEc3Ef44cD5d6b795B37F986Bee6B7Ca9550",
   sepolia: "0x5409D9f1516fFc65DDe006Bf28c3c7Ca642aa71b",
@@ -51,6 +58,13 @@ const SolvBTCYieldTokenBeaconAddresses = {
   linea: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   rootstock: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   soneium: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+};
+
+const SolvBTCYieldTokenV3BeaconAddresses = {
+  dev_sepolia: "0x0C62BEc3Ef44cD5d6b795B37F986Bee6B7Ca9550",
+  sepolia: "0x5409D9f1516fFc65DDe006Bf28c3c7Ca642aa71b",
+  mainnet: "",
+  soneium: "0x11d174BF28F2E71B7c1FCB157096e44E74bA8585",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -290,6 +304,15 @@ const SolvBTCYieldTokenInfos = {
       slot: "32030870374811907794649220857327593169746590509367059349803313767026049122191",
       poolId:
         "0xc63f3d6660f19445e108061adf74e0471a51a33dad30fe9b4815140168fd6136",
+      navOracle: "0x8c29858319614380024093dbee553f9337665756",
+      holdingValueSftId: 0,
+    },
+    "SolvBTC DEX LP": {
+      // https://fund-management.solv.finance/open-fund/management/343/overview
+      erc20: "",
+      sft: "0x982D50f8557D57B748733a3fC3d55AeF40C46756",
+      slot: "17660905005845915868798550309913569450157209061885611613682651900123401414530",
+      poolId: "0xa11f08f40185c0ba7ff7f5ea343798a4e2cd0f0d65d47fd5a59ebb51d2d275fa",
       navOracle: "0x8c29858319614380024093dbee553f9337665756",
       holdingValueSftId: 0,
     },
@@ -555,7 +578,9 @@ const SolvBTCYieldTokenInfos = {
 
 module.exports = {
   SolvBTCYieldTokenFactoryAddresses,
+  SolvBTCYieldTokenFactoryV3Addresses,
   SolvBTCYieldTokenBeaconAddresses,
+  SolvBTCYieldTokenV3BeaconAddresses,
   SolvBTCYieldTokenMultiAssetPoolAddresses,
   SolvBTCYieldTokenInfos,
 };

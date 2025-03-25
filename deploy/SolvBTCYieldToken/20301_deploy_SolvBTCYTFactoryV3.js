@@ -17,6 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const admin = deployer;  // admin address when deploying the contract
   const governor = deployer;
   const safeAdmins = {
+    mainnet: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     soneium: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
