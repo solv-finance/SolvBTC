@@ -227,7 +227,7 @@ const config: HardhatUserConfig = {
         process.env.GOERLI_URL ||
         `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [PRIVATE_KEY],
     },
     polygon: {
       url: "https://polygon-rpc.com/",

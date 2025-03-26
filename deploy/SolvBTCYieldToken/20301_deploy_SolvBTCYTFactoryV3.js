@@ -20,6 +20,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     mainnet: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     soneium: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
+  console.log(admin);
 
   const instance = await deploy("SolvBTCYieldTokenFactoryV3", {
     contract: "SolvBTCFactoryV3",
