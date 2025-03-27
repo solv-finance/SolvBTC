@@ -63,35 +63,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     await txWait(setManagerTx);
   }
 
-  // transfer ownership to safe wallet
-  const owner = owners[network.name];
-  const transferOwnershipTx = await solvBTCYieldTokenV3.transferOwnership(owner);
-  console.log(`* INFO: Transfer ownership to ${owner} at ${transferOwnershipTx.hash}`);
-  await txWait(transferOwnershipTx);
-
-  // grant admin role to safe wallet
-  const adminRole = await solvBTCYieldTokenV3.DEFAULT_ADMIN_ROLE();
-  let hasAdminRole = await solvBTCYieldTokenV3.hasRole(adminRole, owner);
-  if (hasAdminRole) {
-    console.log(`* INFO: ${tokenSymbol} admin role already granted to ${owner}`);
-  } else {
-    const grantRoleTx = await solvBTCYieldTokenV3.grantRole(adminRole, owner);
-    console.log(`* INFO: ${tokenSymbol} grant admin role to ${owner} at ${grantRoleTx.hash}`);
-    await txWait(grantRoleTx);
-  }
-
-  // ensure admin role is granted to safe wallet
-  hasAdminRole = await solvBTCYieldTokenV3.hasRole(adminRole, owner);
-  assert(hasAdminRole, `* ERROR: ${tokenSymbol} admin role not granted to ${owner}`);
-
-  // renounce admin role from deployer
-  const deployerHasAdminRole = await solvBTCYieldTokenV3.hasRole(adminRole, deployer);
-  if (deployerHasAdminRole) {
-    const renounceRoleTx = await solvBTCYieldTokenV3.renounceRole(adminRole, deployer);
-    console.log(`* INFO: Renounce admin role from ${deployer} at ${renounceRoleTx.hash}`);
-    await txWait(renounceRoleTx);
-  }
-
 };
 
 module.exports.tags = ['SolvBTCV3_DLP']

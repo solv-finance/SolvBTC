@@ -224,7 +224,7 @@ const config: HardhatUserConfig = {
 
     mainnet: {
       url:
-        process.env.GOERLI_URL ||
+        process.env.ETH_URL ||
         `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [PRIVATE_KEY],
@@ -342,6 +342,7 @@ const config: HardhatUserConfig = {
 
   etherscan: {
     apiKey: {
+      mainnet: process.env.ETHERSCAN_API_KEY || "",
       bsc: process.env.BSCSCAN_API_KEY || "",
       arb: process.env.ARBISCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",

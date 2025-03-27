@@ -6,10 +6,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
 
   const solvBTCYieldTokenMultiAssetPoolAddress = (await deployments.get('SolvBTCYieldTokenMultiAssetPoolProxy')).address;
-  const solvBTCYieldTokenMultiAssetPoolAddressInConfig = require('./20999_export_SolvBTCYTInfos').SolvBTCYieldTokenMultiAssetPoolAddresses[network.name];
+  const solvBTCYieldTokenMultiAssetPoolAddressInConfig = require('./20099_export_SolvBTCYTInfos').SolvBTCYieldTokenMultiAssetPoolAddresses[network.name];
   assert(solvBTCYieldTokenMultiAssetPoolAddress == solvBTCYieldTokenMultiAssetPoolAddressInConfig, 'pool address not matched');
 
-  const solvBTCYieldTokenInfos = require('./20999_export_SolvBTCYTInfos').SolvBTCYieldTokenInfos;
+  const solvBTCYieldTokenInfos = require('./20399_export_SolvBTCYTInfos').SolvBTCYieldTokenInfos;
 
   const SolvBTCYieldTokenV3Factory = await ethers.getContractFactory('SolvBTCYieldTokenV3', deployer);
 

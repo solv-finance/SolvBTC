@@ -67,14 +67,14 @@ module.exports = async ({ getNamedAccounts, network }) => {
   const { deployer } = await getNamedAccounts();
 
   const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", deployer);
-  const solvBTCAddress = require("../SolvBTC/10999_export_SolvBTCInfos").SolvBTCInfos[network.name].erc20;
+  const solvBTCAddress = require("../SolvBTC/10399_export_SolvBTCInfos").SolvBTCInfos[network.name].erc20;
   const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
 
   // SolvBTC
   await transferAdminAndOwner("SolvBTC", solvBTC);
 
   // SolvBTCYieldTokens
-  const solvBTCYieldTokenInfos = require("../SolvBTCYieldToken/20999_export_SolvBTCYTInfos").SolvBTCYieldTokenInfos;
+  const solvBTCYieldTokenInfos = require("../SolvBTCYieldToken/20399_export_SolvBTCYTInfos").SolvBTCYieldTokenInfos;
   for (let productName in solvBTCYieldTokenInfos[network.name]) {
     let yieldTokenAddress = solvBTCYieldTokenInfos[network.name][productName].erc20;
     let yieldToken = SolvBTCFactory.attach(yieldTokenAddress);
@@ -82,4 +82,4 @@ module.exports = async ({ getNamedAccounts, network }) => {
   }
 };
 
-module.exports.tags = ["TransferAdminAndOwner"];
+module.exports.tags = ["TransferAdminAndOwnerV3"];
