@@ -6,6 +6,9 @@ import "./SolvBTCYieldTokenV3.sol";
 import "./SolvBTCV3_1.sol";
 
 contract SolvBTCYieldTokenV3_1 is SolvBTCYieldTokenV3, SolvBTCV3_1 {
+
+    event SetAlias(string name, string symbol);
+
     struct AliasStorage {
         string _name;
         string _symbol;
@@ -50,6 +53,7 @@ contract SolvBTCYieldTokenV3_1 is SolvBTCYieldTokenV3, SolvBTCV3_1 {
         AliasStorage storage $ = _getAliasStorage();
         $._name = name_;
         $._symbol = symbol_;
+        emit SetAlias(name_, symbol_);
     }
 
     function _approve(address owner, address spender, uint256 value, bool emitEvent)
