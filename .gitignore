@@ -10,3 +10,5 @@ cache_forge/
 out/
 
 solcInputs/
+
+.vscode/
