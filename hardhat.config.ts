@@ -13,6 +13,41 @@ import "@matterlabs/hardhat-zksync-upgradable";
 import dotenv from "dotenv";
 dotenv.config();
 
+// Get master password using synchronous method
+function getMasterKey() {
+  try {
+    process.stdout.write("Enter your master password: ");
+    // Use spawnSync instead of execSync
+    const { spawnSync } = require("child_process");
+    const result = spawnSync("bash", ["-c", "read -s line && echo $line"], {
+      stdio: ["inherit", "pipe", "inherit"],
+      encoding: "utf8",
+    });
+    const masterKey = result.stdout.trim();
+    return masterKey;
+  } catch (error) {
+    console.error("Error getting master password:", error);
+    process.exit(1);
+  }
+}
+
+function getPrivateKey() {
+  try {
+    const masterKey = getMasterKey();
+    return execSync(
+      `export MASTER_KEY=${masterKey} && /usr/local/bin/solv-key dec`,
+      { encoding: "utf8" } // Add encoding option
+    )
+      .split("=")[0]
+      .trim();
+  } catch (error) {
+    console.error("Error getting private key:", error);
+    process.exit(1);
+  }
+}
+
+const PRIVATE_KEY = process.env.PRIVATE_KEY || getPrivateKey();
+
 const config: HardhatUserConfig = {
   solidity: {
     compilers: [
@@ -43,7 +78,7 @@ const config: HardhatUserConfig = {
     },
     mainnet: {
       url:
-        process.env.GOERLI_URL ||
+        process.env.ETH_URL ||
         `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],

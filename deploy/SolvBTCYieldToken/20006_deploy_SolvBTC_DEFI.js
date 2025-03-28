@@ -16,9 +16,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   );
 
   const productType = "SolvBTC Yield Token";
-  const productName = "SolvBTC DEFI";
-  const tokenName = "SolvBTC DEFI";
-  const tokenSymbol = "SolvBTC.DEFI";
+  const productName = "SolvBTC DeFi";
+  const tokenName = "SolvBTC DeFi";
+  const tokenSymbol = "SolvBTC.DeFi";
 
   let proxyAddress = await solvBTCYieldTokenFactory.getProxy(
     productType,
@@ -96,4 +96,4 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 };
 
-module.exports.tags = ["SolvBTC_DEFI"];
+module.exports.tags = ["SolvBTC_DeFi"];

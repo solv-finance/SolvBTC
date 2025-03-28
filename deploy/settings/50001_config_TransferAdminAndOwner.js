@@ -13,63 +13,42 @@ const isAdmin = async (contract, wallet) => {
 
 const transferAdminAndOwner = async (productName, token) => {
   console.log(
-    `Start handling tasks for ${colors.yellow(productName)} - ${
-      token.address
-    } on ${colors.yellow(network.name)}`
+    `Start handling tasks for ${colors.yellow(productName)} - ${token.address} on ${colors.yellow(network.name)}`
   );
 
   const ADMIN_ROLE_ID = await token.DEFAULT_ADMIN_ROLE();
+  const newAdmin = getNewAdmin(network.name);
 
   // Grant admin role to newAdmin
   if (!(await isAdmin(token, newAdmin))) {
     const grantTx = await token.grantRole(ADMIN_ROLE_ID, newAdmin);
-    console.log(
-      `* ${colors.yellow(
-        productName
-      )}: Granting admin role to ${newAdmin} at tx ${grantTx.hash}`
-    );
+    console.log(`* ${colors.yellow(productName)}: Granting admin role to ${newAdmin} at tx ${grantTx.hash}`);
     await txWait(grantTx);
   }
   assert.equal(await isAdmin(token, newAdmin), true);
-  console.log(
-    `* ${colors.yellow(productName)}: ${newAdmin} has been granted admin role`
-  );
+  console.log(`* ${colors.yellow(productName)}: ${newAdmin} has been granted admin role`);
 
   // Renounce admin role by oldAdmin
   if (await isAdmin(token, oldAdmin)) {
     const renounceTx = await token.renounceRole(ADMIN_ROLE_ID, oldAdmin);
-    console.log(
-      `* ${colors.yellow(
-        productName
-      )}: Renouncing admin role for ${oldAdmin} at tx ${renounceTx.hash}`
-    );
+    console.log(`* ${colors.yellow(productName)}: Renouncing admin role for ${oldAdmin} at tx ${renounceTx.hash}`);
     await txWait(renounceTx);
   }
   assert.equal(await isAdmin(token, oldAdmin), false);
-  console.log(
-    `* ${colors.yellow(productName)}: ${oldAdmin} has renounced admin role`
-  );
+  console.log(`* ${colors.yellow(productName)}: ${oldAdmin} has renounced admin role`);
 
   // Transfer ownership to newAdmin
   let owner = await token.owner();
   let pendingOwner = await token.pendingOwner();
   if (owner != newAdmin && pendingOwner != newAdmin) {
     const transferOwnershipTx = await token.transferOwnership(newAdmin);
-    console.log(
-      `* ${colors.yellow(
-        productName
-      )}: Transferring ownership to ${newAdmin} at tx ${
-        transferOwnershipTx.hash
-      }`
-    );
+    console.log(`* ${colors.yellow(productName)}: Transferring ownership to ${newAdmin} at tx ${transferOwnershipTx.hash}`);
     await txWait(transferOwnershipTx);
   }
-  assert.equal(await token.pendingOwner(), newAdmin);
-  console.log(
-    `* ${colors.yellow(
-      productName
-    )}: Ownership has been transferred to ${newAdmin}`
-  );
+  if (owner != newAdmin) {
+    assert.equal(await token.pendingOwner(), newAdmin);
+  }
+  console.log(`* ${colors.yellow(productName)}: Ownership has been transferred to ${newAdmin}`);
 };
 
 module.exports = async ({ getNamedAccounts, network }) => {
