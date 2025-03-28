@@ -27,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     args: [admin, governor],
     deterministicDeployment: ethers.utils.keccak256(
       ethers.utils.toUtf8Bytes(
-        "SolvBTCFactoryV3" + deterministicSuffix[network.name]
+        "SolvBTCFactoryV3" + deterministicSuffix
       )
     ),
   });

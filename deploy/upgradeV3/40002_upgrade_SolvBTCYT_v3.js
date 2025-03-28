@@ -9,7 +9,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCFactory = SolvBTCFactoryFactory.attach(solvBTCFactoryAddress);
 
   const productType = 'SolvBTC Yield Token';
-  const implementation = (await deployments.get('SolvBTCYieldToken_v3.1')).address;
+  const implementation = (await deployments.get('SolvBTCYieldToken_v3.1.1')).address;
 
   const implInSolvBTCFactory = await solvBTCFactory.getImplementation(productType);
   if (implInSolvBTCFactory != implementation) {

@@ -4,7 +4,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
 
-  const version = "_v3.1";
+  const version = "_v3.1.1";
 
   const deterministicSuffixes = {
     dev_sepolia: "_dev" + version,
@@ -40,7 +40,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   });
   console.log(
     `* INFO: ${colors.yellow(
-      `SolvBTCYieldTokenImpl_V3.1`
+      `SolvBTCYieldTokenImpl_V3.1.1`
     )} deployed at ${colors.green(instance.address)} on ${colors.red(
       network.name
     )}`

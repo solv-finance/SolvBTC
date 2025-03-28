@@ -4,7 +4,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
   const { deploy } = deployments;
 
-  const version = "_v3.0";
+  const version = "_v3.1.1";
 
   const deterministicSuffixes = {
     dev_sepolia: "_dev" + version,
@@ -31,7 +31,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const deterministicSuffix = deterministicSuffixes[network.name] || version;
 
   const instance = await deploy("SolvBTCYieldToken" + version, {
-    contract: "SolvBTCYieldTokenV3",
+    contract: "SolvBTCYieldTokenV3_1",
     from: deployer,
     log: true,
     deterministicDeployment: ethers.utils.keccak256(

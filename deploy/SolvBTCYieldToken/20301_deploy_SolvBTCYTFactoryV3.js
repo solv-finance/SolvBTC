@@ -27,9 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     log: true,
     args: [admin, governor],
     deterministicDeployment: ethers.utils.keccak256(
-      ethers.utils.toUtf8Bytes(
-        "SolvBTCYieldTokenFactoryV3" + deterministicSuffix[network.name]
-      )
+      ethers.utils.toUtf8Bytes("SolvBTCYieldTokenFactoryV3" + deterministicSuffix)
     ),
   });
   console.log(
