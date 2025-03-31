@@ -101,8 +101,7 @@ const config: HardhatUserConfig = {
     },
     bsctest: {
       url:
-        process.env.BSC_TESTNET_URL ||
-        `https://bsc-testnet-rpc.publicnode.com`,
+        process.env.BSC_TESTNET_URL || `https://bsc-testnet-rpc.publicnode.com`,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
@@ -227,12 +226,16 @@ const config: HardhatUserConfig = {
         process.env.ETH_URL ||
         `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [PRIVATE_KEY],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     polygon: {
       url: "https://polygon-rpc.com/",
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     bsc: {
       url: process.env.BSC_URL || `https://bsc-dataseed.binance.org/`,
@@ -246,97 +249,135 @@ const config: HardhatUserConfig = {
         process.env.ARB_URL ||
         `https://arb.getblock.io/${process.env.GETBLOCK_KEY}/mainnet/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     mantle: {
       url: process.env.MANTLE_TESTNET_URL || `https://rpc.mantle.xyz/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     merlin: {
       url: process.env.MERLIN_URL || ` https://rpc.merlinchain.io`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     ailayer: {
       url: process.env.AILAYER_URL || `https://mainnet-rpc.ailayer.xyz/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     avax: {
       url: process.env.AVAX_URL || `https://api.avax.network/ext/bc/C/rpc`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     bob: {
       url: process.env.BOB_URL || `https://rpc.gobob.xyz/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     base: {
       url: process.env.BASE_URL || `https://mainnet.base.org/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     core: {
       url: process.env.CORE_URL || `https://rpc.ankr.com/core`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     taiko: {
       url: process.env.CORE_URL || `https://rpc.mainnet.taiko.xyz`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     mode: {
       url: process.env.CORE_URL || `https://mainnet.mode.network`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     linea: {
       url: process.env.LINEA_URL || `https://rpc.linea.build`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     bitlayer: {
       url: process.env.BITLAYER_URL || `https://rpc.bitlayer-rpc.com`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     corn: {
       url: process.env.CORN_URL || `https://maizenet-rpc.usecorn.com`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     sonic: {
       url: process.env.SONIC_URL || `https://rpc.soniclabs.com`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     zksync: {
       url: process.env.ZKSYNC_URL || `https://mainnet.era.zksync.io`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     sei: {
       url: process.env.SEI_URL || `https://evm-rpc.sei-apis.com/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     bera: {
       url: process.env.BERA_URL || `https://rpc.berachain.com/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     rootstock: {
       url: process.env.ROOTSTOCK_URL || `https://public-node.rsk.co`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
     soneium: {
       url: process.env.SONEIUM_URL || `https://rpc.soneium.org/`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [process.env.PRIVATE_KEY]
+          : [PRIVATE_KEY],
     },
   },
 
