@@ -10,6 +10,8 @@ import "@matterlabs/hardhat-zksync-node";
 import "@matterlabs/hardhat-zksync-verify";
 import "@matterlabs/hardhat-zksync-upgradable";
 
+import { execSync } from "child_process";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -110,6 +112,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       sepolia: process.env.ETHERSCAN_API_KEY as any,
       mainnet: process.env.ETHERSCAN_API_KEY as any,
+      zksyncsepolia: process.env.ETHERSCAN_API_KEY as any,
       zkSyncMainnet: process.env.ETHERSCAN_API_KEY as any,
     },
   },
