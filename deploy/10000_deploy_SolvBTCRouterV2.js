@@ -287,7 +287,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsctest: ["v2.1"],
     mainnet: ["v2.1"],
     bsc: ["v2.1"],
-    avax: ["v2.1"],
   };
   const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
 

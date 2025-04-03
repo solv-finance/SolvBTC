@@ -2,7 +2,7 @@ const SolvBTCYieldTokenFactoryV3Addresses = {
   dev_sepolia: "0x197cfd48184ADCCa3b061851118c624c22EE59b2",
   sepolia: "0x197cfd48184ADCCa3b061851118c624c22EE59b2",
   mainnet: "0x86fC77cfe9F7d6a84097E9B73bd32cA185fdb12a",
-  avax: "",
+  avax: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   soneium: "0xF233c5cac3177c70a554C0178cFA85f61D97622B",
 };
 
@@ -10,7 +10,7 @@ const SolvBTCYieldTokenV3BeaconAddresses = {
   dev_sepolia: "0x0C62BEc3Ef44cD5d6b795B37F986Bee6B7Ca9550",
   sepolia: "0x5409D9f1516fFc65DDe006Bf28c3c7Ca642aa71b",
   mainnet: "0x27F2328aFeF3af851753E3Eca5E7d2281c3C22F6",
-  avax: "",
+  avax: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   soneium: "0x11d174BF28F2E71B7c1FCB157096e44E74bA8585",
 };
 
@@ -29,7 +29,7 @@ const SolvBTCYieldTokenInfos = {
   avax: {
     "SolvBTC Avalanche": {
       // https://fund-management.solv.finance/open-fund/management/344/overview
-      erc20: "",
+      erc20: "0x6C7d727a0432D03351678F91FAA1126a5B871DF5",
       sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
       slot: "86753098298693272234281896498673541742160926213380072723269693569823891599359",
       poolId: "0x83933f7cabce9efa8ed17c7f601dba81cfa49f0dabaf2885bf1624719bf78443",
