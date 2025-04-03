@@ -3,7 +3,7 @@ const { txWait } = require("../utils/deployUtils");
 const assert = require("assert");
 const { network } = require("hardhat");
 
-const oldAdmin = "0x55C09707Fd7aFD670e82A62FaeE312903940013E";
+const { oldAdmin } = await getNamedAccounts();
 const newDefaultAdmin = "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D";
 const newAdmins = {
   soneium: "0x6DDb2894cb7C33A271B89dE76e1f9e0eb78a6BdC",
