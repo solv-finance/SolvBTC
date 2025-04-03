@@ -10,6 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsctest: "0x929b1B405714ef93CdFFFd6492009baff351f788",
     bsc: "0xaE050694c137aD777611286C316E5FDda58242F3",
     mainnet: "0x57bB6a8563a8e8478391C79F3F433C6BA077c567",
+    avax: "0x59Cf3db95bdF5C545877871c3863c9DBe6b0b7cf"
   };
 
   // target token, currency, poolId
@@ -124,6 +125,18 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x02228958e4f53e94e09cc0afd49939bf93af0b991889fa5fe761672c0e9c3021", // 340 fund pool ID
       ],
     ],
+    avax: [
+      [
+        "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777", // target token - SolvBTC
+        "0x152b9d0FdC40C096757F570A51E494bd4b943E50", // currency - BTC.b
+        "0xf5ae38da3319d22b4628e635f6fa60bf966de13c5334b6845eba764d6321e16b", // 183 fund pool ID
+      ],
+      [
+        "0x6C7d727a0432D03351678F91FAA1126a5B871DF5", // target token - SolvBTC.AVAX
+        "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777", // currency - SolvBTC
+        "0x83933f7cabce9efa8ed17c7f601dba81cfa49f0dabaf2885bf1624719bf78443", // 344 fund pool ID
+      ],
+    ]
   };
 
   // currency, target token, path
@@ -220,6 +233,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         ["0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7"], // path - SolvBTC
       ],
     ],
+    avax: [
+      [
+        "0x152b9d0FdC40C096757F570A51E494bd4b943E50", // currency - BTC.b
+        "0x6C7d727a0432D03351678F91FAA1126a5B871DF5", // target token - SolvBTC.AVAX
+        ["0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777"], // path - SolvBTC
+      ],
+    ],
   };
 
   const multiAssetPools = {
@@ -251,6 +271,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [ "0x647A50540F5a1058B206f5a3eB17f56f29127F53", "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A" ], // SolvBTC.DeFi
       [ "0x6c948A4C31D013515d871930Fe3807276102F25d", "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A" ], // SolvBTC.BNB
     ],
+    avax: [
+      [ "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777", "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705" ], // SolvBTC
+      [ "0x6C7d727a0432D03351678F91FAA1126a5B871DF5", "0x814F3ae67dF0da9fe2399a29516FD14b9085263a" ], // SolvBTC.AVAX
+    ],
   };
 
   const contractName = "SolvBTCRouterV2";
@@ -263,6 +287,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsctest: ["v2.1"],
     mainnet: ["v2.1"],
     bsc: ["v2.1"],
+    avax: ["v2.1"],
   };
   const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
 
