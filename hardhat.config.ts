@@ -73,26 +73,10 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {},
     localhost: {},
-    dev_goerli: {
-      url:
-        process.env.GOERLI_URL ||
-        `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
-    dev_mumbai: {
-      url: process.env.MUMBAI_URL || `https://rpc-mumbai.maticvigil.com/`,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
     dev_sepolia: {
       url:
         process.env.SEPOLIA_URL ||
         `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
-    goerli: {
-      url:
-        process.env.GOERLI_URL ||
-        `https://goerli.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
     sepolia: {
@@ -106,12 +90,6 @@ const config: HardhatUserConfig = {
         process.env.BSC_TESTNET_URL || `https://bsc-testnet-rpc.publicnode.com`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
-    arb_goerli: {
-      url:
-        process.env.ARB_GOERLI_URL ||
-        `https://arb-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
     mantle_testnet: {
       url: process.env.MANTLE_TESTNET_URL || `https://rpc.testnet.mantle.xyz/`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
@@ -120,9 +98,8 @@ const config: HardhatUserConfig = {
       url: process.env.MERLIN_TEST_URL || `https://testnet-rpc.merlinchain.io`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
-
-    mumbai: {
-      url: process.env.MUMBAI_URL || `https://rpc-mumbai.maticvigil.com/`,
+    amoy: {
+      url: process.env.AMOY_URL || `https://rpc-amoy.polygon.technology`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
     ailayer_test: {

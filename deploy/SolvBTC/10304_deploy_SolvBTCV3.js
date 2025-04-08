@@ -14,7 +14,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const tokenSymbol = 'SolvBTC';
 
   const owner = deployer;
-  const blacklistManager = deployer;
+  const blacklistManagers = {};
+  const blacklistManager = blacklistManagers[network.name] || deployer;
 
   let proxyAddress = await solvBTCFactoryV3.getProxy(productType, productName);
   if (proxyAddress == ethers.constants.AddressZero) {

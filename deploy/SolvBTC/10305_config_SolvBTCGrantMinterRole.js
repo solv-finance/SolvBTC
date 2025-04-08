@@ -6,7 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
 
   const SolvBTCFactory = await ethers.getContractFactory('SolvBTCV3', deployer);
-  const solvBTCAddress = require('./10399_export_SolvBTCInfos').SolvBTCInfos[network.name].erc20;
+  const solvBTCAddress = require('./10399_export_SolvBTCV3Infos').SolvBTCInfos[network.name].erc20;
   const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
 
   const solvBTCMultiAssetPoolAddress = (await deployments.get('SolvBTCMultiAssetPoolProxy')).address;
