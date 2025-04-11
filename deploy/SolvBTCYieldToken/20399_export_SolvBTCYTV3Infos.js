@@ -4,7 +4,7 @@ const SolvBTCYieldTokenFactoryV3Addresses = {
   mainnet: "0x86fC77cfe9F7d6a84097E9B73bd32cA185fdb12a",
   avax: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   soneium: "0xF233c5cac3177c70a554C0178cFA85f61D97622B",
-  polygon: "",
+  polygon: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
 };
 
 const SolvBTCYieldTokenV3BeaconAddresses = {
@@ -13,7 +13,7 @@ const SolvBTCYieldTokenV3BeaconAddresses = {
   mainnet: "0x27F2328aFeF3af851753E3Eca5E7d2281c3C22F6",
   avax: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   soneium: "0x11d174BF28F2E71B7c1FCB157096e44E74bA8585",
-  polygon: "",
+  polygon: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -41,7 +41,7 @@ const SolvBTCYieldTokenInfos = {
   },
   polygon: {
     "xSolvBTC": {
-      erc20: "",
+      erc20: "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077",
       sft: "",
       slot: "",
       poolId: "",

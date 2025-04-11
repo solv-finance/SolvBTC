@@ -39,12 +39,16 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     )} on ${colors.red(network.name)}`
   );
 
+  
+  const SolvBTCFactoryV3Factory = await ethers.getContractFactory('SolvBTCFactoryV3', deployer);
+  const solvBTCFactoryV3 = SolvBTCFactoryV3Factory.attach(instance.address);
+
   // transfer admin to safe wallet
   if (safeAdmins[network.name]) {
     const safeAdmin = safeAdmins[network.name];
-    const currentAdmin = await solvBTCYieldTokenFactoryV3.admin();
+    const currentAdmin = await solvBTCFactoryV3.admin();
     if (currentAdmin.toLowerCase() != safeAdmin.toLowerCase()) {
-      const transferAdminTx = await solvBTCYieldTokenFactoryV3.transferAdmin(safeAdmin);
+      const transferAdminTx = await solvBTCFactoryV3.transferAdmin(safeAdmin);
       console.log(`* INFO: Transfer admin to ${safeAdmin} at ${transferAdminTx.hash}`);
       await transferAdminTx.wait();
     }
