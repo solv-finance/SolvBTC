@@ -14,7 +14,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const tokenSymbol = 'SolvBTC';
 
   const owner = deployer;
-  const blacklistManagers = {};
+  const blacklistManagers = {
+    polygon: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+  };
   const blacklistManager = blacklistManagers[network.name] || deployer;
 
   let proxyAddress = await solvBTCFactoryV3.getProxy(productType, productName);
@@ -30,7 +32,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     console.log(`* INFO: SolvBTC already deployed at ${colors.yellow(proxyAddress)}`);
   }
 
-  const SolvBTCV3Factory_ = await ethers.getContractFactory('SolvBTCV3', deployer);
+  const SolvBTCV3Factory_ = await ethers.getContractFactory('SolvBTCV3_1', deployer);
   const solvBTCV3Address = await solvBTCFactoryV3.getProxy(productType, productName);
   const solvBTCV3 = SolvBTCV3Factory_.attach(solvBTCV3Address);
 

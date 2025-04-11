@@ -19,6 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const governor = deployer;
   const safeAdmins = {
     soneium: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    polygon: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
   const instance = await deploy("SolvBTCFactoryV3", {
