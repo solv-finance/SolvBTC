@@ -7,7 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const gasPrice = await gasTracker.getGasPrice(network.name);
 
   const governor = deployer;
-  const market = require('../SolvBTC/10999_export_SolvBTCInfos').OpenFundMarketAddresses[network.name];
+  const market = require('../SolvBTC/10099_export_SolvBTCInfos').OpenFundMarketAddresses[network.name];
   const solvBTCYieldTokenMultiAssetPool = (await deployments.get('SolvBTCYieldTokenMultiAssetPoolProxy')).address;
 
   const contractName = 'SolvBTCRouter';

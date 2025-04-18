@@ -4,7 +4,6 @@ const gasTracker = require('../utils/gasTracker');
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const { deployer } = await getNamedAccounts();
-  const gasPrice = await gasTracker.getGasPrice(network.name);
 
   const contractName = 'SolvBTCMultiAssetPool';
   const firstImplName = contractName + 'Impl';

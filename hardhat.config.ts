@@ -177,6 +177,10 @@ const config: HardhatUserConfig = {
       url: process.env.MONAD_TEST_RPC_URL || `https://rpc.monad.network`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
+    ink_test: {
+      url: process.env.INK_TEST_RPC_URL || `https://rpc-gel-sepolia.inkonchain.com`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
@@ -270,6 +274,10 @@ const config: HardhatUserConfig = {
       url: process.env.SONEIUM_URL || `https://rpc.soneium.org/`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
+    ink: {
+      url: process.env.INK_URL || `https://rpc-gel.inkonchain.com`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    }
   },
 
   etherscan: {
@@ -277,6 +285,7 @@ const config: HardhatUserConfig = {
       mainnet: process.env.ETHERSCAN_API_KEY || "",
       bsc: process.env.BSCSCAN_API_KEY || "",
       arb: process.env.ARBISCAN_API_KEY || "",
+      polygon: process.env.POLYSCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",
       merlin: process.env.MERLINSCAN_API_KEY || "",
       mantle: "mantle",

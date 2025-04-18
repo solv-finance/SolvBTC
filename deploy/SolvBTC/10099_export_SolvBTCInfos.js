@@ -11,6 +11,7 @@ const OpenFundMarketAddresses = {
   rootstock_test: "0xc8DBd2edC8F8Ee43958cAa08bb9A3D32E3E5E0c2",
   soneium_test: "0xb286E7B265da1e67F1Bfb0A61E26a261f82Bd270",
   monad_test: "0xbd0AD78C460d3E67426c5F4e470F470D071A7cA9",
+  ink_test: "0xEF375CE335123F6a290aBA9da229d0828569336d",
   mainnet: "0x57bB6a8563a8e8478391C79F3F433C6BA077c567",
   arb: "0x629aD7Bc14726e9cEA4FCb3A7b363D237bB5dBE8",
   bsc: "0xaE050694c137aD777611286C316E5FDda58242F3",
@@ -24,6 +25,7 @@ const OpenFundMarketAddresses = {
   linea: "0xf5a247157656678398B08d3eFa1673358C611A3f",
   rootstock: "0x6c8dA184B019E6C4Baa710113c0d9DE68A693B1f",
   soneium: "0xB381fD599649322b143978f8a1fCa0cB41a4Ab5a",
+  ink: "",
 };
 
 const SolvBTCFactoryAddresses = {
@@ -106,6 +108,7 @@ const SolvBTCMultiAssetPoolAddresses = {
   rootstock_test: "0xDbeFE6A6aFA590358b951d989F73824baA6E3008",
   soneium_test: "0xA853A738d3D86e1cd24b79bdB16916F57e8F9886",
   monad_test: "0x5817Df96AEd5741591278e37df1225FE2eacd357",
+  ink_test: "0x1cCe72c6C640EC14685fc6A647A7155F6f679EcC",
   amoy: "0xDbeFE6A6aFA590358b951d989F73824baA6E3008",
   mainnet: "0x1d5262919C4AAb745A8C9dD56B80DB9FeaEf86BA",
   arb: "0xf00aa0442bD2abFA2Fe20B12a1f88104A61037c7",
@@ -120,6 +123,7 @@ const SolvBTCMultiAssetPoolAddresses = {
   linea: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
   rootstock: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
   soneium: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
+  ink: "",
 };
 
 const SolvBTCInfos = {

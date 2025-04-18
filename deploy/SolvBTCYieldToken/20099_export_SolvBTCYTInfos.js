@@ -67,6 +67,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   linea_test: "0x329DB5Aa10CcBCB2628A50672d6520ECD45b50bC",
   soneium_test: "0x8a93B5e7110F406eD4164BA70588a8412c0A87A0",
   monad_test: "0x4A49F801843cdC4A763b5C3ec0d5FF0775a8Bc79",
+  ink_test: "0xF67F05996108917DF6Bbc17714E0436EB1cb5d84",
   mainnet: "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
   arb: "0x0679E96f5EEDa5313099f812b558714717AEC176",
   bsc: "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
@@ -80,6 +81,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   linea: "0x5b60F7e24Ac48C1146d1aedb6a72B62c83378730",
   rootstock: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
   soneium: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+  ink: "",
 };
 
 const SolvBTCYieldTokenInfos = {

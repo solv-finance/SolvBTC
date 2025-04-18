@@ -11,6 +11,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     sepolia: "_tnt" + version,
     bsctest: "_tnt" + version,
     amoy: "_tnt" + version,
+    ink_test: "_tnt" + version,
   };
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;
@@ -20,6 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const safeAdmins = {
     soneium: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     polygon: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    ink: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
   const instance = await deploy("SolvBTCFactoryV3", {
