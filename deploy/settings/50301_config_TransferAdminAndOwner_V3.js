@@ -69,9 +69,9 @@ module.exports = async ({ getNamedAccounts, network }) => {
   const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", deployer);
 
   // SolvBTC
-  // const solvBTCAddress = require("../SolvBTC/10399_export_SolvBTCV3Infos").SolvBTCInfos[network.name].erc20;
-  // const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
-  // await transferAdminAndOwner("SolvBTC", solvBTC);
+  const solvBTCAddress = require("../SolvBTC/10399_export_SolvBTCV3Infos").SolvBTCInfos[network.name].erc20;
+  const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
+  await transferAdminAndOwner("SolvBTC", solvBTC);
 
   // SolvBTCYieldTokens
   const solvBTCYieldTokenInfos = require("../SolvBTCYieldToken/20399_export_SolvBTCYTV3Infos").SolvBTCYieldTokenInfos;
