@@ -56,10 +56,10 @@ const SolvBTCYieldTokenInfos = {
   ink: {
     "xSolvBTC": {
       erc20: "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077",
-      sft: "",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
       slot: "",
       poolId: "",
-      navOracle: "",
+      navOracle: "0x600Fb9600444fb8373bF9A112Ae0977F6676c564",
       holdingValueSftId: 0,
     },
   },
