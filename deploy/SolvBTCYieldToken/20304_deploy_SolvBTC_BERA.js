@@ -10,13 +10,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenFactoryV3 = SolvBTCYieldTokenFactoryV3Factory.attach(solvBTCYieldTokenFactoryV3Address);
 
   const productType = "SolvBTC Yield Token";
-  const productName = "xSolvBTC";
-  const tokenName = "xSolvBTC";
-  const tokenSymbol = "xSolvBTC";
+  const productName = "SolvBTC Bera Vault";
+  const tokenName = "SolvBTC Bera Vault";
+  const tokenSymbol = "SolvBTC.BERA";
 
   const blacklistManagers = {
     mainnet: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+    bsc: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     avax: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+    bob: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     soneium: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     polygon: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     ink: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",

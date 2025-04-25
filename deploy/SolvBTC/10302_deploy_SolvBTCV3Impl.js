@@ -28,6 +28,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     corn_test: "_tnt" + version,
     amoy: "_tnt" + version,
     ink_test: "_tnt" + version,
+    hyperevm_test: "_tnt" + version,
   };
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;

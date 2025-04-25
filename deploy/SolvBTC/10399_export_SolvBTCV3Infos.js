@@ -25,14 +25,26 @@ const SolvBTCInfos = {
     erc20: "0xa0CEbaB0b0918b09a8D39917c3Bd961402B7291A",
     holdingValueSftId: 0,
   },
+  hyperevm_test: {
+    sft: "",
+    slot: "",
+    erc20: "0xa0CEbaB0b0918b09a8D39917c3Bd961402B7291A",
+    holdingValueSftId: 0,
+  },
   polygon: {
     sft: "",
     slot: "",
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
     holdingValueSftId: 0,
   },
-  ink: {
+  ink: {  // id = 350
     sft: "0x1f4D23513C3eF0D63B97BBD2cE7C845Ebb1CF1ce",
+    slot: "78908435061005241208597124183970788172052752205035978365903093961294268813828",
+    erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
+    holdingValueSftId: 0,
+  },
+  hyperevm: {
+    sft: "",
     slot: "",
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
     holdingValueSftId: 0,
