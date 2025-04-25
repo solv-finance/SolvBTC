@@ -65,4 +65,4 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 };
 
-module.exports.tags = ['xSolvBTC']
+module.exports.tags = ['SolvBTCV3_BERA']

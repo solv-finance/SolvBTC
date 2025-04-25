@@ -4,9 +4,9 @@ const SolvBTCYieldTokenFactoryV3Addresses = {
   ink_test: "0xE081Dd28Dfd3001F851CFb5bA8279F1C2B8b92b5",
   hyperevm_test: "0xE081Dd28Dfd3001F851CFb5bA8279F1C2B8b92b5",
   mainnet: "0x86fC77cfe9F7d6a84097E9B73bd32cA185fdb12a",
-  bsc: "",
+  bsc: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   avax: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
-  bob: "",
+  bob: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   soneium: "0xF233c5cac3177c70a554C0178cFA85f61D97622B",
   polygon: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   ink: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
@@ -19,9 +19,9 @@ const SolvBTCYieldTokenV3BeaconAddresses = {
   ink_test: "0x25883B7Aea8775C32699A01D7edaE557219E03d3",
   hyperevm_test: "0x25883B7Aea8775C32699A01D7edaE557219E03d3",
   mainnet: "0x27F2328aFeF3af851753E3Eca5E7d2281c3C22F6",
-  bsc: "",
+  bsc: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   avax: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
-  bob: "",
+  bob: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   soneium: "0x11d174BF28F2E71B7c1FCB157096e44E74bA8585",
   polygon: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   ink: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
@@ -41,7 +41,7 @@ const SolvBTCYieldTokenInfos = {
   },
   bsc: {
     "SolvBTC Bera Vault": {  // id = 352
-      erc20: "",
+      erc20: "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",
       sft: "0xB816018E5d421E8b809A4dc01aF179D86056eBDF",
       slot: "70222896071207762779953378931956679402408390821663654047017958775368527671200",
       poolId: "0x0b2bb30466fb1d5b0c664f9a6e4e1a90d5c8bc5abaecd823563641d6fc5ae57a",
@@ -61,7 +61,7 @@ const SolvBTCYieldTokenInfos = {
   },
   bob: {
     "SolvBTC Bera Vault": {  // id = 353
-      erc20: "",
+      erc20: "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",
       sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
       slot: "55617451925192291987943078869523025238057240556376942035959585371788117273753",
       poolId: "0xdecbbc2d7327df6a7123775568b05eb192cc30c3156fe875698689d70dbc7d2c",
