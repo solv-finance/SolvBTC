@@ -26,6 +26,7 @@ const OpenFundMarketAddresses = {
   rootstock: "0x6c8dA184B019E6C4Baa710113c0d9DE68A693B1f",
   soneium: "0xB381fD599649322b143978f8a1fCa0cB41a4Ab5a",
   ink: "0xBa891CE042BdB092C450D242c05DB44d7e5Bb728",
+  bera: "0x56a4d805d7A292f03Ead5Be31E0fFB8f7d0E3B48",
 };
 
 const SolvBTCFactoryAddresses = {
