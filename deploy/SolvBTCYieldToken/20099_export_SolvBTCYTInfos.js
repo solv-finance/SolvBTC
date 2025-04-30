@@ -25,6 +25,7 @@ const SolvBTCYieldTokenFactoryAddresses = {
   linea: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   rootstock: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
   soneium: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
+  bera: "0x7DF05aD635456a07ae77Eb5468cA7d0b44687271",
 };
 
 const SolvBTCYieldTokenBeaconAddresses = {
@@ -51,6 +52,7 @@ const SolvBTCYieldTokenBeaconAddresses = {
   linea: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   rootstock: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
   soneium: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
+  bera: "0x0FBF8f2b2ac5e57624848596b704be0949B49038",
 };
 
 const SolvBTCYieldTokenMultiAssetPoolAddresses = {
@@ -81,6 +83,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   linea: "0x5b60F7e24Ac48C1146d1aedb6a72B62c83378730",
   rootstock: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
   soneium: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+  bera: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
   ink: "0x90dC5Df364B42e182744e2B7DF254d3Ce48f8Aa0",
 };
 
@@ -553,6 +556,16 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 0,
     },
   },
+  bera: {
+    "xSolvBTC": {  // id = 355
+      erc20: "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
+      slot: "106364849777571868594476339325600973338617958733204578422008243301772891782637",
+      poolId: "0x2716ab5b436a50e2a32950745dd1984909642afd749bb216709dfc2a993d11ca",
+      navOracle: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
+      holdingValueSftId: 0,
+    },
+  }
 };
 
 module.exports = {

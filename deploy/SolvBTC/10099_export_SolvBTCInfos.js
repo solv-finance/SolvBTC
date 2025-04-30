@@ -59,6 +59,7 @@ const SolvBTCFactoryAddresses = {
   linea: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   rootstock: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
   soneium: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
+  bera: "0x443628281E4f3E5b5A5D029B9a0D13900ae41578",
 };
 
 const SolvBTCBeaconAddresses = {
@@ -90,6 +91,7 @@ const SolvBTCBeaconAddresses = {
   linea: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
   rootstock: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
   soneium: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
+  bera: "0x73903D48664C92EcafbE1c12c6fFe36C95C8691f",
 };
 
 const SolvBTCMultiAssetPoolAddresses = {
@@ -124,8 +126,8 @@ const SolvBTCMultiAssetPoolAddresses = {
   linea: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
   rootstock: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
   soneium: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
-  ink: "0x4f4abCA989A97C216cF842651fBA93aBF7D748DD",
-};
+  bera: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
+  ink: "0x4f4abCA989A97C216cF842651fBA93aBF7D748DD",};
 
 const SolvBTCInfos = {
   dev_sepolia: {
@@ -299,10 +301,9 @@ const SolvBTCInfos = {
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
   },
-  bera: {
-    //only cross-chain
-    sft: "",
-    slot: "",
+  bera: {  // id = 354
+    sft: "0x1f4D23513C3eF0D63B97BBD2cE7C845Ebb1CF1ce",
+    slot: "73054730711870722933844565498985369099913996007027537845134272683003526055870",
     erc20: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
     holdingValueSftId: 0,
   },
