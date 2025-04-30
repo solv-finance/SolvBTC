@@ -83,7 +83,7 @@ const SolvBTCYieldTokenInfos = {
   },
   bera: {
     "SolvBTC Bera Vault": {  // id = 
-      erc20: "",
+      erc20: "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",
       sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
       slot: "",
       poolId: "",
