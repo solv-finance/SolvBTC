@@ -3,6 +3,7 @@ const SolvBTCFactoryV3Addresses = {
   ink_test: "0x1EEcD600819594308728383fAd726bfE548c8e2a",
   polygon: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
   ink: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
+  hyperevm: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
 };
 
 const SolvBTCBeaconV3Addresses = {
@@ -10,6 +11,7 @@ const SolvBTCBeaconV3Addresses = {
   ink_test: "0xC13C41f979Ef27EfaA1729c97b5b0db586BFd86E",
   polygon: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
   ink: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
+  hyperevm: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
 };
 
 const SolvBTCInfos = {

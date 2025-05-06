@@ -277,6 +277,10 @@ const config: HardhatUserConfig = {
     ink: {
       url: process.env.INK_URL || `https://rpc-gel.inkonchain.com`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    },
+    hyperevm: {
+      url: process.env.HYPEREVM_URL || `https://rpc.hyperliquid.xyz/evm`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
     }
   },
 
