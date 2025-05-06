@@ -181,6 +181,10 @@ const config: HardhatUserConfig = {
       url: process.env.INK_TEST_RPC_URL || `https://rpc-gel-sepolia.inkonchain.com`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
     },
+    hyperevm_test: {
+      url: process.env.HYPEREVM_TEST_RPC_URL || `https://rpc.hyperliquid-testnet.xyz/evm`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
