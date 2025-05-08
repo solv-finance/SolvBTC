@@ -27,6 +27,7 @@ const OpenFundMarketAddresses = {
   soneium: "0xB381fD599649322b143978f8a1fCa0cB41a4Ab5a",
   ink: "0xBa891CE042BdB092C450D242c05DB44d7e5Bb728",
   bera: "0x56a4d805d7A292f03Ead5Be31E0fFB8f7d0E3B48",
+  hyperevm: "0x48780A97Cd325B8E03661F17a848159e14aaec8D",
 };
 
 const SolvBTCFactoryAddresses = {
@@ -128,7 +129,9 @@ const SolvBTCMultiAssetPoolAddresses = {
   rootstock: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
   soneium: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
   bera: "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
-  ink: "0x4f4abCA989A97C216cF842651fBA93aBF7D748DD",};
+  ink: "0x4f4abCA989A97C216cF842651fBA93aBF7D748DD",
+  hyperevm: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb"
+};
 
 const SolvBTCInfos = {
   dev_sepolia: {

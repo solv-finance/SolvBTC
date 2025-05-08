@@ -85,6 +85,7 @@ const SolvBTCYieldTokenMultiAssetPoolAddresses = {
   soneium: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
   bera: "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
   ink: "0x90dC5Df364B42e182744e2B7DF254d3Ce48f8Aa0",
+  hyperevm: "0x2DC5392c35e6682ed27EDE187AC159BA020a5eda",
 };
 
 const SolvBTCYieldTokenInfos = {

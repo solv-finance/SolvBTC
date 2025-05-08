@@ -104,10 +104,18 @@ const SolvBTCYieldTokenInfos = {
   hyperevm: {
     "xSolvBTC": {
       erc20: "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077",
-      sft: "",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
       slot: "",
       poolId: "",
-      navOracle: "",
+      navOracle: "0x1E6101728fD9920465dfA1562c5e371850103da2",
+      holdingValueSftId: 0,
+    },
+    "SolvBTC BNB": {
+      erc20: "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
+      slot: "",
+      poolId: "",
+      navOracle: "0x1E6101728fD9920465dfA1562c5e371850103da2",
       holdingValueSftId: 0,
     },
   },

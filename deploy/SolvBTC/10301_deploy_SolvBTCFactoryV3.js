@@ -36,6 +36,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "SolvBTCFactoryV3" + deterministicSuffix
       )
     ),
+    type: "evmUserModify",
+    usingBigBlocks: true,
   });
   console.log(
     `* INFO: ${colors.yellow(`SolvBTCFactoryV3`)} deployed at ${colors.green(

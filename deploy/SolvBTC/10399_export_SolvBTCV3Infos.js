@@ -48,7 +48,7 @@ const SolvBTCInfos = {
     holdingValueSftId: 0,
   },
   hyperevm: {
-    sft: "",
+    sft: "0x1f4D23513C3eF0D63B97BBD2cE7C845Ebb1CF1ce",
     slot: "",
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
     holdingValueSftId: 0,
