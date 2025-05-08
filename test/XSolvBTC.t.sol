@@ -33,7 +33,7 @@ contract xSolvBTCTest is Test {
     address internal constant solvBTCBera = 0xE7C253EAD50976Caf7b0C2cbca569146A7741B50;
     address internal constant WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
     address internal constant FEE_RECIPIENT = 0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D;
-    uint256 internal constant WITHDRAW_FEE_RATE = 100; // 1%
+    uint64 internal constant WITHDRAW_FEE_RATE = 100; // 1%
     address internal constant ADMIN = 0x55C09707Fd7aFD670e82A62FaeE312903940013E;
     address internal constant OWNER = 0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D;
     address internal constant MINTER = 0x0679E96f5EEDa5313099f812b558714717AEC176;
@@ -130,7 +130,7 @@ contract xSolvBTCTest is Test {
 
     function test_xSolvBTCPool_setWithdrawFeeRateOnlyAdmin() public {
         vm.startPrank(ADMIN);
-        uint256 expectedWithdrawFeeRate = 550;
+        uint64 expectedWithdrawFeeRate = 550;
         XSolvBTCPool(xSolvBTCPool).setWithdrawFeeRateOnlyAdmin(expectedWithdrawFeeRate);
         assertEq(XSolvBTCPool(xSolvBTCPool).withdrawFeeRate(), expectedWithdrawFeeRate);
         vm.stopPrank();
@@ -195,7 +195,7 @@ contract xSolvBTCTest is Test {
             address(impl),
             address(proxyAdmin),
             abi.encodeWithSignature(
-                "initialize(address,address,address,uint256)", solvBTC, xSolvBTC, FEE_RECIPIENT, WITHDRAW_FEE_RATE
+                "initialize(address,address,address,uint64)", solvBTC, xSolvBTC, FEE_RECIPIENT, WITHDRAW_FEE_RATE
             )
         );
         vm.stopPrank();

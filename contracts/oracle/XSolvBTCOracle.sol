@@ -6,7 +6,7 @@ import "../ISolvBTCYieldTokenOracle.sol";
 import "../access/AdminControlUpgradeable.sol";
 
 contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
-    uint256 public currentNav;
+    uint256 private _currentNav;
     uint8 private _navDecimals;
     address public xSolvBTC;
 
@@ -14,13 +14,13 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
 
     function initialize(uint256 currentNav_, uint8 navDecimals_) external initializer {
         __AdminControl_init(msg.sender);
-        currentNav = currentNav_;
+        _currentNav = currentNav_;
         _navDecimals = navDecimals_;
     }
 
     function getNav(address erc20_) external view override returns (uint256) {
         require(erc20_ == xSolvBTC, "XSolvBTCOracle: invalid erc20 address");
-        return currentNav;
+        return _currentNav;
     }
 
     function navDecimals(address erc20_) external view override returns (uint8) {
@@ -29,8 +29,8 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     }
 
     function setCurrentNav(uint256 currentNav_) external onlyAdmin {
-        uint256 oldCurrentNav = currentNav;
-        currentNav = currentNav_;
+        uint256 oldCurrentNav = _currentNav;
+        _currentNav = currentNav_;
         emit SetCurrentNav(oldCurrentNav, currentNav_);
     }
 
