@@ -61,7 +61,9 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
     // ERC20 => multiAssetPool
     mapping(address => address) public multiAssetPools;
 
-    bytes32 public constant X_SOLV_BTC_POOL_ID = bytes32(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
+    //use a special poolId to represent the xSolvBTC pool
+    bytes32 public constant X_SOLV_BTC_POOL_ID =
+        bytes32(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -91,7 +93,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
             address receivedToken = i == path.length ? targetToken_ : path[i];
             bytes32 targetPoolId = poolIds[receivedToken][paidToken];
             pathPoolIds[i] = targetPoolId;
-            // xSolvBTC
+            // if the targetPoolId is the xSolvBTC pool, deposit to xSolvBTC pool
             if (targetPoolId == bytes32(X_SOLV_BTC_POOL_ID)) {
                 targetTokenAmount_ = _depositToXSolvBTC(receivedToken, targetTokenAmount_);
             } else {

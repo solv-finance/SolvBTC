@@ -75,45 +75,47 @@ contract xSolvBTCTest is Test {
 
     function test_XSolvBTCPool_depositSolvBTCToXSolvBTC() public {
         vm.startPrank(USER_1);
-        uint256 depositAmount = 1000 * 10 ** 18;
-        deal(solvBTC, USER_1, depositAmount);
+        uint256 depositSolvBTCAmount = 1000 * 10 ** 18;
+        uint256 expectedXSolvBTCAmount = SolvBTCYieldToken(xSolvBTC).getSharesByValue(depositSolvBTCAmount);
+        deal(solvBTC, USER_1, depositSolvBTCAmount);
         uint256 totalSupplyBeforeOfSolvBTC = IERC20(solvBTC).totalSupply();
         uint256 totalSupplyBeforeOfXSolvBTC = IERC20(xSolvBTC).totalSupply();
         uint256 balanceBeforeOfUser1OfSolvBTC = IERC20(solvBTC).balanceOf(USER_1);
         uint256 balanceBeforeOfUser1OfXSolvBTC = IERC20(xSolvBTC).balanceOf(USER_1);
-        IERC20(solvBTC).approve(xSolvBTCPool, depositAmount);
-        IxSolvBTCPool(xSolvBTCPool).deposit(depositAmount);
+        IERC20(solvBTC).approve(xSolvBTCPool, depositSolvBTCAmount);
+        IxSolvBTCPool(xSolvBTCPool).deposit(depositSolvBTCAmount);
         uint256 totalSupplyAfterOfSolvBTC = IERC20(solvBTC).totalSupply();
         uint256 totalSupplyAfterOfXSolvBTC = IERC20(xSolvBTC).totalSupply();
         uint256 balanceAfterOfUser1OfSolvBTC = IERC20(solvBTC).balanceOf(USER_1);
         uint256 balanceAfterOfUser1OfXSolvBTC = IERC20(xSolvBTC).balanceOf(USER_1);
-        assertEq(totalSupplyAfterOfSolvBTC, totalSupplyBeforeOfSolvBTC - depositAmount);
-        assertEq(totalSupplyAfterOfXSolvBTC, totalSupplyBeforeOfXSolvBTC + depositAmount);
-        assertEq(balanceAfterOfUser1OfSolvBTC, balanceBeforeOfUser1OfSolvBTC - depositAmount);
-        assertEq(balanceAfterOfUser1OfXSolvBTC, balanceBeforeOfUser1OfXSolvBTC + depositAmount);
+        assertEq(totalSupplyAfterOfSolvBTC, totalSupplyBeforeOfSolvBTC - depositSolvBTCAmount);
+        assertEq(totalSupplyAfterOfXSolvBTC, totalSupplyBeforeOfXSolvBTC + expectedXSolvBTCAmount);
+        assertEq(balanceAfterOfUser1OfSolvBTC, balanceBeforeOfUser1OfSolvBTC - depositSolvBTCAmount);
+        assertEq(balanceAfterOfUser1OfXSolvBTC, balanceBeforeOfUser1OfXSolvBTC + expectedXSolvBTCAmount);
         vm.stopPrank();
     }
 
     function test_XSolvBTCPool_withdrawSolvBTCFromXSolvBTC() public {
         vm.startPrank(USER_1);
-        uint256 withdrawAmount = 1000 * 10 ** 18;
-        deal(xSolvBTC, USER_1, withdrawAmount);
+        uint256 withdrawXSolvBTCAmount = 1000 * 10 ** 18;
+        uint256 expectedWithdrawSolvBTCAmount = SolvBTCYieldToken(xSolvBTC).getValueByShares(withdrawXSolvBTCAmount);
+        deal(xSolvBTC, USER_1, withdrawXSolvBTCAmount);
         uint256 balanceBeforeOfUser1OfSolvBTC = IERC20(solvBTC).balanceOf(USER_1);
         uint256 balanceBeforeOfUser1OfXSolvBTC = IERC20(xSolvBTC).balanceOf(USER_1);
         uint256 totalSupplyBeforeOfSolvBTC = IERC20(solvBTC).totalSupply();
         uint256 totalSupplyBeforeOfXSolvBTC = IERC20(xSolvBTC).totalSupply();
-        uint256 fee = withdrawAmount * WITHDRAW_FEE_RATE / 10000;
+        uint256 fee = expectedWithdrawSolvBTCAmount * WITHDRAW_FEE_RATE / 10000;
         uint256 feeRecipientBalanceBefore = IERC20(solvBTC).balanceOf(FEE_RECIPIENT);
-        IxSolvBTCPool(xSolvBTCPool).withdraw(withdrawAmount);
+        IxSolvBTCPool(xSolvBTCPool).withdraw(withdrawXSolvBTCAmount);
         uint256 totalSupplyAfterOfSolvBTC = IERC20(solvBTC).totalSupply();
         uint256 totalSupplyAfterOfXSolvBTC = IERC20(xSolvBTC).totalSupply();
         uint256 balanceAfterOfUser1OfSolvBTC = IERC20(solvBTC).balanceOf(USER_1);
         uint256 balanceAfterOfUser1OfXSolvBTC = IERC20(xSolvBTC).balanceOf(USER_1);
         uint256 feeRecipientBalanceAfter = IERC20(solvBTC).balanceOf(FEE_RECIPIENT);
-        assertEq(balanceAfterOfUser1OfSolvBTC, balanceBeforeOfUser1OfSolvBTC + withdrawAmount - fee);
-        assertEq(balanceAfterOfUser1OfXSolvBTC, balanceBeforeOfUser1OfXSolvBTC - withdrawAmount);
-        assertEq(totalSupplyAfterOfSolvBTC, totalSupplyBeforeOfSolvBTC + withdrawAmount);
-        assertEq(totalSupplyAfterOfXSolvBTC, totalSupplyBeforeOfXSolvBTC - withdrawAmount);
+        assertEq(balanceAfterOfUser1OfSolvBTC, balanceBeforeOfUser1OfSolvBTC + expectedWithdrawSolvBTCAmount - fee);
+        assertEq(balanceAfterOfUser1OfXSolvBTC, balanceBeforeOfUser1OfXSolvBTC - withdrawXSolvBTCAmount);
+        assertEq(totalSupplyAfterOfSolvBTC, totalSupplyBeforeOfSolvBTC + expectedWithdrawSolvBTCAmount);
+        assertEq(totalSupplyAfterOfXSolvBTC, totalSupplyBeforeOfXSolvBTC - withdrawXSolvBTCAmount);
         assertEq(feeRecipientBalanceAfter, feeRecipientBalanceBefore + fee);
 
         vm.stopPrank();
@@ -175,7 +177,7 @@ contract xSolvBTCTest is Test {
         XSolvBTCPool(xSolvBTCPool).setFeeRecipientOnlyAdmin(USER_1);
         vm.stopPrank();
     }
-    /* uncomment when SolvBTCBera deposit is open
+    /* uncomment when SolvBTC.Bera deposit is open
     function test_SolvBTCRouterV2_depositWBTCToSolvBTCBera() public {
         vm.startPrank(USER_1);
         uint256 depositAmount = 1000 * 10 ** 18;
@@ -208,11 +210,10 @@ contract xSolvBTCTest is Test {
         XSolvBTCOracle impl = new XSolvBTCOracle{salt: implSalt}();
         bytes32 proxySalt = keccak256(abi.encodePacked(impl));
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy{salt: proxySalt}(
-            address(impl),
-            address(proxyAdmin),
-            abi.encodeWithSignature("initialize(uint256,uint8)", 1000000000000000000, 18)
+            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(uint8)", 18)
         );
         XSolvBTCOracle(address(proxy)).setXSolvBTC(xSolvBTC);
+        XSolvBTCOracle(address(proxy)).setNav(block.timestamp, 1.2e18);
         vm.stopPrank();
         return address(proxy);
     }
