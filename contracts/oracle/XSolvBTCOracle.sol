@@ -16,8 +16,8 @@ import "../access/AdminControlUpgradeable.sol";
 contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     uint8 private _navDecimals;
     address public xSolvBTC;
-    mapping(uint256 => uint256) private _navs;
-    uint256 private _updatedAt;
+    uint256 private _latestUpdatedAt;
+    uint256 private _latestNav;
 
     event SetNav(uint256 navTime, uint256 nav);
 
@@ -41,16 +41,8 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      */
     function getNav(address erc20_) external view override returns (uint256) {
         require(erc20_ == xSolvBTC, "XSolvBTCOracle: invalid erc20 address");
-
-        uint256 navTime = _getDate(block.timestamp);
-        uint256 nav = _navs[navTime];
-        if (nav == 0 && _updatedAt != 0 && navTime >= _updatedAt) {
-            nav = _navs[_updatedAt];
-        }
-
-        require(nav != 0, "XSolvBTCOracle: nav not set");
-
-        return nav;
+        require(_latestNav != 0, "XSolvBTCOracle: nav not set");
+        return _latestNav;
     }
 
     /**
@@ -64,16 +56,22 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     }
 
     /**
+     * @notice Get the latest updated at
+     * @return latestUpdatedAt The latest updated at
+     */
+    function latestUpdatedAt() external view returns (uint256) {
+        return _latestUpdatedAt;
+    }
+
+    /**
      * @notice Set the nav of xSolvBTC
-     * @param navTime_ The time of the nav
      * @param nav_ The nav of xSolvBTC
      */
-    function setNav(uint256 navTime_, uint256 nav_) external onlyAdmin {
-        uint256 navTime = _getDate(navTime_);
-        require(navTime >= _updatedAt, "XSolvBTCOracle: invalid nav time");
-        _navs[navTime] = nav_;
-        _updatedAt = navTime;
-        emit SetNav(navTime, nav_);
+    function setNav(uint256 nav_) external onlyAdmin {
+        require(nav_ != 0, "XSolvBTCOracle: invalid nav");
+        _latestNav = nav_;
+        _latestUpdatedAt = block.timestamp;
+        emit SetNav(_latestUpdatedAt, nav_);
     }
 
     /**

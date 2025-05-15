@@ -38,59 +38,22 @@ contract XSolvBTCOracleTest is Test {
 
     function test_SetNav() public {
         vm.startPrank(ADMIN);
-        oracle.setNav(block.timestamp, 1e18);
-        vm.stopPrank();
-        assertEq(oracle.getNav(xSolvBTC), 1e18);
-    }
-
-    function test_GetYesterdayNav() public {
-        vm.startPrank(ADMIN);
-        uint256 yesterday = block.timestamp - 1 days;
-        oracle.setNav(yesterday, 1.3e18);
-        vm.stopPrank();
-        assertEq(oracle.getNav(xSolvBTC), 1.3e18);
-    }
-
-    function test_GetTodayNav() public {
-        vm.startPrank(ADMIN);
-        oracle.setNav(block.timestamp, 1e18);
-        vm.stopPrank();
-        assertEq(oracle.getNav(xSolvBTC), 1e18);
-    }
-
-    function test_GetTodayNavWhenTomorrowNavIsSet() public {
-        vm.startPrank(ADMIN);
-        oracle.setNav(block.timestamp, 1.4e18);
-        oracle.setNav(block.timestamp + 1 days, 1.5e18);
+        oracle.setNav(1.4e18);
         vm.stopPrank();
         assertEq(oracle.getNav(xSolvBTC), 1.4e18);
     }
 
-    function test_GetTodayNavWhenYesterdayAndTomorrowNavIsSet() public {
+    function test_GetLatestUpdatedAt() public {
         vm.startPrank(ADMIN);
-        oracle.setNav(block.timestamp - 1 days, 1.4e18);
-        oracle.setNav(block.timestamp, 1.5e18);
-        oracle.setNav(block.timestamp + 1 days, 1.6e18);
+        oracle.setNav(1.4e18);
         vm.stopPrank();
-        assertEq(oracle.getNav(xSolvBTC), 1.5e18);
-        vm.warp(block.timestamp - 1 days);
-        assertEq(oracle.getNav(xSolvBTC), 1.4e18);
-        vm.warp(block.timestamp + 2 days);
-        assertEq(oracle.getNav(xSolvBTC), 1.6e18);
-    }
-
-    function test_RevertWhenNavTimeIsBeforeUpdatedAt() public {
-        vm.startPrank(ADMIN);
-        oracle.setNav(block.timestamp, 1e18);
-        vm.expectRevert("XSolvBTCOracle: invalid nav time");
-        oracle.setNav(block.timestamp - 1 days, 1e18);
-        vm.stopPrank();
+        assertEq(oracle.latestUpdatedAt(), block.timestamp);
     }
 
     function test_RevertWhenSetNavByNonAdmin() public {
         vm.startPrank(USER_1);
         vm.expectRevert("only admin");
-        oracle.setNav(block.timestamp, 1e18);
+        oracle.setNav(1.4e18);
         vm.stopPrank();
     }
 

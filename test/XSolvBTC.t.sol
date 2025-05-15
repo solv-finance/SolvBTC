@@ -177,16 +177,15 @@ contract xSolvBTCTest is Test {
         XSolvBTCPool(xSolvBTCPool).setFeeRecipientOnlyAdmin(USER_1);
         vm.stopPrank();
     }
-    /* uncomment when SolvBTC.Bera deposit is open
+
     function test_SolvBTCRouterV2_depositWBTCToSolvBTCBera() public {
         vm.startPrank(USER_1);
-        uint256 depositAmount = 1000 * 10 ** 18;
+        uint256 depositAmount = 0.001 * 10 ** 6;
         deal(WBTC, USER_1, depositAmount);
         IERC20(WBTC).approve(solvBTCRouterV2, depositAmount);
         SolvBTCRouterV2(solvBTCRouterV2).deposit(solvBTCBera, WBTC, depositAmount);
         vm.stopPrank();
     }
-    */
 
     function _deployXSolvBTCPool() internal returns (address) {
         vm.startPrank(ADMIN);
@@ -213,7 +212,7 @@ contract xSolvBTCTest is Test {
             address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(uint8)", 18)
         );
         XSolvBTCOracle(address(proxy)).setXSolvBTC(xSolvBTC);
-        XSolvBTCOracle(address(proxy)).setNav(block.timestamp, 1.2e18);
+        XSolvBTCOracle(address(proxy)).setNav(1.2e18);
         vm.stopPrank();
         return address(proxy);
     }
