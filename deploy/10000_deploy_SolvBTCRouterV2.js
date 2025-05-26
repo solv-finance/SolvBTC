@@ -180,7 +180,21 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       ],
     ],
     hyperevm: [
-
+      [
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", // target token - SolvBTC
+        "0x9FDBdA0A5e284c32744D2f17Ee5c74B284993463", // currency - UBTC
+        "0x8f7c9f7133da42e0610c8e4ac4cd06d183c8315b8c68632d5ca825eab62b1d51", // 360 fund pool ID
+      ],
+      [
+        "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077", // target token - xSolvBTC
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", // currency - SolvBTC
+        "0x20ab0178dcd647ef0d88df3daa2453e1677b2360cd4f6f98bb4603d7b9b7303a", // 361 fund pool ID
+      ],
+      [
+        "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F", // target token - SolvBTC.BNB
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", // currency - SolvBTC
+        "0xa055402e0286dee50dd8e31a2fc495fe64e0035edf83bc4dd3477bacb6339d20", // 362 fund pool ID
+      ],
     ],
   };
 
