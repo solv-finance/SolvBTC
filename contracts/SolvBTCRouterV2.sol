@@ -5,15 +5,17 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import {IOpenFundMarket, IOFMWhitelistStrategyManager, PoolInfo} from "./external/IOpenFundMarket.sol";
-import {IOpenFundRedemptionDelegate, IOpenFundRedemptionConcrete, RedeemInfo} from "./external/IOpenFundRedemption.sol";
+import {
+    IOpenFundRedemptionDelegate, IOpenFundRedemptionConcrete, RedeemInfo
+} from "./external/IOpenFundRedemption.sol";
 import {IERC721} from "./external/IERC721.sol";
 import {IERC3525} from "./external/IERC3525.sol";
 import {ERC20TransferHelper} from "./utils/ERC20TransferHelper.sol";
 import {ERC3525TransferHelper} from "./utils/ERC3525TransferHelper.sol";
 import {ISolvBTCMultiAssetPool} from "./ISolvBTCMultiAssetPool.sol";
+import {IxSolvBTCPool} from "./IxSolvBTCPool.sol";
 
 contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
-
     event Deposit(
         address indexed targetToken,
         address indexed currency,
@@ -24,19 +26,19 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         bytes32[] poolIds
     );
     event WithdrawRequest(
-        address indexed targetToken, 
-        address indexed currency, 
-        address indexed requester, 
-        bytes32 poolId,
-        uint256 withdrawAmount,
-        uint256 redemptionId 
-    );
-    event CancelWithdrawRequest(
-        address indexed targetToken, 
-        address indexed redemption, 
+        address indexed targetToken,
+        address indexed currency,
         address indexed requester,
         bytes32 poolId,
-        uint256 redemptionId, 
+        uint256 withdrawAmount,
+        uint256 redemptionId
+    );
+    event CancelWithdrawRequest(
+        address indexed targetToken,
+        address indexed redemption,
+        address indexed requester,
+        bytes32 poolId,
+        uint256 redemptionId,
         uint256 targetTokenAmount
     );
     event SetOpenFundMarket(address indexed openFundMarket);
@@ -59,6 +61,10 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
     // ERC20 => multiAssetPool
     mapping(address => address) public multiAssetPools;
 
+    //use a special poolId to represent the xSolvBTC pool
+    bytes32 public constant X_SOLV_BTC_POOL_ID =
+        bytes32(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -70,11 +76,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         __ReentrancyGuard_init();
     }
 
-    function deposit(address targetToken_, address currency_, uint256 currencyAmount_) 
-        external 
-        virtual 
-        nonReentrant 
-        returns (uint256 targetTokenAmount_) 
+    function deposit(address targetToken_, address currency_, uint256 currencyAmount_)
+        external
+        virtual
+        nonReentrant
+        returns (uint256 targetTokenAmount_)
     {
         require(currencyAmount_ > 0, "SolvBTCRouterV2: invalid currency amount");
         ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
@@ -85,12 +91,26 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         for (uint256 i = 0; i <= path.length; i++) {
             address paidToken = i == 0 ? currency_ : path[i - 1];
             address receivedToken = i == path.length ? targetToken_ : path[i];
-            pathPoolIds[i] = poolIds[receivedToken][paidToken];
-            targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_);
+            bytes32 targetPoolId = poolIds[receivedToken][paidToken];
+            pathPoolIds[i] = targetPoolId;
+            // if the targetPoolId is the xSolvBTC pool, deposit to xSolvBTC pool
+            if (targetPoolId == bytes32(X_SOLV_BTC_POOL_ID)) {
+                targetTokenAmount_ = _depositToXSolvBTC(receivedToken, targetTokenAmount_);
+            } else {
+                targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_);
+            }
         }
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
 
         emit Deposit(targetToken_, currency_, msg.sender, targetTokenAmount_, currencyAmount_, path, pathPoolIds);
+    }
+
+    function _depositToXSolvBTC(address targetToken_, uint256 currencyAmount_)
+        internal
+        returns (uint256 targetTokenAmount_)
+    {
+        address xSolvBTCPool = multiAssetPools[targetToken_];
+        return IxSolvBTCPool(xSolvBTCPool).deposit(currencyAmount_);
     }
 
     function _deposit(address targetToken_, address currency_, uint256 currencyAmount_)
@@ -108,14 +128,13 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
         address multiAssetPool = multiAssetPools[targetToken_];
         require(
-            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
+            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
             "SolvBTCRouterV2: target token not match"
         );
 
         ERC20TransferHelper.doApprove(currency_, openFundMarket, currencyAmount_);
-        targetTokenAmount_ = IOpenFundMarket(openFundMarket).subscribe(
-            targetPoolId, currencyAmount_, 0, uint64(block.timestamp + 300)
-        );
+        targetTokenAmount_ =
+            IOpenFundMarket(openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, uint64(block.timestamp + 300));
 
         uint256 shareCount = share.balanceOf(address(this));
         uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
@@ -126,11 +145,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
     }
 
-    function withdrawRequest(address targetToken_, address currency_, uint256 withdrawAmount_) 
+    function withdrawRequest(address targetToken_, address currency_, uint256 withdrawAmount_)
         external
         virtual
         nonReentrant
-        returns (address, uint256) 
+        returns (address, uint256)
     {
         bytes32 targetPoolId = poolIds[targetToken_][currency_];
         require(targetPoolId > 0, "SolvBTCRouterV2: poolId not found");
@@ -143,13 +162,14 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
         address multiAssetPool = multiAssetPools[targetToken_];
         require(
-            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
+            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
             "SolvBTCRouterV2: target token not match"
         );
 
         {
             ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, withdrawAmount_);
-            uint256 shareId = ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
+            uint256 shareId =
+                ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
             require(withdrawAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
 
             ERC3525TransferHelper.doApproveId(address(share), openFundMarket, shareId);
@@ -165,10 +185,10 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         return (address(redemption), redemptionId_);
     }
 
-    function cancelWithdrawRequest(address targetToken_, address redemption_, uint256 redemptionId_) 
-        external 
-        virtual 
-        nonReentrant 
+    function cancelWithdrawRequest(address targetToken_, address redemption_, uint256 redemptionId_)
+        external
+        virtual
+        nonReentrant
         returns (uint256 targetTokenAmount_)
     {
         bytes32 targetPoolId = _getPoolIdByRedemptionId(redemption_, redemptionId_);
@@ -178,7 +198,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
         address multiAssetPool = multiAssetPools[targetToken_];
         require(
-            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot), 
+            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
             "SolvBTCRouterV2: target token not match"
         );
 
@@ -194,7 +214,9 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
 
-        emit CancelWithdrawRequest(targetToken_, redemption_, msg.sender, targetPoolId, redemptionId_, targetTokenAmount_);
+        emit CancelWithdrawRequest(
+            targetToken_, redemption_, msg.sender, targetPoolId, redemptionId_, targetTokenAmount_
+        );
     }
 
     function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
@@ -203,9 +225,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
             return true;
         }
         address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
-        return 
-            IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender) ||
-            checkKycSBT();
+        return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender) || checkKycSBT();
     }
 
     function checkKycSBT() public view virtual returns (bool) {
@@ -262,7 +282,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         for (uint256 i = 0; i < path_.length; i++) {
             require(path_[i] != address(0), "SolvBTCRouterV2: invalid path token");
         }
-        
+
         paths[currency_][targetToken_] = path_;
         emit SetPath(currency_, targetToken_, path_);
     }
