@@ -233,7 +233,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
                 return true;
             }
         }
-        return kycSBTVerifiers.length == 0;
+        return false;
     }
 
     function addKycSBTVerifier(address kycSBTVerifier_) external onlyOwner {
