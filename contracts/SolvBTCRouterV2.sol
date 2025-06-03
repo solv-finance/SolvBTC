@@ -49,8 +49,10 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
     event SetPoolId(address indexed targetToken, address indexed currency, bytes32 indexed poolId);
     event SetMultiAssetPool(address indexed token, address indexed multiAssetPool);
 
+    // the address of OpenFundMarket contract
     address public openFundMarket;
 
+    // the addresses of SBTs that will be used to verify the KYC status
     address[] public kycSBTVerifiers;
 
     // currency => target ERC20 => path(ERC20[])
@@ -62,7 +64,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
     // ERC20 => multiAssetPool
     mapping(address => address) public multiAssetPools;
 
-    //use a special poolId to represent the xSolvBTC pool
+    // use a special poolId to represent the xSolvBTC pool
     bytes32 public constant X_SOLV_BTC_POOL_ID =
         bytes32(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
 
@@ -75,6 +77,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         _disableInitializers();
     }
 
+    /**
+     * @notice Router initialization
+     * @param owner_ The owner and admin role of the contract
+     * @param manager_ The manager of the contract, who is allowed to set the path/poolId/multiAssetPool
+     */
     function initialize(address owner_, address manager_) external initializer {
         require(owner_ != address(0), "SolvBTCRouterV2: invalid admin");
         require(manager_!= address(0), "SolvBTCRouterV2: invalid manager");
@@ -86,6 +93,14 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         _grantRole(MANAGER_ROLE, manager_);
     }
 
+    /**
+     * @notice Deposit currency and get targetToken
+     * @param targetToken_ The target ERC20 token address to receive
+     * @param currency_ The currency address to deposit
+     * @param currencyAmount_ The amount of currency to deposit
+     * @param expireTime_ The expire time
+     * @return targetTokenAmount_ The targetToken amount to receive
+     */
     function deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint64 expireTime_)
         external
         virtual
@@ -155,6 +170,13 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         ISolvBTCMultiAssetPool(multiAssetPool).deposit(address(share), shareId, targetTokenAmount_);
     }
 
+    /**
+     * @notice Withdraw currency with target token from the pool
+     * @param targetToken_ The target ERC20 token address to withdraw
+     * @param currency_ The currency address to receive after claiming
+     * @param withdrawAmount_ The amount of targetToken to withdraw
+     * @return The address and ID of the redemption sft token to receive
+     */
     function withdrawRequest(address targetToken_, address currency_, uint256 withdrawAmount_)
         external
         virtual
@@ -196,6 +218,13 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         return (address(redemption), redemptionId_);
     }
 
+    /**
+     * @notice Cancel the withdraw request
+     * @param targetToken_ The target ERC20 token address to receive after canceling
+     * @param redemption_ The redemption sft token address
+     * @param redemptionId_ The redemption sft token ID
+     * @return targetTokenAmount_ The targetToken amount to receive
+     */
     function cancelWithdrawRequest(address targetToken_, address redemption_, uint256 redemptionId_)
         external
         virtual
@@ -231,6 +260,10 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         );
     }
 
+    /**
+     * @notice Check if msg.sender is allowed to deposit to the pool
+     * @param poolId_ The poolId of the pool to deposit
+     */
     function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
         address _openFundMarket = openFundMarket;
         PoolInfo memory poolInfo = IOpenFundMarket(_openFundMarket).poolInfos(poolId_);
@@ -241,6 +274,9 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender) || checkKycSBT();
     }
 
+    /**
+     * @notice Verify the KYC status of msg.sender
+     */
     function checkKycSBT() public view virtual returns (bool) {
         for (uint256 i = 0; i < kycSBTVerifiers.length; i++) {
             if (IERC721(kycSBTVerifiers[i]).balanceOf(msg.sender) > 0) {
@@ -250,12 +286,20 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         return false;
     }
 
+    /**
+     * @notice Add KYC SBT verifier
+     * @param kycSBTVerifier_ The KYC SBT verifier address
+     */
     function addKycSBTVerifier(address kycSBTVerifier_) external onlyRole(MANAGER_ROLE) {
         require(kycSBTVerifier_ != address(0), "SolvBTCRouterV2: invalid verifier");
         kycSBTVerifiers.push(kycSBTVerifier_);
         emit AddKycSBTVerifier(kycSBTVerifier_);
     }
 
+    /**
+     * @notice Remove KYC SBT verifier
+     * @param kycSBTVerifier_ The KYC SBT verifier address
+     */
     function removeKycSBTVerifier(address kycSBTVerifier_) external onlyRole(MANAGER_ROLE) {
         for (uint256 i = 0; i < kycSBTVerifiers.length; i++) {
             if (kycSBTVerifiers[i] == kycSBTVerifier_) {
@@ -274,6 +318,12 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         return redeemInfo.poolId;
     }
 
+    /**
+     * @notice Set the poolId for a target token and currency
+     * @param targetToken_ The target ERC20 token address to receive
+     * @param currency_ The currency address to deposit
+     * @param poolId_ The poolId of the pool to deposit
+     */
     function setPoolId(address targetToken_, address currency_, bytes32 poolId_) external onlyRole(MANAGER_ROLE) {
         require(targetToken_ != address(0), "SolvBTCRouterV2: invalid targetToken");
         require(currency_ != address(0), "SolvBTCRouterV2: invalid currency");
@@ -283,6 +333,12 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         emit SetPoolId(targetToken_, currency_, poolId_);
     }
 
+    /**
+     * @notice Set the path for a target token and currency
+     * @param currency_ The currency address to deposit
+     * @param targetToken_ The target ERC20 token address to receive
+     * @param path_ The addresses of the path tokens that indicate how to convert currency to targetToken
+     */
     function setPath(address currency_, address targetToken_, address[] memory path_) external onlyRole(MANAGER_ROLE) {
         require(currency_ != address(0), "SolvBTCRouterV2: invalid currency");
         require(targetToken_ != address(0), "SolvBTCRouterV2: invalid targetToken");
@@ -294,6 +350,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         emit SetPath(currency_, targetToken_, path_);
     }
 
+    /**
+     * @notice Set the multiAssetPool/xSolvBTCPool address for a target token
+     * @param token_ The target ERC20 token address
+     * @param multiAssetPool_ The multiAssetPool/xSolvBTCPool address
+     */
     function setMultiAssetPool(address token_, address multiAssetPool_) external onlyRole(MANAGER_ROLE) {
         require(token_ != address(0), "SolvBTCRouterV2: invalid token");
         require(multiAssetPool_ != address(0), "SolvBTCRouterV2: invalid multiAssetPool");
@@ -301,6 +362,10 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         emit SetMultiAssetPool(token_, multiAssetPool_);
     }
 
+    /**
+     * @notice Set the openFundMarket address
+     * @param openFundMarket_ The openFundMarket address
+     */
     function setOpenFundMarket(address openFundMarket_) external onlyOwner {
         require(openFundMarket_ != address(0), "SolvBTCRouterV2: invalid openFundMarket");
         openFundMarket = openFundMarket_;

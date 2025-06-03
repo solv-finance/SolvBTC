@@ -26,6 +26,8 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, Ownable2StepUpgradeable {
     bytes32 private constant XSolvBTCOracleStorageLocation = 
         0xe699987a594d9368cbcce94ab9df9ac0e935b8cc6f6360cc1af52fdf2ef3a500;
 
+    uint256 private constant SECONDS_PER_DAY = 86400;
+
     function _getXSolvBTCOracleStorage() private pure returns (XSolvBTCOracleStorage storage $) {
         assembly {
             $.slot := XSolvBTCOracleStorageLocation
@@ -101,6 +103,10 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, Ownable2StepUpgradeable {
         $.xSolvBTC = xSolvBTC_;
     }
 
+    /**
+     * @notice Set the nav decimals
+     * @param navDecimals_ The decimals of the nav
+     */
     function _setNavDecimals(uint8 navDecimals_) internal {
         XSolvBTCOracleStorage storage $ = _getXSolvBTCOracleStorage();
         $.navDecimals = navDecimals_;
@@ -112,6 +118,6 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, Ownable2StepUpgradeable {
      * @return date The date
      */
     function _getDate(uint256 timestamp_) internal pure returns (uint256) {
-        return timestamp_ / 86400 * 86400;
+        return timestamp_ / SECONDS_PER_DAY * SECONDS_PER_DAY;
     }
 }

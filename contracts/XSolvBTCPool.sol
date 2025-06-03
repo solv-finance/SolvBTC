@@ -12,8 +12,8 @@ import "./ISolvBTCYieldToken.sol";
  * @title XSolvBTCPool
  * @notice The pool for xSolvBTC, which is a yield token of solvBTC.
  * @dev This contract is a pool that allows users to deposit and withdraw solvBTC and xSolvBTC.
- * @dev The xSolvBTC will be minted, and the solvBTC will be burned when the user withdraws.
- * @dev The SolvBTC will be minted, and the xSolvBTC will be burned when the user deposits.
+ * @dev Deposit: Burns SolvBTC, mints xSolvBTC.
+ * @dev Withdraw: Burns xSolvBTC, mints SolvBTC.
  * @dev The withdraw fee will be deducted from the solvBTC, and the fee will be sent to the fee recipient.
  */
 contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
@@ -74,10 +74,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2Step
         __ReentrancyGuard_init();
         __Ownable_init(msg.sender);
 
-        require(
-            solvBTC_ != address(0) && xSolvBTC_ != address(0) && feeRecipient_ != address(0),
-            "XSolvBTCPool: invalid address"
-        );
+        require(solvBTC_ != address(0) && xSolvBTC_ != address(0), "XSolvBTCPool: invalid address");
 
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         $.solvBTC = solvBTC_;
@@ -94,9 +91,9 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2Step
      * @return xSolvBtcAmount The amount of xSolvBTC received
      */
     function deposit(uint256 solvBtcAmount_) external virtual override nonReentrant returns (uint256 xSolvBtcAmount) {
-        require(solvBtcAmount_ > 0, "SolvBTCMultiAssetPool: deposit amount cannot be 0");
+        require(solvBtcAmount_ > 0, "XSolvBTCPool: deposit amount cannot be 0");
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
-        require($.depositAllowed, "SolvBTCMultiAssetPool: deposit not allowed");
+        require($.depositAllowed, "XSolvBTCPool: deposit not allowed");
 
         address solvBTC = $.solvBTC;
         address xSolvBTC = $.xSolvBTC;
@@ -115,7 +112,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2Step
      * @return solvBtcAmount The amount of solvBTC received
      */
     function withdraw(uint256 xSolvBtcAmount_) external virtual override nonReentrant returns (uint256 solvBtcAmount) {
-        require(xSolvBtcAmount_ > 0, "SolvBTCMultiAssetPool: withdraw amount cannot be 0");
+        require(xSolvBtcAmount_ > 0, "XSolvBTCPool: withdraw amount cannot be 0");
 
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         address solvBTC = $.solvBTC;
@@ -147,7 +144,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2Step
      * @param feeRecipient_ The address of the fee recipient
      */
     function _setFeeRecipient(address feeRecipient_) internal virtual {
-        require(feeRecipient_ != address(0), "SolvBTCMultiAssetPool: fee recipient cannot be 0 address");
+        require(feeRecipient_ != address(0), "XSolvBTCPool: fee recipient cannot be 0 address");
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         address oldFeeRecipient = $.feeRecipient;
         $.feeRecipient = feeRecipient_;
@@ -167,7 +164,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2Step
      * @param withdrawFeeRate_ The withdraw fee rate, 10000 = 100%
      */
     function _setWithdrawFeeRate(uint64 withdrawFeeRate_) internal virtual {
-        require(withdrawFeeRate_ < 10000, "SolvBTCMultiAssetPool: invalid withdraw fee rate");
+        require(withdrawFeeRate_ < 10000, "XSolvBTCPool: invalid withdraw fee rate");
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         uint64 oldWithdrawFeeRate = $.withdrawFeeRate;
         $.withdrawFeeRate = withdrawFeeRate_;
