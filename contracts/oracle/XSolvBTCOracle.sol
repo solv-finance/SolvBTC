@@ -89,7 +89,7 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, Ownable2StepUpgradeable {
         XSolvBTCOracleStorage storage $ = _getXSolvBTCOracleStorage();
         $.latestNav = nav_;
         $.latestUpdatedAt = block.timestamp;
-        emit SetNav($.latestUpdatedAt, nav_);
+        emit SetNav(block.timestamp, nav_);
     }
 
     /**
