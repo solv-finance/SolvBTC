@@ -3,11 +3,10 @@
 pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import "./access/AdminControlUpgradeable.sol";
 import "./IxSolvBTCPool.sol";
 import "./ISolvBTCYieldToken.sol";
-import "./ISolvBTCYieldTokenOracle.sol";
 
 /**
  * @title XSolvBTCPool
@@ -17,7 +16,7 @@ import "./ISolvBTCYieldTokenOracle.sol";
  * @dev The SolvBTC will be minted, and the xSolvBTC will be burned when the user deposits.
  * @dev The withdraw fee will be deducted from the solvBTC, and the fee will be sent to the fee recipient.
  */
-contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControlUpgradeable {
+contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
     struct XSolvBTCPoolStorage {
         address solvBTC;
         address xSolvBTC;
@@ -72,8 +71,8 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         virtual
         initializer
     {
-        AdminControlUpgradeable.__AdminControl_init(msg.sender);
-        ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
+        __ReentrancyGuard_init();
+        __Ownable_init(msg.sender);
 
         require(
             solvBTC_ != address(0) && xSolvBTC_ != address(0) && feeRecipient_ != address(0),
@@ -134,7 +133,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
      * @notice Set the fee recipient
      * @param feeRecipient_ The address of the fee recipient
      */
-    function setFeeRecipientOnlyAdmin(address feeRecipient_) external virtual onlyAdmin {
+    function setFeeRecipientOnlyOwner(address feeRecipient_) external virtual onlyOwner {
         _setFeeRecipient(feeRecipient_);
     }
 
@@ -154,7 +153,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
      * @notice Set the withdraw fee rate
      * @param withdrawFeeRate_ The withdraw fee rate, 10000 = 100%
      */
-    function setWithdrawFeeRateOnlyAdmin(uint64 withdrawFeeRate_) external virtual onlyAdmin {
+    function setWithdrawFeeRateOnlyOwner(uint64 withdrawFeeRate_) external virtual onlyOwner {
         _setWithdrawFeeRate(withdrawFeeRate_);
     }
 
@@ -174,7 +173,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
      * @notice Set the deposit allowed
      * @param depositAllowed_ The deposit allowed
      */
-    function setDepositAllowedOnlyAdmin(bool depositAllowed_) external virtual onlyAdmin {
+    function setDepositAllowedOnlyOwner(bool depositAllowed_) external virtual onlyOwner {
         _setDepositAllowed(depositAllowed_);
     }
 
