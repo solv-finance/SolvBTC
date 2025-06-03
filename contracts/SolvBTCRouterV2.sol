@@ -80,16 +80,20 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
     /**
      * @notice Router initialization
      * @param owner_ The owner and admin role of the contract
-     * @param manager_ The manager of the contract, who is allowed to set the path/poolId/multiAssetPool
      */
-    function initialize(address owner_, address manager_) external initializer {
+    function initialize(address owner_) external initializer {
         require(owner_ != address(0), "SolvBTCRouterV2: invalid admin");
-        require(manager_!= address(0), "SolvBTCRouterV2: invalid manager");
-
-        __ReentrancyGuard_init();
-
         __Ownable_init_unchained(owner_);
-        _grantRole(DEFAULT_ADMIN_ROLE, owner_);
+        __ReentrancyGuard_init();
+    }
+
+    /**
+     * @notice Initialize the role of the contract
+     * @param manager_ The manager role of the contract
+     */
+    function initializeRoleOnlyOwner(address manager_) external onlyOwner {
+        require(manager_!= address(0), "SolvBTCRouterV2: invalid manager");
+        _grantRole(DEFAULT_ADMIN_ROLE, owner());
         _grantRole(MANAGER_ROLE, manager_);
     }
 
@@ -193,13 +197,12 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable,
         IERC3525 redemption = IERC3525(poolInfo.poolSFTInfo.openFundRedemption);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address multiAssetPool = multiAssetPools[targetToken_];
-        require(
-            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
-            "SolvBTCRouterV2: target token not match"
-        );
-
         {
+            address multiAssetPool = multiAssetPools[targetToken_];
+            require(
+                targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
+                "SolvBTCRouterV2: target token not match"
+            );
             ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, withdrawAmount_);
             uint256 shareId =
                 ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
