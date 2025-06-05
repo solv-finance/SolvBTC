@@ -14,7 +14,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenOracle = SolvBTCYieldTokenOracleFactory.attach(solvBTCYieldTokenOracleAddress);
 
   const productType = 'SolvBTC Yield Token';
-  const productInfos = require('./20399_export_SolvBTCYTInfos').SolvBTCYieldTokenInfos;
+  const productInfos = require('./20399_export_SolvBTCYTV3Infos').SolvBTCYieldTokenInfos;
 
   for (let productName in productInfos[network.name]) {
     let info = productInfos[network.name][productName];
