@@ -70,6 +70,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x1210371F2E26a74827F250afDfdbE3091304a3b7",
       holdingValueSftId: 0,
     },
+    "SolvBTC Jupiter": {  // id = 366
+      erc20: "",
+      sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
+      slot: "28476413256154288415314409550437675281393417508018888691119213357323496091627",
+      poolId: "0x6f113a39a50769de40d4f2e7e46b6a4c6d7774e2c3943ced2dbcb25e626d1d04",
+      navOracle: "0x1210371F2E26a74827F250afDfdbE3091304a3b7",
+      holdingValueSftId: 0,
+    },
   },
   polygon: {
     "xSolvBTC": {
@@ -87,6 +95,14 @@ const SolvBTCYieldTokenInfos = {
       sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
       slot: "",
       poolId: "",
+      navOracle: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
+      holdingValueSftId: 0,
+    },
+    "SolvBTC BNB": {  // id = 365
+      erc20: "",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
+      slot: "94568680496174746578339484307969382184325470230486571443240364699745942106540",
+      poolId: "0x2fad59251e2d7208c181067918f9424088358380f47b582948225d8f887f1b6d",
       navOracle: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
       holdingValueSftId: 0,
     },
