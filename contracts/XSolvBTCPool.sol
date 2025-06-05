@@ -24,6 +24,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         address feeRecipient;
         uint64 withdrawFeeRate; // 10000 = 100%
         bool depositAllowed;
+        uint256 maxMultiplier; // 10000 = 100%
     }
 
     // keccak256(abi.encode(uint256(keccak256("solv.storage.xSolvBTCPool")) - 1)) & ~bytes32(uint256(0xff))
@@ -102,6 +103,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         ISolvBTC($.solvBTC).burn(msg.sender, solvBtcAmount_);
         //mint xSolvBTC
         xSolvBtcAmount = ISolvBTCYieldToken($.xSolvBTC).getSharesByValue(solvBtcAmount_);
+        require(solvBtcAmount_ >= xSolvBtcAmount, "SolvBTCMultiAssetPool: deposit amount is too small");
         ISolvBTCYieldToken($.xSolvBTC).mint(msg.sender, xSolvBtcAmount);
 
         emit Deposit(msg.sender, $.solvBTC, $.xSolvBTC, solvBtcAmount_, xSolvBtcAmount);
@@ -126,6 +128,10 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
             ISolvBTC($.solvBTC).mint($.feeRecipient, fee);
         }
         //mint solvBTC to user
+        require(
+            (solvBtcAmount - fee) < ($.maxMultiplier / 10000) * xSolvBtcAmount_,
+            "SolvBTCMultiAssetPool: withdraw amount is too large"
+        );
         ISolvBTC($.solvBTC).mint(msg.sender, solvBtcAmount - fee);
         emit Withdraw(msg.sender, $.solvBTC, $.xSolvBTC, solvBtcAmount, xSolvBtcAmount_);
     }
@@ -224,5 +230,14 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
     function _calculateWithdrawFee(uint256 amount_) private view returns (uint256) {
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         return (amount_ * $.withdrawFeeRate) / 10000;
+    }
+
+    function setMaxMultiplierOnlyAdmin(uint256 maxMultiplier_) external virtual onlyAdmin {
+        _setMaxMultiplier(maxMultiplier_);
+    }
+
+    function _setMaxMultiplier(uint256 maxMultiplier_) internal virtual {
+        XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
+        $.maxMultiplier = maxMultiplier_;
     }
 }
