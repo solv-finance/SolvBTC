@@ -11,6 +11,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const versions = {
     dev_sepolia: [ 'v2.1', 'v2.2' ],
+    sepolia: [ 'v2.1', 'v2.2' ],
+    bsctest: [ 'v2.1', 'v2.2' ],
   }
   const upgrades = versions[network.name]?.map(v => {return firstImplName + '_' + v}) || []
 
@@ -29,26 +31,22 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const SolvBTCRouterV2Factory = await ethers.getContractFactory("SolvBTCRouterV2", deployer);
   const solvBTCRouterV2 = SolvBTCRouterV2Factory.attach(proxy.address);
-  
-  const params = {
-    dev_sepolia: [
-      '0x32Ea1777bC01977a91D15a1C540cbF29bE17D89D',  // xSolvBTC
-      '0xe8C3edB09D1d155292BE0453d57bC3250a0084B6',  // SolvBTC
-      '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',  // xSolvBTC PoolId
-      (await deployments.get('XSolvBTCPoolProxy')).address,  // xSolvBTCPool
-    ]
-  }
 
-  const currentPoolId = await solvBTCRouterV2.poolIds(params[network.name][0], params[network.name][1]);
-  if (currentPoolId !== params[network.name][2]) {
-    const setPoolIdTx = await solvBTCRouterV2.setPoolId(params[network.name][0], params[network.name][1], params[network.name][2]);
+  const solvBTCAddress = require('./1099_export_xSolvBTCPoolInfos').SolvBTCAddresses[network.name];
+  const xSolvBTCAddress = require('./1099_export_xSolvBTCPoolInfos').XSolvBTCInfos[network.name].token;
+  const xSolvBTCPoolId = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+  const xSolvBTCPoolAddress = (await deployments.get('XSolvBTCPoolProxy')).address;
+  
+  const currentPoolId = await solvBTCRouterV2.poolIds(xSolvBTCAddress, solvBTCAddress);
+  if (currentPoolId !== xSolvBTCPoolId) {
+    const setPoolIdTx = await solvBTCRouterV2.setPoolId(xSolvBTCAddress, solvBTCAddress, xSolvBTCPoolId);
     console.log(`Set PoolInfo for xSolvBTC at tx: ${setPoolIdTx.hash}`);
     await setPoolIdTx.wait(1);
   }
 
-  const currentPool = await solvBTCRouterV2.multiAssetPools(params[network.name][1]);
-  if (currentPool !== params[network.name][3]) {
-    const setPoolTx = await solvBTCRouterV2.setMultiAssetPool(params[network.name][1], params[network.name][3]);
+  const currentPool = await solvBTCRouterV2.multiAssetPools(xSolvBTCAddress);
+  if (currentPool !== xSolvBTCPoolAddress) {
+    const setPoolTx = await solvBTCRouterV2.setMultiAssetPool(xSolvBTCAddress, xSolvBTCPoolAddress);
     console.log(`Set MultiAssetPool for xSolvBTC at tx: ${setPoolTx.hash}`);
     await setPoolTx.wait(1);
   }

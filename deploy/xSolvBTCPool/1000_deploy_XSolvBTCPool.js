@@ -4,14 +4,31 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const { deployer } = await getNamedAccounts();
 
-  const params = {
+  const tokenInfos = require('./1099_export_xSolvBTCPoolInfos');
+
+  const solvBTCAddress = tokenInfos.SolvBTCAddresses[network.name];
+  const xSolvBTCAddress = tokenInfos.XSolvBTCInfos[network.name].token;
+
+  const defaultFeeRecipient = "0x5ef01B1eFfA34Bdd3A305a968A907108D52FF234";
+  const defaultWithdrawFeeRate = 20;  // 0.2%
+
+  const customFeeInfos = {
     dev_sepolia: {
-      solvBTC: '0xe8C3edB09D1d155292BE0453d57bC3250a0084B6',
-      xSolvBTC: '0x32Ea1777bC01977a91D15a1C540cbF29bE17D89D',
+      feeRecipient: deployer,
+      withdrawFeeRate: 100,  // 1%
+    },
+    sepolia: {
+      feeRecipient: deployer,
+      withdrawFeeRate: 100,  // 1%
+    },
+    bsctest: {
       feeRecipient: deployer,
       withdrawFeeRate: 100,  // 1%
     },
   };
+
+  const feeRecipient = customFeeInfos[network.name]?.feeRecipient || defaultFeeRecipient;
+  const withdrawFeeRate = customFeeInfos[network.name]?.withdrawFeeRate || defaultWithdrawFeeRate;
 
   const contractName = 'XSolvBTCPool';
   const firstImplName = contractName + 'Impl';
@@ -32,8 +49,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       initializer: { 
         method: "initialize", 
         args: [ 
-          params[network.name].solvBTC, params[network.name].xSolvBTC, 
-          params[network.name].feeRecipient, params[network.name].withdrawFeeRate 
+          solvBTCAddress, xSolvBTCAddress, feeRecipient, withdrawFeeRate 
         ] 
       },
       upgrades: upgrades
