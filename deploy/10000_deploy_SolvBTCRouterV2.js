@@ -312,7 +312,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // currency - BTCB
         "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", // target token - SolvBTC.BERA
-        ["0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", "0x1346b618dC92810EC74163e4c27004c921D446a5"], // path: BTCB -> SolvBTC -> xSolvBTC -> SolvBTC.BERA
+        [
+          "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7",
+          "0x1346b618dC92810EC74163e4c27004c921D446a5",
+        ], // path: BTCB -> SolvBTC -> xSolvBTC -> SolvBTC.BERA
       ],
       [
         "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
@@ -331,19 +334,37 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0x03C7054BCB39f7b2e5B2c7AcB37583e32D70Cfa3", // currency - WBTC
         "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", // target token - SolvBTC.BERA
-        ["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", "0xCC0966D8418d412c599A6421b760a847eB169A8c"], // path: BTCB -> SolvBTC -> xSolvBTC -> SolvBTC.BERA
+        [
+          "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+          "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+        ], // path: BTCB -> SolvBTC -> xSolvBTC -> SolvBTC.BERA
       ],
       [
         "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", // currency - SolvBTC
         "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", // target token - SolvBTC.BERA
         ["0xCC0966D8418d412c599A6421b760a847eB169A8c"], // path: SolvBTC -> xSolvBTC -> SolvBTC.BERA
       ],
+      [
+        "0x03C7054BCB39f7b2e5B2c7AcB37583e32D70Cfa3", // currency - WBTC
+        "0xCC0966D8418d412c599A6421b760a847eB169A8c", // target token - xSolvBTC
+        ["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77"], // path: WBTC -> SolvBTC -> xSolvBTC
+      ],
+    ],
+    mantle: [
+      [
+        "0xc96de26018a54d51c097160568752c4e3bd6c364", // currency - FBTC
+        "0x1d40baFC49c37CdA49F2a5427E2FB95E1e3FCf20", // target token - xSolvBTC
+        ["0xa68d25fC2AF7278db4BcdcAabce31814252642a9"], // path: FBTC -> SolvBTC -> xSolvBTC
+      ],
     ],
     bera: [
       [
         "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c", // currency - WBTC
         "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", // target token - SolvBTC.BERA
-        ["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", "0xCC0966D8418d412c599A6421b760a847eB169A8c"], // path: BTCB -> SolvBTC -> xSolvBTC -> SolvBTC.BERA
+        [
+          "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+          "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+        ], // path: BTCB -> SolvBTC -> xSolvBTC -> SolvBTC.BERA
       ],
       [
         "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", // currency - SolvBTC
@@ -367,57 +388,156 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const multiAssetPools = {
     dev_sepolia: [
-      [ "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6", "0xBdF15396e8A49773386fBA396D74dbbB8ED993f2" ], // SolvBTC
-      [ "0x49aFCf847193c48091969bdB20852ef4c5A534D7", "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce" ], // SolvBTC.BERA
-      [ "0x7157D9B6bEF77BDC9e8162659239252DD9FB875C", "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce" ], // SolvBTC.BNB
+      [
+        "0xe8C3edB09D1d155292BE0453d57bC3250a0084B6",
+        "0xBdF15396e8A49773386fBA396D74dbbB8ED993f2",
+      ], // SolvBTC
+      [
+        "0x49aFCf847193c48091969bdB20852ef4c5A534D7",
+        "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce",
+      ], // SolvBTC.BERA
+      [
+        "0x7157D9B6bEF77BDC9e8162659239252DD9FB875C",
+        "0xc57C23278e0C02998bbA7D5a842A49F34744d4ce",
+      ], // SolvBTC.BNB
     ],
     sepolia: [
-      [ "0xE33109766662932a26d978123383ff9E7bdeF346", "0xeC8A36eF9b006abf8c477bD82c649067DB2A3769" ], // SolvBTC
-      [ "0x96231D57c60C0d64d14F080d771a98FDaDD2Ec8A", "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c" ], // SolvBTC.YP
-      [ "0xf44c01111C54C550d044025099220D79B9559EB9", "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c" ], // SolvBTC.BBN
-      [ "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0", "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c" ], // SolvBTC.BERA
+      [
+        "0xE33109766662932a26d978123383ff9E7bdeF346",
+        "0xeC8A36eF9b006abf8c477bD82c649067DB2A3769",
+      ], // SolvBTC
+      [
+        "0x96231D57c60C0d64d14F080d771a98FDaDD2Ec8A",
+        "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c",
+      ], // SolvBTC.YP
+      [
+        "0xf44c01111C54C550d044025099220D79B9559EB9",
+        "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c",
+      ], // SolvBTC.BBN
+      [
+        "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0",
+        "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c",
+      ], // SolvBTC.BERA
     ],
     bsctest: [
-      [ "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", "0xED714AC014a11e758af1Fbc53d3B8a6F3056a1F8" ], // SolvBTC
-      [ "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad", "0x56006176aEe38928ea658A80De972E9232521026" ], // SolvBTC.BBN
-      [ "0x89E573571B6786b11643585acbCcF3Cb3ABef81e", "0x56006176aEe38928ea658A80De972E9232521026" ], // SolvBTC.DeFi
+      [
+        "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9",
+        "0xED714AC014a11e758af1Fbc53d3B8a6F3056a1F8",
+      ], // SolvBTC
+      [
+        "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
+        "0x56006176aEe38928ea658A80De972E9232521026",
+      ], // SolvBTC.BBN
+      [
+        "0x89E573571B6786b11643585acbCcF3Cb3ABef81e",
+        "0x56006176aEe38928ea658A80De972E9232521026",
+      ], // SolvBTC.DeFi
     ],
     mainnet: [
-      [ "0x7A56E1C57C7475CCf742a1832B028F0456652F97", "0x1d5262919C4AAb745A8C9dD56B80DB9FeaEf86BA" ], // SolvBTC
-      [ "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D" ], // SolvBTC.BBN
-      [ "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50", "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D" ], // SolvBTC.BERA
-      [ "0x32Bc653dbD08C70f4dDEF2Bab15915193A617D75", "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D" ], // SolvBTC.DLP
+      [
+        "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+        "0x1d5262919C4AAb745A8C9dD56B80DB9FeaEf86BA",
+      ], // SolvBTC
+      [
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf",
+        "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
+      ], // SolvBTC.BBN
+      [
+        "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50",
+        "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
+      ], // SolvBTC.BERA
+      [
+        "0x32Bc653dbD08C70f4dDEF2Bab15915193A617D75",
+        "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
+      ], // SolvBTC.DLP
     ],
     bsc: [
-      [ "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", "0x1FF72318deeD339e724e3c8deBCD528dC013D845" ], // SolvBTC
-      [ "0x1346b618dC92810EC74163e4c27004c921D446a5", "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A" ], // SolvBTC.BBN
-      [ "0x647A50540F5a1058B206f5a3eB17f56f29127F53", "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A" ], // SolvBTC.DeFi
-      [ "0x6c948A4C31D013515d871930Fe3807276102F25d", "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A" ], // SolvBTC.BNB
-      [ "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A" ], // SolvBTC.BERA
+      [
+        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7",
+        "0x1FF72318deeD339e724e3c8deBCD528dC013D845",
+      ], // SolvBTC
+      [
+        "0x1346b618dC92810EC74163e4c27004c921D446a5",
+        "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
+      ], // SolvBTC.BBN
+      [
+        "0x647A50540F5a1058B206f5a3eB17f56f29127F53",
+        "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
+      ], // SolvBTC.DeFi
+      [
+        "0x6c948A4C31D013515d871930Fe3807276102F25d",
+        "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
+      ], // SolvBTC.BNB
+      [
+        "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",
+        "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
+      ], // SolvBTC.BERA
     ],
     mantle: [
-      [ "0xa68d25fC2AF7278db4BcdcAabce31814252642a9", "0x9954Ec753e60515Cde96765efF4D35b18542C09f" ], // SolvBTC
-      [ "0x1d40baFC49c37CdA49F2a5427E2FB95E1e3FCf20", (await deployments.get("XSolvBTCPoolProxy")).address ], // xSolvBTC
+      [
+        "0xa68d25fC2AF7278db4BcdcAabce31814252642a9",
+        "0x9954Ec753e60515Cde96765efF4D35b18542C09f",
+      ], // SolvBTC
+      [
+        "0x1d40baFC49c37CdA49F2a5427E2FB95E1e3FCf20",
+        (await deployments.get("XSolvBTCPoolProxy")).address,
+      ], // xSolvBTC
     ],
     avax: [
-      [ "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777", "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705" ], // SolvBTC
-      [ "0x6C7d727a0432D03351678F91FAA1126a5B871DF5", "0x814F3ae67dF0da9fe2399a29516FD14b9085263a" ], // SolvBTC.AVAX
+      [
+        "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777",
+        "0x0BA5f53a4Bf22C9e5947aeb6eA4521D030f35705",
+      ], // SolvBTC
+      [
+        "0x6C7d727a0432D03351678F91FAA1126a5B871DF5",
+        "0x814F3ae67dF0da9fe2399a29516FD14b9085263a",
+      ], // SolvBTC.AVAX
     ],
     bob: [
-      [ "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", "0xc2f69541e3dC306777D260dC66bfD54fcb897100" ], // SolvBTC
-      [ "0xCC0966D8418d412c599A6421b760a847eB169A8c", (await deployments.get("XSolvBTCPoolProxy")).address ], // xSolvBTC
-      [ "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", "0xd157B70F917fEf3A59502b9128feCA911dEbC864" ], // SolvBTC.BERA
+      [
+        "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+        "0xc2f69541e3dC306777D260dC66bfD54fcb897100",
+      ], // SolvBTC
+      [
+        "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+        (await deployments.get("XSolvBTCPoolProxy")).address,
+      ], // xSolvBTC
+      [
+        "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",
+        "0xd157B70F917fEf3A59502b9128feCA911dEbC864",
+      ], // SolvBTC.BERA
     ],
     bera: [
-      [ "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C" ], // SolvBTC
-      [ "0xCC0966D8418d412c599A6421b760a847eB169A8c", "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957" ], // xSolvBTC
-      [ "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B", "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957" ], // SolvBTC.BERA
-      [ "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F", "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957" ], // SolvBTC.BNB
+      [
+        "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+        "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
+      ], // SolvBTC
+      [
+        "0xCC0966D8418d412c599A6421b760a847eB169A8c",
+        "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+      ], // xSolvBTC
+      [
+        "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",
+        "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+      ], // SolvBTC.BERA
+      [
+        "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F",
+        "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+      ], // SolvBTC.BNB
     ],
     hyperevm: [
-      [ "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb" ], // SolvBTC
-      [ "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077", "0x2DC5392c35e6682ed27EDE187AC159BA020a5eda" ], // xSolvBTC
-      [ "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F", "0x2DC5392c35e6682ed27EDE187AC159BA020a5eda" ], // SolvBTC.BNB
+      [
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
+        "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
+      ], // SolvBTC
+      [
+        "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077",
+        "0x2DC5392c35e6682ed27EDE187AC159BA020a5eda",
+      ], // xSolvBTC
+      [
+        "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F",
+        "0x2DC5392c35e6682ed27EDE187AC159BA020a5eda",
+      ], // SolvBTC.BNB
     ],
   };
 
@@ -434,7 +554,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     mantle: ["v2.2"],
     bob: ["v2.2"],
   };
-  const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
+  const upgrades =
+    versions[network.name]?.map((v) => {
+      return firstImplName + "_" + v;
+    }) || [];
 
   const { proxy, newImpl, newImplName } =
     await transparentUpgrade.deployOrUpgrade(
@@ -454,34 +577,57 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       }
     );
 
-  const SolvBTCRouterV2Factory = await ethers.getContractFactory("SolvBTCRouterV2", deployer);
+  const SolvBTCRouterV2Factory = await ethers.getContractFactory(
+    "SolvBTCRouterV2",
+    deployer
+  );
   const solvBTCRouterV2 = SolvBTCRouterV2Factory.attach(proxy.address);
 
   const currentMarket = await solvBTCRouterV2.openFundMarket();
   if (currentMarket.toLowerCase() != market[network.name].toLowerCase()) {
-    let setMarketTx = await solvBTCRouterV2.setOpenFundMarket(market[network.name]);
-    console.log(`Set OpenFundMarket ${market[network.name]} at tx: ${setMarketTx.hash}`);
+    let setMarketTx = await solvBTCRouterV2.setOpenFundMarket(
+      market[network.name]
+    );
+    console.log(
+      `Set OpenFundMarket ${market[network.name]} at tx: ${setMarketTx.hash}`
+    );
     await setMarketTx.wait(1);
   }
 
   for (let poolId of poolIds[network.name]) {
     let currentPoolId = await solvBTCRouterV2.poolIds(poolId[0], poolId[1]);
     if (currentPoolId != poolId[2]) {
-      let setPoolIdTx = await solvBTCRouterV2.setPoolId(poolId[0], poolId[1], poolId[2]);
-      console.log(`Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`);
+      let setPoolIdTx = await solvBTCRouterV2.setPoolId(
+        poolId[0],
+        poolId[1],
+        poolId[2]
+      );
+      console.log(
+        `Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`
+      );
       await setPoolIdTx.wait(1);
     }
   }
 
   for (let pathInfo of pathInfos[network.name]) {
     try {
-      let currentPath = await solvBTCRouterV2.paths(pathInfo[0], pathInfo[1], 0);
+      let currentPath = await solvBTCRouterV2.paths(
+        pathInfo[0],
+        pathInfo[1],
+        0
+      );
       if (currentPath.toLowerCase() != pathInfo[2][0].toLowerCase()) {
         throw new Error("Path not match");
       }
     } catch (e) {
-      let setPathTx = await solvBTCRouterV2.setPath(pathInfo[0], pathInfo[1], pathInfo[2]);
-      console.log(`Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`);
+      let setPathTx = await solvBTCRouterV2.setPath(
+        pathInfo[0],
+        pathInfo[1],
+        pathInfo[2]
+      );
+      console.log(
+        `Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`
+      );
       await setPathTx.wait(1);
     }
   }
@@ -489,12 +635,16 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   for (let multiAssetPool of multiAssetPools[network.name]) {
     let currentPool = await solvBTCRouterV2.multiAssetPools(multiAssetPool[0]);
     if (currentPool != multiAssetPool[1]) {
-      let setPoolTx = await solvBTCRouterV2.setMultiAssetPool(multiAssetPool[0], multiAssetPool[1]);
-      console.log(`Set MultiAssetPool for token ${multiAssetPool[0]} at tx: ${setPoolTx.hash}`);
+      let setPoolTx = await solvBTCRouterV2.setMultiAssetPool(
+        multiAssetPool[0],
+        multiAssetPool[1]
+      );
+      console.log(
+        `Set MultiAssetPool for token ${multiAssetPool[0]} at tx: ${setPoolTx.hash}`
+      );
       await setPoolTx.wait(1);
     }
   }
-
 };
 
 module.exports.tags = ["SolvBTCRouterV2"];
