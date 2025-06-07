@@ -551,7 +551,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsctest: ["v2.1"],
     mainnet: ["v2.1"],
     bsc: ["v2.1"],
-    mantle: ["v2.2"],
+    mantle: [],
     bob: ["v2.2"],
   };
   const upgrades =
