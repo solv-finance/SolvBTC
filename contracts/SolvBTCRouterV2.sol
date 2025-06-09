@@ -70,10 +70,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         _disableInitializers();
     }
 
-    function initialize(address owner_) external initializer {
+    function initialize(address owner_, address openFundMarket_) external initializer {
         require(owner_ != address(0), "SolvBTCRouterV2: invalid admin");
         __Ownable_init_unchained(owner_);
         __ReentrancyGuard_init();
+        _setOpenFundMarket(openFundMarket_);
     }
 
     function deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint64 expireTime_)
@@ -261,7 +262,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         return redeemInfo.poolId;
     }
 
-    function setOpenFundMarket(address openFundMarket_) external onlyOwner {
+    function _setOpenFundMarket(address openFundMarket_) private {
         require(openFundMarket_ != address(0), "SolvBTCRouterV2: invalid openFundMarket");
         openFundMarket = openFundMarket_;
         emit SetOpenFundMarket(openFundMarket_);
