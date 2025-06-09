@@ -245,6 +245,11 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         return (amount_ * $.withdrawFeeRate) / 10000;
     }
 
+    function maxMultiplier() external view virtual returns (uint256) {
+        MultiplierStorage storage $ = _getMultiplierStorage();
+        return $ .maxMultiplier;
+    }
+
     function setMaxMultiplierOnlyAdmin(uint256 maxMultiplier_) external virtual onlyAdmin {
         _setMaxMultiplier(maxMultiplier_);
     }
