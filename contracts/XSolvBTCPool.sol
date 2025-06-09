@@ -26,13 +26,25 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         bool depositAllowed;
     }
 
+    struct MultiplierStorage {
+        uint256 maxMultiplier;
+    }
+
     // keccak256(abi.encode(uint256(keccak256("solv.storage.xSolvBTCPool")) - 1)) & ~bytes32(uint256(0xff))
-    bytes32 private constant XSolvBTCPoolStorageLocation =
-        0x4142751e4ad30de9575cf73d5fefb7910c20ffeb3557c886f882c49419246b00;
+    bytes32 private constant XSolvBTCPoolStorageLocation = 0x4142751e4ad30de9575cf73d5fefb7910c20ffeb3557c886f882c49419246b00;
+
+    // keccak256(abi.encode(uint256(keccak256("solv.storage.Multiplier")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant MultiplierStorageLocation = 0xe2416d9034d34fddf7bf2612a1798286ce32da5eaa3b1435acb443ea405c2300;
 
     function _getXSolvBTCPoolStorage() private pure returns (XSolvBTCPoolStorage storage $) {
         assembly {
             $.slot := XSolvBTCPoolStorageLocation
+        }
+    }
+
+    function _getMultiplierStorage() private pure returns (MultiplierStorage storage $) {
+        assembly {
+            $.slot := MultiplierStorageLocation
         }
     }
 
@@ -54,6 +66,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
     event SetFeeRecipient(address oldFeeRecipient, address newFeeRecipient);
     event SetWithdrawFeeRate(uint64 oldWithdrawFeeRate, uint64 newWithdrawFeeRate);
     event SetDepositAllowed(bool oldDepositAllowed, bool newDepositAllowed);
+    event SetMaxMultiplier(uint256 oldMaxMultiplier, uint256 newMaxMultiplier);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -102,6 +115,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         ISolvBTC($.solvBTC).burn(msg.sender, solvBtcAmount_);
         //mint xSolvBTC
         xSolvBtcAmount = ISolvBTCYieldToken($.xSolvBTC).getSharesByValue(solvBtcAmount_);
+        require(solvBtcAmount_ >= xSolvBtcAmount, "xSolvBTCPool: xSolvBTC amount error");
         ISolvBTCYieldToken($.xSolvBTC).mint(msg.sender, xSolvBtcAmount);
 
         emit Deposit(msg.sender, $.solvBTC, $.xSolvBTC, solvBtcAmount_, xSolvBtcAmount);
@@ -116,6 +130,7 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         require(xSolvBtcAmount_ > 0, "SolvBTCMultiAssetPool: withdraw amount cannot be 0");
 
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
+        MultiplierStorage storage $$ = _getMultiplierStorage();
         solvBtcAmount = ISolvBTCYieldToken($.xSolvBTC).getValueByShares(xSolvBtcAmount_);
 
         //burn xSolvBTC
@@ -126,6 +141,10 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
             ISolvBTC($.solvBTC).mint($.feeRecipient, fee);
         }
         //mint solvBTC to user
+        require(
+            (solvBtcAmount - fee) < (xSolvBtcAmount_ * $$.maxMultiplier / 10000),
+            "xSolvBTCPool: solvBTC amount error"
+        );
         ISolvBTC($.solvBTC).mint(msg.sender, solvBtcAmount - fee);
         emit Withdraw(msg.sender, $.solvBTC, $.xSolvBTC, solvBtcAmount, xSolvBtcAmount_);
     }
@@ -224,5 +243,15 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
     function _calculateWithdrawFee(uint256 amount_) private view returns (uint256) {
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         return (amount_ * $.withdrawFeeRate) / 10000;
+    }
+
+    function setMaxMultiplierOnlyAdmin(uint256 maxMultiplier_) external virtual onlyAdmin {
+        _setMaxMultiplier(maxMultiplier_);
+    }
+
+    function _setMaxMultiplier(uint256 maxMultiplier_) internal virtual {
+        MultiplierStorage storage $ = _getMultiplierStorage();
+        emit SetMaxMultiplier($.maxMultiplier, maxMultiplier_);
+        $.maxMultiplier = maxMultiplier_;
     }
 }

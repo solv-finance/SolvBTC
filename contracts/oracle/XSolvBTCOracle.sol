@@ -69,6 +69,7 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      */
     function setNav(uint256 nav_) external onlyAdmin {
         require(nav_ != 0, "XSolvBTCOracle: invalid nav");
+        require(nav_ >= _latestNav, "XSolvBTCOracle: nav cannot be reduced");
         _latestNav = nav_;
         _latestUpdatedAt = block.timestamp;
         emit SetNav(_latestUpdatedAt, nav_);
