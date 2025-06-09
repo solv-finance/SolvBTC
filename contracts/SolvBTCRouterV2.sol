@@ -76,7 +76,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         __ReentrancyGuard_init();
     }
 
-    function deposit(address targetToken_, address currency_, uint256 currencyAmount_)
+    function deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint64 expireTime_)
         external
         virtual
         nonReentrant
@@ -97,7 +97,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
             if (targetPoolId == bytes32(X_SOLV_BTC_POOL_ID)) {
                 targetTokenAmount_ = _depositToXSolvBTC(receivedToken, targetTokenAmount_);
             } else {
-                targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_);
+                targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_, expireTime_);
             }
         }
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
@@ -113,7 +113,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         return IxSolvBTCPool(xSolvBTCPool).deposit(currencyAmount_);
     }
 
-    function _deposit(address targetToken_, address currency_, uint256 currencyAmount_)
+    function _deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint64 expireTime_)
         internal
         returns (uint256 targetTokenAmount_)
     {
@@ -134,7 +134,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
         ERC20TransferHelper.doApprove(currency_, openFundMarket, currencyAmount_);
         targetTokenAmount_ =
-            IOpenFundMarket(openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, uint64(block.timestamp + 300));
+            IOpenFundMarket(openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, expireTime_);
 
         uint256 shareCount = share.balanceOf(address(this));
         uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
