@@ -15,12 +15,23 @@ import "../XSolvBTCPool.sol";
  * @dev Only the nav is allowed per day.
  */
 contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
+
+    // the decimals of the nav value
     uint8 private _navDecimals;
+
+    // the address of xSolvBTC
     address public xSolvBTC;
+
+    // the timestamp when the latest nav is updated
     uint256 private _latestUpdatedAt;
+
+    // the value of the latest nav
     uint256 private _latestNav;
 
+    // the address of xSolvBTCPool
     address public xSolvBTCPool;
+
+    uint256 private constant SECONDS_PER_DAY = 86400;
 
     event SetNav(uint256 navTime, uint256 nav);
 
@@ -104,7 +115,7 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      * @return date The date
      */
     function _getDate(uint256 timestamp_) internal pure returns (uint256) {
-        return timestamp_ / 86400 * 86400;
+        return timestamp_ / SECONDS_PER_DAY * SECONDS_PER_DAY;
     }
 
     uint256[45] private __gap;
