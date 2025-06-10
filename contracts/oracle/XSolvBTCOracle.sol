@@ -106,4 +106,6 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     function _getDate(uint256 timestamp_) internal pure returns (uint256) {
         return timestamp_ / 86400 * 86400;
     }
+    
+    uint256[45] private __gap;
 }
