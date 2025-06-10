@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 
 import "../ISolvBTCYieldTokenOracle.sol";
 import "../access/AdminControlUpgradeable.sol";
+import "../XSolvBTCPool.sol";
 
 /**
  * @title XSolvBTCOracle
@@ -18,6 +19,8 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     address public xSolvBTC;
     uint256 private _latestUpdatedAt;
     uint256 private _latestNav;
+
+    address public xSolvBTCPool;
 
     event SetNav(uint256 navTime, uint256 nav);
 
@@ -70,6 +73,8 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     function setNav(uint256 nav_) external onlyAdmin {
         require(nav_ != 0, "XSolvBTCOracle: invalid nav");
         require(nav_ >= _latestNav, "XSolvBTCOracle: nav cannot be reduced");
+        uint256 poolWithdrawFeeRate = XSolvBTCPool(xSolvBTCPool).withdrawFeeRate();
+        require(nav_ - _latestNav <= _latestNav * poolWithdrawFeeRate / 10000, "XSolvBTCOracle: nav growth over withdraw fee rate");
         _latestNav = nav_;
         _latestUpdatedAt = block.timestamp;
         emit SetNav(_latestUpdatedAt, nav_);
@@ -80,7 +85,17 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      * @param xSolvBTC_ The address of the xSolvBTC
      */
     function setXSolvBTC(address xSolvBTC_) external onlyAdmin {
+        require(xSolvBTC_ != address(0), "XSolvBTCOracle: invalid xSolvBTC address");
         xSolvBTC = xSolvBTC_;
+    }
+
+    /**
+     * @notice Set the xSolvBTCPool address
+     * @param xSolvBTCPool_ The address of the xSolvBTCPool
+     */
+    function setXSolvBTCPool(address xSolvBTCPool_) external onlyAdmin {
+        require(xSolvBTCPool_!= address(0), "XSolvBTCOracle: invalid xSolvBTCPool address");
+        xSolvBTCPool = xSolvBTCPool_;
     }
 
     /**
