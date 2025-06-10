@@ -122,7 +122,8 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         require(targetPoolId > 0, "SolvBTCRouterV2: poolId not found");
         require(checkPoolPermission(targetPoolId), "SolvBTCRouterV2: pool permission denied");
 
-        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(targetPoolId);
+        address _openFundMarket = openFundMarket;
+        PoolInfo memory poolInfo = IOpenFundMarket(_openFundMarket).poolInfos(targetPoolId);
         require(currency_ == poolInfo.currency, "SolvBTCRouterV2: currency not match");
         IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
@@ -133,9 +134,9 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
             "SolvBTCRouterV2: target token not match"
         );
 
-        ERC20TransferHelper.doApprove(currency_, openFundMarket, currencyAmount_);
+        ERC20TransferHelper.doApprove(currency_, _openFundMarket, currencyAmount_);
         targetTokenAmount_ =
-            IOpenFundMarket(openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, expireTime_);
+            IOpenFundMarket(_openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, expireTime_);
 
         uint256 shareCount = share.balanceOf(address(this));
         uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
@@ -155,26 +156,27 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         bytes32 targetPoolId = poolIds[targetToken_][currency_];
         require(targetPoolId > 0, "SolvBTCRouterV2: poolId not found");
 
-        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(targetPoolId);
+        address _openFundMarket = openFundMarket;
+        PoolInfo memory poolInfo = IOpenFundMarket(_openFundMarket).poolInfos(targetPoolId);
         require(currency_ == poolInfo.currency, "SolvBTCRouterV2: currency not match");
         IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         IERC3525 redemption = IERC3525(poolInfo.poolSFTInfo.openFundRedemption);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
-        address multiAssetPool = multiAssetPools[targetToken_];
-        require(
-            targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
-            "SolvBTCRouterV2: target token not match"
-        );
-
         {
+            address multiAssetPool = multiAssetPools[targetToken_];
+            require(
+                targetToken_ == ISolvBTCMultiAssetPool(multiAssetPool).getERC20(address(share), shareSlot),
+                "SolvBTCRouterV2: target token not match"
+            );
+
             ERC20TransferHelper.doTransferIn(targetToken_, msg.sender, withdrawAmount_);
             uint256 shareId =
                 ISolvBTCMultiAssetPool(multiAssetPool).withdraw(address(share), shareSlot, 0, withdrawAmount_);
             require(withdrawAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: share value not match");
 
-            ERC3525TransferHelper.doApproveId(address(share), openFundMarket, shareId);
-            IOpenFundMarket(openFundMarket).requestRedeem(targetPoolId, shareId, 0, withdrawAmount_);
+            ERC3525TransferHelper.doApproveId(address(share), _openFundMarket, shareId);
+            IOpenFundMarket(_openFundMarket).requestRedeem(targetPoolId, shareId, 0, withdrawAmount_);
         }
 
         uint256 redemptionCount = redemption.balanceOf(address(this));
@@ -193,7 +195,8 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         returns (uint256 targetTokenAmount_)
     {
         bytes32 targetPoolId = _getPoolIdByRedemptionId(redemption_, redemptionId_);
-        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(targetPoolId);
+        address _openFundMarket = openFundMarket;
+        PoolInfo memory poolInfo = IOpenFundMarket(_openFundMarket).poolInfos(targetPoolId);
         IERC3525 share = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 shareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
 
@@ -205,8 +208,8 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
         targetTokenAmount_ = IERC3525(redemption_).balanceOf(redemptionId_);
         ERC3525TransferHelper.doTransferIn(redemption_, msg.sender, redemptionId_);
-        ERC3525TransferHelper.doApproveId(redemption_, openFundMarket, redemptionId_);
-        IOpenFundMarket(openFundMarket).revokeRedeem(targetPoolId, redemptionId_);
+        ERC3525TransferHelper.doApproveId(redemption_, _openFundMarket, redemptionId_);
+        IOpenFundMarket(_openFundMarket).revokeRedeem(targetPoolId, redemptionId_);
         uint256 shareCount = share.balanceOf(address(this));
         uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
         require(targetTokenAmount_ == share.balanceOf(shareId), "SolvBTCRouterV2: cancel amount not match");
@@ -221,11 +224,12 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
     }
 
     function checkPoolPermission(bytes32 poolId_) public view virtual returns (bool) {
-        PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
+        address _openFundMarket = openFundMarket;
+        PoolInfo memory poolInfo = IOpenFundMarket(_openFundMarket).poolInfos(poolId_);
         if (poolInfo.permissionless) {
             return true;
         }
-        address whiteListManager = IOpenFundMarket(openFundMarket).getAddress("OFMWhitelistStrategyManager");
+        address whiteListManager = IOpenFundMarket(_openFundMarket).getAddress("OFMWhitelistStrategyManager");
         return IOFMWhitelistStrategyManager(whiteListManager).isWhitelisted(poolId_, msg.sender) || checkKycSBT();
     }
 

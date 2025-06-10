@@ -42,10 +42,10 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      * @param erc20_ The address of the erc20 token
      * @return nav The nav of xSolvBTC
      */
-    function getNav(address erc20_) external view override returns (uint256) {
+    function getNav(address erc20_) external view override returns (uint256 nav) {
         require(erc20_ == xSolvBTC, "XSolvBTCOracle: invalid erc20 address");
-        require(_latestNav != 0, "XSolvBTCOracle: nav not set");
-        return _latestNav;
+        nav = _latestNav;
+        require(nav != 0, "XSolvBTCOracle: nav not set");
     }
 
     /**
@@ -77,7 +77,7 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
         require(nav_ - _latestNav <= _latestNav * poolWithdrawFeeRate / 10000, "XSolvBTCOracle: nav growth over withdraw fee rate");
         _latestNav = nav_;
         _latestUpdatedAt = block.timestamp;
-        emit SetNav(_latestUpdatedAt, nav_);
+        emit SetNav(block.timestamp, nav_);
     }
 
     /**
@@ -106,6 +106,6 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     function _getDate(uint256 timestamp_) internal pure returns (uint256) {
         return timestamp_ / 86400 * 86400;
     }
-    
+
     uint256[45] private __gap;
 }

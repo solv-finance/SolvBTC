@@ -111,14 +111,17 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         require(solvBtcAmount_ > 0, "SolvBTCMultiAssetPool: deposit amount cannot be 0");
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         require($.depositAllowed, "SolvBTCMultiAssetPool: deposit not allowed");
-        //burn solvBTC
-        ISolvBTC($.solvBTC).burn(msg.sender, solvBtcAmount_);
-        //mint xSolvBTC
-        xSolvBtcAmount = ISolvBTCYieldToken($.xSolvBTC).getSharesByValue(solvBtcAmount_);
-        require(solvBtcAmount_ >= xSolvBtcAmount, "xSolvBTCPool: xSolvBTC amount error");
-        ISolvBTCYieldToken($.xSolvBTC).mint(msg.sender, xSolvBtcAmount);
 
-        emit Deposit(msg.sender, $.solvBTC, $.xSolvBTC, solvBtcAmount_, xSolvBtcAmount);
+        address solvBTC = $.solvBTC;
+        address xSolvBTC = $.xSolvBTC;
+        //burn solvBTC
+        ISolvBTC(solvBTC).burn(msg.sender, solvBtcAmount_);
+        //mint xSolvBTC
+        xSolvBtcAmount = ISolvBTCYieldToken(xSolvBTC).getSharesByValue(solvBtcAmount_);
+        require(solvBtcAmount_ >= xSolvBtcAmount, "xSolvBTCPool: xSolvBTC amount error");
+        ISolvBTCYieldToken(xSolvBTC).mint(msg.sender, xSolvBtcAmount);
+
+        emit Deposit(msg.sender, solvBTC, xSolvBTC, solvBtcAmount_, xSolvBtcAmount);
     }
 
     /**
@@ -131,22 +134,24 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
 
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         MultiplierStorage storage $$ = _getMultiplierStorage();
-        solvBtcAmount = ISolvBTCYieldToken($.xSolvBTC).getValueByShares(xSolvBtcAmount_);
+        address solvBTC = $.solvBTC;
+        address xSolvBTC = $.xSolvBTC;
+        solvBtcAmount = ISolvBTCYieldToken(xSolvBTC).getValueByShares(xSolvBtcAmount_);
 
         //burn xSolvBTC
-        ISolvBTCYieldToken($.xSolvBTC).burn(msg.sender, xSolvBtcAmount_);
+        ISolvBTCYieldToken(xSolvBTC).burn(msg.sender, xSolvBtcAmount_);
         //mint solvBTC to fee recipient
         uint256 fee = _calculateWithdrawFee(solvBtcAmount);
         if (fee > 0) {
-            ISolvBTC($.solvBTC).mint($.feeRecipient, fee);
+            ISolvBTC(solvBTC).mint($.feeRecipient, fee);
         }
         //mint solvBTC to user
         require(
             (solvBtcAmount - fee) < (xSolvBtcAmount_ * $$.maxMultiplier / 10000),
             "xSolvBTCPool: solvBTC amount error"
         );
-        ISolvBTC($.solvBTC).mint(msg.sender, solvBtcAmount - fee);
-        emit Withdraw(msg.sender, $.solvBTC, $.xSolvBTC, solvBtcAmount, xSolvBtcAmount_);
+        ISolvBTC(solvBTC).mint(msg.sender, solvBtcAmount - fee);
+        emit Withdraw(msg.sender, solvBTC, xSolvBTC, solvBtcAmount, xSolvBtcAmount_);
     }
 
     /**
