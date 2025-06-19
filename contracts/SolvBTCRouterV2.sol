@@ -89,10 +89,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
      * @param targetToken_ The target ERC20 token address to receive
      * @param currency_ The currency address to deposit
      * @param currencyAmount_ The amount of currency to deposit
+     * @param minimumTargetTokenAmount_ The minimum acceptable return amount of target token
      * @param expireTime_ The expire time
      * @return targetTokenAmount_ The targetToken amount to receive
      */
-    function deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint64 expireTime_)
+    function deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint256 minimumTargetTokenAmount_, uint64 expireTime_)
         external
         virtual
         nonReentrant
@@ -116,6 +117,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
                 targetTokenAmount_ = _deposit(receivedToken, paidToken, targetTokenAmount_, expireTime_);
             }
         }
+        require(targetTokenAmount_ >= minimumTargetTokenAmount_, "SolvBTCRouterV2: target token amount not enough");
         ERC20TransferHelper.doTransferOut(targetToken_, payable(msg.sender), targetTokenAmount_);
 
         emit Deposit(targetToken_, currency_, msg.sender, targetTokenAmount_, currencyAmount_, path, pathPoolIds);
