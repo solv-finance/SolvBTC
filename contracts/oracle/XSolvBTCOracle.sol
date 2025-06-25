@@ -43,9 +43,13 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      * @notice Initialize the oracle
      * @param navDecimals_ The decimals of the nav
      */
-    function initialize(uint8 navDecimals_) external initializer {
+    function initialize(uint8 navDecimals_, uint256 initNav_) external initializer {
         __AdminControl_init(msg.sender);
         _navDecimals = navDecimals_;
+
+        _latestNav = initNav_;
+        _latestUpdatedAt = block.timestamp;
+        emit SetNav(block.timestamp, initNav_);
     }
 
     /**
