@@ -10,6 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const defaultFeeRecipient = "0x5ef01B1eFfA34Bdd3A305a968A907108D52FF234";
   const defaultWithdrawFeeRate = 20; // 0.2%
+  const defaultMaxMultiplier = 15000; // 150%
 
   const customFeeInfos = {
     dev_sepolia: {
@@ -34,16 +35,19 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     customFeeInfos[network.name]?.feeRecipient || defaultFeeRecipient;
   const withdrawFeeRate =
     customFeeInfos[network.name]?.withdrawFeeRate || defaultWithdrawFeeRate;
+  const maxMultiplier =
+    customFeeInfos[network.name]?.maxMultiplier || defaultMaxMultiplier;
 
   const contractName = "XSolvBTCPool";
   const firstImplName = contractName + "Impl";
   const proxyName = contractName + "Proxy";
 
-  const versions = {};
-  const upgrades =
-    versions[network.name]?.map((v) => {
-      return firstImplName + "_" + v;
-    }) || [];
+  const versions = {
+    dev_sepolia: ["v1.1"],
+    sepolia: ["v1.1"],
+    bsctest: ["v1.1"],
+  };
+  const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
 
   const { proxy, newImpl, newImplName } =
     await transparentUpgrade.deployOrUpgrade(
@@ -67,6 +71,17 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         upgrades: upgrades,
       }
     );
+
+  // set MaxMultiplier in pool if needed
+  const XSolvBTCPoolFactory = await ethers.getContractFactory("XSolvBTCPool", deployer);
+  const xSolvBTCPool = XSolvBTCPoolFactory.attach(proxy.address);
+  const currentMaxMultiplier = await xSolvBTCPool.maxMultiplier();
+  if (currentMaxMultiplier != maxMultiplier) {
+    const setMaxMultiplierTx = await xSolvBTCPool.setMaxMultiplierOnlyAdmin(maxMultiplier);
+    console.log(`maxMultiplier set to ${maxMultiplier} at tx: ${setMaxMultiplierTx.hash}`);
+    await setMaxMultiplierTx.wait(1);
+  }
+
 };
 
 module.exports.tags = ["xSolvBTCPool"];

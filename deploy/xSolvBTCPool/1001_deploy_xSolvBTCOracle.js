@@ -6,12 +6,17 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
 
   const navDecimals = 18;
+  const initNav = ethers.utils.parseEther('1');
 
   const contractName = 'XSolvBTCOracle';
   const firstImplName = contractName + 'Impl';
   const proxyName = contractName + 'Proxy';
 
-  const versions = {}
+  const versions = {
+    dev_sepolia: [],
+    sepolia: ["v1.1"],
+    bsctest: ["v1.1"],
+  }
   const upgrades = versions[network.name]?.map(v => {return firstImplName + '_' + v}) || []
 
   const { proxy, newImpl, newImplName } = await transparentUpgrade.deployOrUpgrade(
@@ -25,7 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     {
       initializer: { 
         method: "initialize", 
-        args: [ navDecimals ]
+        args: [ navDecimals, initNav ]
       },
       upgrades: upgrades
     }
@@ -43,6 +48,17 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     const setXSolvBTCTx = await xSolvBTCOracle.setXSolvBTC(xSolvBTCAddress);
     console.log(`xSolvBTC ${xSolvBTCAddress} set to oracle ${proxy.address} at tx: ${setXSolvBTCTx.hash}`);
     await setXSolvBTCTx.wait(1);
+  }
+
+  // set xSolvBTCPool in oracle if needed
+  const xSolvBTCPoolAddress = await deployments.get('XSolvBTCPoolProxy').then(d => d.address);
+  const currentXSolvBTCPoolInOracle = await xSolvBTCOracle.xSolvBTCPool();
+  if (currentXSolvBTCPoolInOracle === xSolvBTCPoolAddress) {
+    console.log(`xSolvBTCPool ${xSolvBTCPoolAddress} already set to oracle ${proxy.address}`);
+  } else {
+    const setXSolvBTCPoolTx = await xSolvBTCOracle.setXSolvBTCPool(xSolvBTCPoolAddress);
+    console.log(`xSolvBTCPool ${xSolvBTCPoolAddress} set to oracle ${proxy.address} at tx: ${setXSolvBTCPoolTx.hash}`);
+    await setXSolvBTCPoolTx.wait(1);
   }
 
 };

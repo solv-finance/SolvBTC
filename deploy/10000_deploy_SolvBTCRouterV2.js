@@ -50,7 +50,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0xf44c01111C54C550d044025099220D79B9559EB9", // target token - SolvBTC.BBN
         "0xE33109766662932a26d978123383ff9E7bdeF346", // currency - SolvBTC
-        "0x64a66ad214a02b4136f8ab710e690b31fdbf359c82ecc7814034a5b60287968b", // pool ID
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // special fund pool ID
+        // "0x64a66ad214a02b4136f8ab710e690b31fdbf359c82ecc7814034a5b60287968b", // pool ID
       ],
       [
         "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0", // target token - SolvBTC.BERA
@@ -67,7 +68,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad", // target token - SolvBTC.BBN
         "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9", // currency - SolvBTC
-        "0xaf3b2b789b70339ac56f23c2c8bfd0edd2b1b496f174aefa46880e011fc86187", // pool ID
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // special fund pool ID
+        // "0xaf3b2b789b70339ac56f23c2c8bfd0edd2b1b496f174aefa46880e011fc86187", // pool ID
       ],
       [
         "0xaDAe5fc8d830f86f53E20c8a39F7E12Ff6d4E87c", // target token - SolvBTC.ENA
@@ -412,8 +414,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       ], // SolvBTC.YP
       [
         "0xf44c01111C54C550d044025099220D79B9559EB9",
-        "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c",
-      ], // SolvBTC.BBN
+        (await deployments.get("XSolvBTCPoolProxy")).address,
+      ], // xSolvBTC
       [
         "0x8146034b06C4ab83d7a59614b64e62705d4dC0C0",
         "0x58D91F2A23ddB50Cc699424e9E74097A51509b7c",
@@ -426,8 +428,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       ], // SolvBTC
       [
         "0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad",
-        "0x56006176aEe38928ea658A80De972E9232521026",
-      ], // SolvBTC.BBN
+        (await deployments.get("XSolvBTCPoolProxy")).address,
+      ], // xSolvBTC
       [
         "0x89E573571B6786b11643585acbCcF3Cb3ABef81e",
         "0x56006176aEe38928ea658A80De972E9232521026",
@@ -546,9 +548,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const proxyName = contractName + "Proxy";
 
   const versions = {
-    dev_sepolia: ["v2.1"],
-    sepolia: ["v2.1"],
-    bsctest: ["v2.1"],
+    dev_sepolia: ["v2.1", "v2.2", "v2.3"],
+    sepolia: ["v2.1", "v2.2", "v2.3"],
+    bsctest: ["v2.1", "v2.2", "v2.3"],
     mainnet: ["v2.1"],
     bsc: ["v2.1"],
     mantle: [],
