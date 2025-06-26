@@ -27,7 +27,7 @@ interface IOpenFundMarketForAdmin {
 }
 
 contract xSolvBTCTest is Test {
-    //use arbitrum chain
+    // fork ethereum mainnet
     address internal constant xSolvBTC = 0xd9D920AA40f578ab794426F5C90F6C731D159DEf;
     address internal constant solvBTC = 0x7A56E1C57C7475CCf742a1832B028F0456652F97;
     address internal constant solvBTCBera = 0xE7C253EAD50976Caf7b0C2cbca569146A7741B50;
@@ -75,7 +75,7 @@ contract xSolvBTCTest is Test {
 
     function test_XSolvBTCPool_depositSolvBTCToXSolvBTC() public {
         vm.startPrank(USER_1);
-        uint256 depositSolvBTCAmount = 1000 * 10 ** 18;
+        uint256 depositSolvBTCAmount = 1 * 10 ** 18;
         uint256 expectedXSolvBTCAmount = SolvBTCYieldToken(xSolvBTC).getSharesByValue(depositSolvBTCAmount);
         deal(solvBTC, USER_1, depositSolvBTCAmount);
         uint256 totalSupplyBeforeOfSolvBTC = IERC20(solvBTC).totalSupply();
@@ -126,7 +126,7 @@ contract xSolvBTCTest is Test {
         uint256 depositAmount = 1000 * 10 ** 18;
         deal(solvBTC, USER_1, depositAmount);
         IERC20(solvBTC).approve(solvBTCRouterV2, depositAmount);
-        SolvBTCRouterV2(solvBTCRouterV2).deposit(xSolvBTC, solvBTC, depositAmount);
+        SolvBTCRouterV2(solvBTCRouterV2).deposit(xSolvBTC, solvBTC, depositAmount, 0, uint64(block.timestamp + 300));
         vm.stopPrank();
     }
 
@@ -159,7 +159,7 @@ contract xSolvBTCTest is Test {
         XSolvBTCPool(xSolvBTCPool).setDepositAllowedOnlyAdmin(false);
         vm.stopPrank();
         vm.startPrank(USER_1);
-        vm.expectRevert("SolvBTCMultiAssetPool: deposit not allowed");
+        vm.expectRevert("xSolvBTCPool: deposit not allowed");
         IxSolvBTCPool(xSolvBTCPool).deposit(1000 * 10 ** 18);
         vm.stopPrank();
     }
@@ -183,7 +183,7 @@ contract xSolvBTCTest is Test {
         uint256 depositAmount = 0.001 * 10 ** 6;
         deal(WBTC, USER_1, depositAmount);
         IERC20(WBTC).approve(solvBTCRouterV2, depositAmount);
-        SolvBTCRouterV2(solvBTCRouterV2).deposit(solvBTCBera, WBTC, depositAmount);
+        SolvBTCRouterV2(solvBTCRouterV2).deposit(solvBTCBera, WBTC, depositAmount, 0, uint64(block.timestamp + 300));
         vm.stopPrank();
     }
 
@@ -199,6 +199,7 @@ contract xSolvBTCTest is Test {
                 "initialize(address,address,address,uint64)", solvBTC, xSolvBTC, FEE_RECIPIENT, WITHDRAW_FEE_RATE
             )
         );
+        XSolvBTCPool(address(proxy)).setMaxMultiplierOnlyAdmin(15000);
         vm.stopPrank();
         return address(proxy);
     }
@@ -209,10 +210,10 @@ contract xSolvBTCTest is Test {
         XSolvBTCOracle impl = new XSolvBTCOracle{salt: implSalt}();
         bytes32 proxySalt = keccak256(abi.encodePacked(impl));
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy{salt: proxySalt}(
-            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(uint8)", 18)
+            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(uint8,uint256)", 18, 1e18)
         );
         XSolvBTCOracle(address(proxy)).setXSolvBTC(xSolvBTC);
-        XSolvBTCOracle(address(proxy)).setNav(1.2e18);
+        XSolvBTCOracle(address(proxy)).setXSolvBTCPool(xSolvBTCPool);
         vm.stopPrank();
         return address(proxy);
     }

@@ -23,29 +23,32 @@ interface IProxyAdmin {
 }
 
 contract XSolvBTCOracleTest is Test {
+    address internal constant solvBTC = 0x7A56E1C57C7475CCf742a1832B028F0456652F97;
     address internal constant xSolvBTC = 0xd9D920AA40f578ab794426F5C90F6C731D159DEf;
     address internal constant ADMIN = 0x55C09707Fd7aFD670e82A62FaeE312903940013E;
     ProxyAdmin internal constant proxyAdmin = ProxyAdmin(0xD3e96c05F2bED82271B5C9d737C215F6BcadfF68);
     address internal constant USER_1 = 0x3D64cFEEf2B66AdD5191c387E711AF47ab01e296;
 
+    XSolvBTCPool public xSolvBTCPool;
     XSolvBTCOracle public oracle;
 
     function setUp() public {
         //fork eth mainnet
         vm.createSelectFork(vm.envString("ETH_RPC_URL"));
+        xSolvBTCPool = XSolvBTCPool(_deployXSolvBTCPool());
         oracle = XSolvBTCOracle(_deployXSolvBTCOracle());
     }
 
     function test_SetNav() public {
         vm.startPrank(ADMIN);
-        oracle.setNav(1.4e18);
+        oracle.setNav(1.005e18);
         vm.stopPrank();
-        assertEq(oracle.getNav(xSolvBTC), 1.4e18);
+        assertEq(oracle.getNav(xSolvBTC), 1.005e18);
     }
 
     function test_GetLatestUpdatedAt() public {
         vm.startPrank(ADMIN);
-        oracle.setNav(1.4e18);
+        oracle.setNav(1.005e18);
         vm.stopPrank();
         assertEq(oracle.latestUpdatedAt(), block.timestamp);
     }
@@ -53,18 +56,29 @@ contract XSolvBTCOracleTest is Test {
     function test_RevertWhenSetNavByNonAdmin() public {
         vm.startPrank(USER_1);
         vm.expectRevert("only admin");
-        oracle.setNav(1.4e18);
+        oracle.setNav(1.005e18);
         vm.stopPrank();
-    }
-
-    function test_RevertWhenNavIsZero() public {
-        vm.expectRevert("XSolvBTCOracle: nav not set");
-        oracle.getNav(xSolvBTC);
     }
 
     function test_RevertWhenGetNavByInvalidXSolvBTC() public {
         vm.expectRevert("XSolvBTCOracle: invalid erc20 address");
         oracle.getNav(address(0));
+    }
+
+    function _deployXSolvBTCPool() internal returns (address) {
+        vm.startPrank(ADMIN);
+        bytes32 implSalt = keccak256(abi.encodePacked(ADMIN));
+        XSolvBTCPool impl = new XSolvBTCPool{salt: implSalt}();
+        bytes32 proxySalt = keccak256(abi.encodePacked(impl));
+        TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy{salt: proxySalt}(
+            address(impl),
+            address(proxyAdmin),
+            abi.encodeWithSignature(
+                "initialize(address,address,address,uint64)", solvBTC, xSolvBTC, ADMIN, 100
+            )
+        );
+        vm.stopPrank();
+        return address(proxy);
     }
 
     function _deployXSolvBTCOracle() internal returns (address) {
@@ -73,9 +87,10 @@ contract XSolvBTCOracleTest is Test {
         XSolvBTCOracle impl = new XSolvBTCOracle{salt: implSalt}();
         bytes32 proxySalt = keccak256(abi.encodePacked(impl));
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy{salt: proxySalt}(
-            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(uint8)", 18)
+            address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize(uint8,uint256)", 18, 1e18)
         );
         XSolvBTCOracle(address(proxy)).setXSolvBTC(xSolvBTC);
+        XSolvBTCOracle(address(proxy)).setXSolvBTCPool(address(xSolvBTCPool));
         vm.stopPrank();
         return address(proxy);
     }
