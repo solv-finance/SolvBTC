@@ -16,6 +16,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     dev_sepolia: [],
     sepolia: ["v1.1"],
     bsctest: ["v1.1"],
+    mantle: ["v1.1"],
+    bob: ["v1.1"],
   }
   const upgrades = versions[network.name]?.map(v => {return firstImplName + '_' + v}) || []
 
