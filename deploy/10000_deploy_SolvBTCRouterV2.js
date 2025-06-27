@@ -609,8 +609,12 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsc: ["v2.1"],
     mantle: ["v2.2", "v2.3"],
     bob: ["v2.2", "v2.3"],
+    avax: ["v2.3"],
   };
-  const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
+  const upgrades =
+    versions[network.name]?.map((v) => {
+      return firstImplName + "_" + v;
+    }) || [];
 
   const { proxy, newImpl, newImplName } =
     await transparentUpgrade.deployOrUpgrade(
@@ -630,27 +634,46 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       }
     );
 
-  const SolvBTCRouterV2Factory = await ethers.getContractFactory("SolvBTCRouterV2", deployer);
+  const SolvBTCRouterV2Factory = await ethers.getContractFactory(
+    "SolvBTCRouterV2",
+    deployer
+  );
   const solvBTCRouterV2 = SolvBTCRouterV2Factory.attach(proxy.address);
 
   for (let poolId of poolIds[network.name]) {
     let currentPoolId = await solvBTCRouterV2.poolIds(poolId[0], poolId[1]);
     if (currentPoolId != poolId[2]) {
-      let setPoolIdTx = await solvBTCRouterV2.setPoolId(poolId[0], poolId[1], poolId[2]);
-      console.log(`Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`);
+      let setPoolIdTx = await solvBTCRouterV2.setPoolId(
+        poolId[0],
+        poolId[1],
+        poolId[2]
+      );
+      console.log(
+        `Set PoolInfo for poolId ${poolId[2]} at tx: ${setPoolIdTx.hash}`
+      );
       await setPoolIdTx.wait(1);
     }
   }
 
   for (let pathInfo of pathInfos[network.name]) {
     try {
-      let currentPath = await solvBTCRouterV2.paths(pathInfo[0], pathInfo[1], 0);
+      let currentPath = await solvBTCRouterV2.paths(
+        pathInfo[0],
+        pathInfo[1],
+        0
+      );
       if (currentPath.toLowerCase() != pathInfo[2][0].toLowerCase()) {
         throw new Error("Path not match");
       }
     } catch (e) {
-      let setPathTx = await solvBTCRouterV2.setPath( pathInfo[0], pathInfo[1], pathInfo[2]);
-      console.log(`Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`);
+      let setPathTx = await solvBTCRouterV2.setPath(
+        pathInfo[0],
+        pathInfo[1],
+        pathInfo[2]
+      );
+      console.log(
+        `Set Path for {${pathInfo[0]} ${pathInfo[1]}} at tx: ${setPathTx.hash}`
+      );
       await setPathTx.wait(1);
     }
   }
@@ -658,8 +681,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   for (let multiAssetPool of multiAssetPools[network.name]) {
     let currentPool = await solvBTCRouterV2.multiAssetPools(multiAssetPool[0]);
     if (currentPool != multiAssetPool[1]) {
-      let setPoolTx = await solvBTCRouterV2.setMultiAssetPool(multiAssetPool[0],multiAssetPool[1]);
-      console.log(`Set MultiAssetPool for token ${multiAssetPool[0]} at tx: ${setPoolTx.hash}`);
+      let setPoolTx = await solvBTCRouterV2.setMultiAssetPool(
+        multiAssetPool[0],
+        multiAssetPool[1]
+      );
+      console.log(
+        `Set MultiAssetPool for token ${multiAssetPool[0]} at tx: ${setPoolTx.hash}`
+      );
       await setPoolTx.wait(1);
     }
   }
