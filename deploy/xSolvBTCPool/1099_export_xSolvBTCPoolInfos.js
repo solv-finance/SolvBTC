@@ -4,6 +4,8 @@ const SolvBTCAddresses = {
   bsctest: "0x1cF0e51005971c5B78b4A8feE419832CFCCD8cf9",
   mantle: "0xa68d25fC2AF7278db4BcdcAabce31814252642a9",
   bob: "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+  base: "0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f",
+  avax: "0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777",
 };
 
 const XSolvBTCInfos = {
