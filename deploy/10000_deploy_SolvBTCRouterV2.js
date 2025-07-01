@@ -86,18 +86,28 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     mainnet: [
       [
         "0x7A56E1C57C7475CCf742a1832B028F0456652F97", // target token - SolvBTC
+        "0xC96dE26018A54D51c097160568752c4E3BD6C364", // currency - FBTC
+        "0x2dc130e46b5958208155546bd4049d5b3319798063a8c4180b4b2b82f3ebdc3d", // 136 pool ID
+      ],
+      [
+        "0x7A56E1C57C7475CCf742a1832B028F0456652F97", // target token - SolvBTC
         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", // currency - WBTC
-        "0x716db7dc196abe78d5349c7166896f674ab978af26ada3e5b3ea74c5a1b48307", // pool ID
+        "0x716db7dc196abe78d5349c7166896f674ab978af26ada3e5b3ea74c5a1b48307", // 186 pool ID
       ],
       [
         "0x7A56E1C57C7475CCf742a1832B028F0456652F97", // target token - SolvBTC
         "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf", // currency - cbBTC
-        "0xdc0937dd33c4af08a08724da23bc45b33b43fbb23f365e7b50a536ce45f447ef", // pool ID
+        "0xdc0937dd33c4af08a08724da23bc45b33b43fbb23f365e7b50a536ce45f447ef", // 224 pool ID
       ],
       [
-        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", // target token - SolvBTC.BBN
+        "0x7A56E1C57C7475CCf742a1832B028F0456652F97", // target token - SolvBTC
+        "0x18084fbA666a33d37592fA2633fD49a74DD93a88", // currency - tBTC
+        "0x23299b545056e9846725f89513e5d7f65a5034ab36515287ff8a27e860b1be75", // 232 pool ID
+      ],
+      [
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", // target token - xSolvBTC
         "0x7A56E1C57C7475CCf742a1832B028F0456652F97", // currency - SolvBTC
-        "0xefcca1eb946cdc7b56509489a56b45b75aff74b8bb84dad5b893012157e0df93", // pool ID
+        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // special fund pool ID
       ],
       [
         "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50", // target token - SolvBTC.BERA
@@ -292,6 +302,26 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ],
     mainnet: [
       [
+        "0xC96dE26018A54D51c097160568752c4E3BD6C364", // currency - FBTC
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", // target token - xSolvBTC
+        ["0x7A56E1C57C7475CCf742a1832B028F0456652F97"], // path: FBTC -> SolvBTC -> xSolvBTC
+      ],
+      [
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", // currency - WBTC
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", // target token - xSolvBTC
+        ["0x7A56E1C57C7475CCf742a1832B028F0456652F97"], // path: WBTC -> SolvBTC -> xSolvBTC
+      ],
+      [
+        "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf", // currency - cbBTC
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", // target token - xSolvBTC
+        ["0x7A56E1C57C7475CCf742a1832B028F0456652F97"], // path: cbBTC -> SolvBTC -> xSolvBTC
+      ],
+      [
+        "0x18084fbA666a33d37592fA2633fD49a74DD93a88", // currency - tBTC
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf", // target token - xSolvBTC
+        ["0x7A56E1C57C7475CCf742a1832B028F0456652F97"], // path: tBTC -> SolvBTC -> xSolvBTC
+      ],
+      [
         "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", // currency - WBTC
         "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50", // target token - SolvBTC.BERA
         [
@@ -482,8 +512,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       ], // SolvBTC
       [
         "0xd9D920AA40f578ab794426F5C90F6C731D159DEf",
-        "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
-      ], // SolvBTC.BBN
+        (await deployments.get("XSolvBTCPoolProxy")).address,
+      ], // xSolvBTC
       [
         "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50",
         "0x763b8a88Ac40eDb6Cc5c13FAac1fCFf4b393218D",
@@ -605,7 +635,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     dev_sepolia: ["v2.1", "v2.2", "v2.3"],
     sepolia: ["v2.1", "v2.2", "v2.3"],
     bsctest: ["v2.1", "v2.2", "v2.3"],
-    mainnet: ["v2.1"],
+    mainnet: ["v2.1", "v2.3"],
     bsc: ["v2.1"],
     mantle: ["v2.2", "v2.3"],
     bob: ["v2.2", "v2.3"],
