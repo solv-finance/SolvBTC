@@ -9,7 +9,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const xSolvBTCAddress = tokenInfos.XSolvBTCInfos[network.name].token;
 
   const defaultFeeRecipient = "0x5ef01B1eFfA34Bdd3A305a968A907108D52FF234";
-  const defaultWithdrawFeeRate = 20; // 0.2%
+  const defaultWithdrawFeeRate = 5; // 0.05%
   const defaultMaxMultiplier = 15000; // 150%
 
   const customFeeInfos = {
@@ -49,7 +49,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     mantle: ["v1.1"],
     bob: ["v1.1"],
   };
-  const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
+  const upgrades =
+    versions[network.name]?.map((v) => {
+      return firstImplName + "_" + v;
+    }) || [];
 
   const { proxy, newImpl, newImplName } =
     await transparentUpgrade.deployOrUpgrade(
@@ -75,15 +78,21 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     );
 
   // set MaxMultiplier in pool if needed
-  const XSolvBTCPoolFactory = await ethers.getContractFactory("XSolvBTCPool", deployer);
+  const XSolvBTCPoolFactory = await ethers.getContractFactory(
+    "XSolvBTCPool",
+    deployer
+  );
   const xSolvBTCPool = XSolvBTCPoolFactory.attach(proxy.address);
   const currentMaxMultiplier = await xSolvBTCPool.maxMultiplier();
   if (currentMaxMultiplier != maxMultiplier) {
-    const setMaxMultiplierTx = await xSolvBTCPool.setMaxMultiplierOnlyAdmin(maxMultiplier);
-    console.log(`maxMultiplier set to ${maxMultiplier} at tx: ${setMaxMultiplierTx.hash}`);
+    const setMaxMultiplierTx = await xSolvBTCPool.setMaxMultiplierOnlyAdmin(
+      maxMultiplier
+    );
+    console.log(
+      `maxMultiplier set to ${maxMultiplier} at tx: ${setMaxMultiplierTx.hash}`
+    );
     await setMaxMultiplierTx.wait(1);
   }
-
 };
 
 module.exports.tags = ["xSolvBTCPool"];
