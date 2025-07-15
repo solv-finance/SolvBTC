@@ -185,6 +185,10 @@ const config: HardhatUserConfig = {
       url: process.env.HYPEREVM_TEST_RPC_URL || `https://rpc.hyperliquid-testnet.xyz/evm`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
     },
+    tac_test: {
+      url: process.env.TAC_TEST_RPC_URL || `https://spb.rpc.tac.build`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
@@ -284,6 +288,10 @@ const config: HardhatUserConfig = {
     },
     hyperevm: {
       url: process.env.HYPEREVM_URL || `https://rpc.hyperliquid.xyz/evm`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    },
+    tac: {
+      url: process.env.TAC_URL || `https://rpc.tac.build`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
     }
   },
