@@ -18,6 +18,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     polygon: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     ink: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     hyperevm: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+    tac: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
   };
   const blacklistManager = blacklistManagers[network.name] || deployer;
 

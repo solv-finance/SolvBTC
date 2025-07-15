@@ -12,6 +12,7 @@ const SolvBTCYieldTokenFactoryV3Addresses = {
   bera: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   ink: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   hyperevm: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
+  tac: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
 };
 
 const SolvBTCYieldTokenV3BeaconAddresses = {
@@ -28,6 +29,7 @@ const SolvBTCYieldTokenV3BeaconAddresses = {
   bera: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   ink: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   hyperevm: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
+  tac: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -132,6 +134,16 @@ const SolvBTCYieldTokenInfos = {
       slot: "",
       poolId: "",
       navOracle: "0x1E6101728fD9920465dfA1562c5e371850103da2",
+      holdingValueSftId: 0,
+    },
+  },
+  tac: {
+    "xSolvBTC": {
+      erc20: "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
       holdingValueSftId: 0,
     },
   },

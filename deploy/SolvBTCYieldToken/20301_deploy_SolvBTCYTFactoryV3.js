@@ -13,6 +13,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     amoy: "_tnt" + version,
     ink_test: "_tnt" + version,
     hyperevm_test: "_tnt" + version,
+    tac_test: "_tnt" + version,
   };
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;
@@ -29,6 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bera: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     ink: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     hyperevm: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    tac: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
   const instance = await deploy("SolvBTCYieldTokenFactoryV3", {
