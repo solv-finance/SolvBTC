@@ -28,7 +28,7 @@ function getMasterKey() {
 }
 const taskName = process.argv[2];
 
-function getPrivateKey() {
+export function getPrivateKey() {
   if (taskName !== "deploy") {
     return process.env.PRIVATE_KEY || undefined;
   }
