@@ -14,25 +14,24 @@ import "./utils/ERC20TransferHelper.sol";
 contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EIP712Upgradeable {
     event Deposit(address indexed currency, address indexed user, uint256 amount, uint256 shares);
     event WithdrawRequest(
-        address indexed user,
-        address indexed sharesToken,
-        address indexed withdrawToken,
-        uint256 shares,
-        bytes32 requestHash,
-        uint256 nav,
-        uint256 timestamp
+        address indexed user, address indexed withdrawToken, uint256 shares, bytes32 requestHash, uint256 nav
     );
     event Withdraw(address indexed user, address indexed withdrawToken, uint256 amount, uint256 timestamp);
+
+    enum WithdrawStatus {
+        NOT_EXIST,
+        PENDING,
+        DONE
+    }
 
     struct WithdrawInfo {
         uint256 chainId;
         string action;
         address user;
         address withdrawToken;
-        uint256 amount;
+        uint256 shares;
         uint256 nav;
         bytes32 requestHash;
-        uint256 timestamp;
     }
 
     struct SolvBTCVaultStorage {
@@ -42,11 +41,9 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         mapping(address => bool) allowedCurrencies;
         address oracle;
         address withdrawSigner;
-        uint32 minWithdrawTime;
         address feeReceiver;
         uint32 withdrawFeeRatio;
-        //requestHash => status: 0: not exist, 1: pending, 2: done
-        mapping(bytes32 => uint8) withdrawRequestStatus;
+        mapping(bytes32 => WithdrawStatus) withdrawRequestStatus;
     }
 
     /// keccak256(abi.encode(uint256(keccak256("solv.storage.SolvBTCVault")) - 1)) & ~bytes32(uint256(0xff))
@@ -54,8 +51,9 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         0x6004566d0072672131319f1802405d73689c7c95aeedc9ce6d5f4b0099b18500;
 
     // EIP712
-    bytes32 public constant WITHDRAW_TYPEHASH =
-        keccak256("Withdraw(address withdrawToken,uint256 amount,uint256 nav,bytes32 requestHash,uint256 timestamp)");
+    bytes32 public constant WITHDRAW_TYPEHASH = keccak256(
+        "Withdraw(uint256 chainId,string action,address user,address withdrawToken,uint256 shares,uint256 nav,bytes32 requestHash)"
+    );
     string private constant WITHDRAW_DOMAIN_SEPARATOR_NAME = "Solv Vault Withdraw";
     string private constant WITHDRAW_DOMAIN_SEPARATOR_VERSION = "1";
 
@@ -68,6 +66,7 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
 
     function initialize(
         address withdrawToken_,
+        address sharesToken_,
         address[] calldata allowedCurrencies_,
         address oracle_,
         address feeReceiver_,
@@ -78,6 +77,7 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         EIP712Upgradeable.__EIP712_init(WITHDRAW_DOMAIN_SEPARATOR_NAME, WITHDRAW_DOMAIN_SEPARATOR_VERSION);
 
         _setWithdrawToken(withdrawToken_);
+        _setSharesToken(sharesToken_);
         _setOracle(oracle_);
         _setFeeReceiver(feeReceiver_);
         _setWithdrawFeeRatio(withdrawFeeRatio_);
@@ -115,17 +115,17 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         require(s.oracle != address(0), "SolvBTCVault: oracle not set");
         require(s.feeReceiver != address(0), "SolvBTCVault: fee receiver not set");
         require(s.withdrawFeeRatio > 0, "SolvBTCVault: withdraw fee ratio not set");
-        require(s.withdrawRequestStatus[requestHash_] == 0, "SolvBTCVault: request already exist");
+        uint256 nav = _getNav();
+        bytes32 key = keccak256(abi.encodePacked(_msgSender(), s.withdrawToken, requestHash_, shares_, nav));
+        require(s.withdrawRequestStatus[key] == WithdrawStatus.NOT_EXIST, "SolvBTCVault: request already exist");
         require(s.withdrawToken != address(0), "SolvBTCVault: withdraw token not set");
         require(s.sharesToken != address(0), "SolvBTCVault: shares token not set");
         require(IERC20Metadata(s.sharesToken).balanceOf(_msgSender()) >= shares_, "SolvBTCVault: shares not enough");
 
-        uint256 nav = _getNav();
-
         ISolvBTCYieldToken(s.sharesToken).burn(_msgSender(), shares_);
-        s.withdrawRequestStatus[requestHash_] = 1;
+        s.withdrawRequestStatus[key] = WithdrawStatus.PENDING;
 
-        emit WithdrawRequest(_msgSender(), s.sharesToken, s.withdrawToken, shares_, requestHash_, nav, block.timestamp);
+        emit WithdrawRequest(_msgSender(), s.withdrawToken, shares_, requestHash_, nav);
     }
 
     function withdraw(bytes memory withdrawInfo_, bytes memory signature_)
@@ -140,9 +140,10 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
 
         WithdrawInfo memory info = abi.decode(withdrawInfo_, (WithdrawInfo));
         SolvBTCVaultStorage storage s = _getStorage();
-        require(s.withdrawRequestStatus[info.requestHash] == 1, "SolvBTCVault: request not exist");
+        bytes32 key =
+            keccak256(abi.encodePacked(info.user, info.withdrawToken, info.requestHash, info.shares, info.nav));
+        require(s.withdrawRequestStatus[key] == WithdrawStatus.PENDING, "SolvBTCVault: request not exist");
         require(s.withdrawToken == info.withdrawToken, "SolvBTCVault: withdraw token not match");
-        require(info.timestamp < block.timestamp - s.minWithdrawTime, "SolvBTCVault: timestamp not match");
         require(s.oracle != address(0), "SolvBTCVault: oracle not set");
         require(s.feeReceiver != address(0), "SolvBTCVault: fee receiver not set");
         require(s.withdrawFeeRatio > 0, "SolvBTCVault: withdraw fee ratio not set");
@@ -151,12 +152,30 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         require(info.chainId == chainId, "SolvBTCVault: chain id not match");
         require(info.user == _msgSender(), "SolvBTCVault: user not match");
         require(keccak256(abi.encodePacked(info.action)) == keccak256("withdraw"), "SolvBTCVault: action not match");
-        require(_recoverAddress(info, signature_) == s.withdrawSigner, "SolvBTCVault: signer not match");
+        bytes32 hash = _getWithdrawHash(info);
+        if (s.withdrawSigner.code.length == 0) {
+            address recoveredSigner = ECDSA.recover(hash, signature_);
+            require(recoveredSigner == s.withdrawSigner, "Signature verification failed");
+        } else {
+            // verify signature by calling isValidSignature when signer is a Safe multisig wallet
+            (bool success, bytes memory result) =
+                s.withdrawSigner.call(abi.encodeWithSignature("isValidSignature(bytes32,bytes)", hash, signature_));
+            require(
+                success && abi.decode(result, (bytes4)) == SIGNATURE_VERIFICATION_MAGIC_VALUE,
+                "Signature verification failed"
+            );
+        }
 
-        uint256 fee = info.amount * s.withdrawFeeRatio / 10000;
-        amount_ = info.amount - fee;
+        uint256 sharesTokenDecimals = IERC20Metadata(s.sharesToken).decimals();
+        uint256 withdrawTokenDecimals = IERC20Metadata(s.withdrawToken).decimals();
+        uint256 navDecimals = ISolvBTCYieldTokenOracle(s.oracle).navDecimals(s.withdrawToken);
+        uint256 amount =
+            info.shares * info.nav * (10 ** withdrawTokenDecimals) / ((10 ** navDecimals) * (10 ** sharesTokenDecimals));
 
-        s.withdrawRequestStatus[info.requestHash] = 2;
+        uint256 fee = amount * s.withdrawFeeRatio / 10000;
+        amount_ = amount - fee;
+
+        s.withdrawRequestStatus[key] = WithdrawStatus.DONE;
 
         ERC20TransferHelper.doTransferOut(info.withdrawToken, payable(s.feeReceiver), fee);
         ERC20TransferHelper.doTransferOut(info.withdrawToken, payable(_msgSender()), amount_);
@@ -180,41 +199,65 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         _setAllowedCurrency(currency_, allowed_);
     }
 
-    function setMinWithdrawTimeByAdmin(uint32 minWithdrawTime_) external onlyOwner {
-        _setMinWithdrawTime(minWithdrawTime_);
-    }
-
     function setWithdrawSignerByAdmin(address withdrawSigner_) external onlyOwner {
         _setWithdrawSigner(withdrawSigner_);
     }
 
-    function _recoverAddress(WithdrawInfo memory info_, bytes memory signature_) internal view returns (address) {
-        bytes32 hash = _hashTypedDataV4(
+    function getOracle() external view returns (address) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.oracle;
+    }
+
+    function getWithdrawSigner() external view returns (address) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.withdrawSigner;
+    }
+
+    function getWithdrawFeeRatio() external view returns (uint32) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.withdrawFeeRatio;
+    }
+
+    function getWithdrawToken() external view returns (address) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.withdrawToken;
+    }
+
+    function getFeeReceiver() external view returns (address) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.feeReceiver;
+    }
+
+    function getSharesToken() external view returns (address) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.sharesToken;
+    }
+
+    function isAllowedCurrency(address currency_) external view returns (bool) {
+        SolvBTCVaultStorage storage s = _getStorage();
+        return s.allowedCurrencies[currency_];
+    }
+
+    function _getWithdrawHash(WithdrawInfo memory info_) internal view returns (bytes32) {
+        return _hashTypedDataV4(
             keccak256(
                 abi.encode(
                     WITHDRAW_TYPEHASH,
                     info_.chainId,
                     keccak256(abi.encodePacked(info_.action)),
                     info_.withdrawToken,
-                    info_.amount,
+                    info_.shares,
                     info_.nav,
-                    info_.requestHash,
-                    info_.timestamp
+                    info_.requestHash
                 )
             )
         );
-        return ECDSA.recover(hash, signature_);
     }
 
     function _getNav() internal view returns (uint256 nav_) {
         SolvBTCVaultStorage storage s = _getStorage();
         ISolvBTCYieldTokenOracle oracle = ISolvBTCYieldTokenOracle(s.oracle);
         nav_ = oracle.getNav(s.withdrawToken);
-    }
-
-    function _setMinWithdrawTime(uint32 minWithdrawTime_) internal {
-        SolvBTCVaultStorage storage s = _getStorage();
-        s.minWithdrawTime = minWithdrawTime_;
     }
 
     function _setWithdrawSigner(address withdrawSigner_) internal {
@@ -225,6 +268,11 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
     function _setWithdrawToken(address withdrawToken_) internal {
         SolvBTCVaultStorage storage s = _getStorage();
         s.withdrawToken = withdrawToken_;
+    }
+
+    function _setSharesToken(address sharesToken_) internal {
+        SolvBTCVaultStorage storage s = _getStorage();
+        s.sharesToken = sharesToken_;
     }
 
     function _setOracle(address oracle_) internal {
