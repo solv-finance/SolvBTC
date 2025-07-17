@@ -18,7 +18,7 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
     );
     event Withdraw(address indexed user, address indexed withdrawToken, uint256 amount, uint256 timestamp);
     event TreasuryDeposit(address indexed currency, uint256 amount);
-    event SetWithdrawSigner(address indexed withdrawSigner);
+    event SetWithdrawVerifier(address indexed withdrawVerifier);
     event SetTreasury(address indexed treasury);
     event SetOracle(address indexed oracle);
     event SetFeeReceiver(address indexed feeReceiver);
@@ -47,7 +47,7 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         address treasury;
         mapping(address => bool) allowedCurrencies;
         address oracle;
-        address withdrawSigner;
+        address withdrawVerifier;
         address feeReceiver;
         uint32 withdrawFeeRatio;
         mapping(bytes32 => WithdrawStatus) withdrawRequestStatus;
@@ -77,7 +77,9 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         address[] calldata allowedCurrencies_,
         address oracle_,
         address feeReceiver_,
-        uint32 withdrawFeeRatio_
+        uint32 withdrawFeeRatio_,
+        address withdrawVerifier_,
+        address treasury_
     ) external virtual initializer {
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
         Ownable2StepUpgradeable.__Ownable2Step_init();
@@ -88,6 +90,8 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         _setOracle(oracle_);
         _setFeeReceiver(feeReceiver_);
         _setWithdrawFeeRatio(withdrawFeeRatio_);
+        _setWithdrawVerifier(withdrawVerifier_);
+        _setTreasury(treasury_);
         for (uint256 i = 0; i < allowedCurrencies_.length; i++) {
             _setAllowedCurrency(allowedCurrencies_[i], true);
         }
@@ -155,18 +159,18 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         require(s.feeReceiver != address(0), "SolvBTCVault: fee receiver not set");
         require(s.withdrawFeeRatio > 0, "SolvBTCVault: withdraw fee ratio not set");
         require(info.nav <= _getNav(), "SolvBTCVault: nav not greater than current nav");
-        require(s.withdrawSigner != address(0), "SolvBTCVault: withdraw signer not set");
+        require(s.withdrawVerifier != address(0), "SolvBTCVault: withdraw signer not set");
         require(info.chainId == chainId, "SolvBTCVault: chain id not match");
         require(info.user == _msgSender(), "SolvBTCVault: user not match");
         require(keccak256(abi.encodePacked(info.action)) == keccak256("withdraw"), "SolvBTCVault: action not match");
         bytes32 hash = _getWithdrawHash(info);
-        if (s.withdrawSigner.code.length == 0) {
+        if (s.withdrawVerifier.code.length == 0) {
             address recoveredSigner = ECDSA.recover(hash, signature_);
-            require(recoveredSigner == s.withdrawSigner, "Signature verification failed");
+            require(recoveredSigner == s.withdrawVerifier, "Signature verification failed");
         } else {
             // verify signature by calling isValidSignature when signer is a Safe multisig wallet
             (bool success, bytes memory result) =
-                s.withdrawSigner.call(abi.encodeWithSignature("isValidSignature(bytes32,bytes)", hash, signature_));
+                s.withdrawVerifier.call(abi.encodeWithSignature("isValidSignature(bytes32,bytes)", hash, signature_));
             require(
                 success && abi.decode(result, (bytes4)) == SIGNATURE_VERIFICATION_MAGIC_VALUE,
                 "Signature verification failed"
@@ -219,9 +223,9 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         emit SetAllowedCurrency(currency_, allowed_);
     }
 
-    function setWithdrawSignerByAdmin(address withdrawSigner_) external onlyOwner {
-        _setWithdrawSigner(withdrawSigner_);
-        emit SetWithdrawSigner(withdrawSigner_);
+    function setWithdrawVerifierByAdmin(address withdrawVerifier_) external onlyOwner {
+        _setWithdrawVerifier(withdrawVerifier_);
+        emit SetWithdrawVerifier(withdrawVerifier_);
     }
 
     function setTreasuryByAdmin(address treasury_) external onlyOwner {
@@ -236,7 +240,7 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
 
     function getWithdrawSigner() external view returns (address) {
         SolvBTCVaultStorage storage s = _getStorage();
-        return s.withdrawSigner;
+        return s.withdrawVerifier;
     }
 
     function getWithdrawFeeRatio() external view returns (uint32) {
@@ -286,9 +290,9 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         nav_ = oracle.getNav(s.withdrawToken);
     }
 
-    function _setWithdrawSigner(address withdrawSigner_) internal {
+    function _setWithdrawVerifier(address withdrawVerifier_) internal {
         SolvBTCVaultStorage storage s = _getStorage();
-        s.withdrawSigner = withdrawSigner_;
+        s.withdrawVerifier = withdrawVerifier_;
     }
 
     function _setWithdrawToken(address withdrawToken_) internal {
