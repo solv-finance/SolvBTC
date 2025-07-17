@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types'
 import { MetaTransactionData, OperationType } from '@safe-global/types-kit';
 import { SafeProposer, SafeProposerConfig } from '../helpers/SafeProposer';
-import { ethers } from 'hardhat';
+import { ethers, network } from 'hardhat';
 import { AuthData } from "./70000_export_AuthContracts";
 import { getPrivateKey } from '../../hardhat.config';
 import colors from "colors";
