@@ -17,6 +17,13 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         address indexed user, address indexed withdrawToken, uint256 shares, bytes32 requestHash, uint256 nav
     );
     event Withdraw(address indexed user, address indexed withdrawToken, uint256 amount, uint256 timestamp);
+    event TreasuryDeposit(address indexed currency, uint256 amount);
+    event SetWithdrawSigner(address indexed withdrawSigner);
+    event SetTreasury(address indexed treasury);
+    event SetOracle(address indexed oracle);
+    event SetFeeReceiver(address indexed feeReceiver);
+    event SetWithdrawFeeRatio(uint32 withdrawFeeRatio);
+    event SetAllowedCurrency(address indexed currency, bool allowed);
 
     enum WithdrawStatus {
         NOT_EXIST,
@@ -115,11 +122,11 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         require(s.oracle != address(0), "SolvBTCVault: oracle not set");
         require(s.feeReceiver != address(0), "SolvBTCVault: fee receiver not set");
         require(s.withdrawFeeRatio > 0, "SolvBTCVault: withdraw fee ratio not set");
+        require(s.withdrawToken != address(0), "SolvBTCVault: withdraw token not set");
+        require(s.sharesToken != address(0), "SolvBTCVault: shares token not set");
         uint256 nav = _getNav();
         bytes32 key = keccak256(abi.encodePacked(_msgSender(), s.withdrawToken, requestHash_, shares_, nav));
         require(s.withdrawRequestStatus[key] == WithdrawStatus.NOT_EXIST, "SolvBTCVault: request already exist");
-        require(s.withdrawToken != address(0), "SolvBTCVault: withdraw token not set");
-        require(s.sharesToken != address(0), "SolvBTCVault: shares token not set");
         require(IERC20Metadata(s.sharesToken).balanceOf(_msgSender()) >= shares_, "SolvBTCVault: shares not enough");
 
         ISolvBTCYieldToken(s.sharesToken).burn(_msgSender(), shares_);
@@ -183,24 +190,43 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
         emit Withdraw(_msgSender(), info.withdrawToken, amount_, block.timestamp);
     }
 
+    function treasuryDeposit(uint256 amount_) external {
+        SolvBTCVaultStorage storage s = _getStorage();
+        require(s.treasury != address(0), "SolvBTCVault: treasury not set");
+        require(_msgSender() == s.treasury, "SolvBTCVault: only treasury can deposit");
+        ERC20TransferHelper.doTransferIn(s.withdrawToken, s.treasury, amount_);
+
+        emit TreasuryDeposit(s.withdrawToken, amount_);
+    }
+
     function setOracleByAdmin(address oracle_) external onlyOwner {
         _setOracle(oracle_);
+        emit SetOracle(oracle_);
     }
 
     function setFeeReceiverByAdmin(address feeReceiver_) external onlyOwner {
         _setFeeReceiver(feeReceiver_);
+        emit SetFeeReceiver(feeReceiver_);
     }
 
     function setWithdrawFeeRatioByAdmin(uint32 withdrawFeeRatio_) external onlyOwner {
         _setWithdrawFeeRatio(withdrawFeeRatio_);
+        emit SetWithdrawFeeRatio(withdrawFeeRatio_);
     }
 
     function setAllowedCurrencyByAdmin(address currency_, bool allowed_) external onlyOwner {
         _setAllowedCurrency(currency_, allowed_);
+        emit SetAllowedCurrency(currency_, allowed_);
     }
 
     function setWithdrawSignerByAdmin(address withdrawSigner_) external onlyOwner {
         _setWithdrawSigner(withdrawSigner_);
+        emit SetWithdrawSigner(withdrawSigner_);
+    }
+
+    function setTreasuryByAdmin(address treasury_) external onlyOwner {
+        _setTreasury(treasury_);
+        emit SetTreasury(treasury_);
     }
 
     function getOracle() external view returns (address) {
@@ -293,6 +319,11 @@ contract SolvBTCVault is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable, EI
     function _setAllowedCurrency(address currency_, bool allowed_) internal {
         SolvBTCVaultStorage storage s = _getStorage();
         s.allowedCurrencies[currency_] = allowed_;
+    }
+
+    function _setTreasury(address treasury_) internal {
+        SolvBTCVaultStorage storage s = _getStorage();
+        s.treasury = treasury_;
     }
 
     function _getStorage() internal pure returns (SolvBTCVaultStorage storage s) {
