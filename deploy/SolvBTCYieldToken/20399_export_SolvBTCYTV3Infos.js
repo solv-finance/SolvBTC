@@ -1,11 +1,15 @@
 const SolvBTCYieldTokenFactoryV3Addresses = {
   dev_sepolia: "0x197cfd48184ADCCa3b061851118c624c22EE59b2",
   sepolia: "0x197cfd48184ADCCa3b061851118c624c22EE59b2",
+  bsctest: "0xE081Dd28Dfd3001F851CFb5bA8279F1C2B8b92b5",
+  avax_test: "0xE081Dd28Dfd3001F851CFb5bA8279F1C2B8b92b5",
   ink_test: "0xE081Dd28Dfd3001F851CFb5bA8279F1C2B8b92b5",
   hyperevm_test: "0xE081Dd28Dfd3001F851CFb5bA8279F1C2B8b92b5",
   mainnet: "0x86fC77cfe9F7d6a84097E9B73bd32cA185fdb12a",
   bsc: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   avax: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
+  arb: "",
+  base: "",
   bob: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   soneium: "0xF233c5cac3177c70a554C0178cFA85f61D97622B",
   polygon: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
@@ -18,11 +22,15 @@ const SolvBTCYieldTokenFactoryV3Addresses = {
 const SolvBTCYieldTokenV3BeaconAddresses = {
   dev_sepolia: "0x0C62BEc3Ef44cD5d6b795B37F986Bee6B7Ca9550",
   sepolia: "0x5409D9f1516fFc65DDe006Bf28c3c7Ca642aa71b",
+  bsctest: "0x25883B7Aea8775C32699A01D7edaE557219E03d3",
+  avax_test: "0x25883B7Aea8775C32699A01D7edaE557219E03d3",
   ink_test: "0x25883B7Aea8775C32699A01D7edaE557219E03d3",
   hyperevm_test: "0x25883B7Aea8775C32699A01D7edaE557219E03d3",
   mainnet: "0x27F2328aFeF3af851753E3Eca5E7d2281c3C22F6",
   bsc: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   avax: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
+  arb: "",
+  base: "",
   bob: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   soneium: "0x11d174BF28F2E71B7c1FCB157096e44E74bA8585",
   polygon: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
@@ -33,6 +41,48 @@ const SolvBTCYieldTokenV3BeaconAddresses = {
 };
 
 const SolvBTCYieldTokenInfos = {
+  dev_sepolia: {
+    "BTC_plus": {  // id = 256
+      erc20: "0xBfE4B499B55084da6a0dA89E0254893B241Dca18",
+      sft: "0x1bdA9d2d280054C5CF657B538751dD3bB88671e3",
+      slot: "61293021146012825438496968948601546888638483863183340126720311815460957141835",
+      poolId: "0x1192db2ccd7787d7d2fd5576ac6c900b1401127de3d44c237470a4fb5ed57ced",
+      navOracle: "0x6255a8d0485659E7f45D97c3D61e532B3fb01877",
+      holdingValueSftId: 0,
+    }
+  },
+
+  sepolia: {
+    "BTC+": {  // id = 158
+      erc20: "0x72B6573FCB8d54522C28689e0aA0B6C77fD245ed",
+      sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      slot: "55379508121673901571492136182643469085584238199650048572192929854062039778418",
+      poolId: "0x89e41449586939cca9764b57d5f82c9a12f7420775459bbc7b3cf6d6dfbb8463",
+      navOracle: "0x2271d9FB0A45b63c781D038d0F44596e865dbc2b",
+      holdingValueSftId: 0,
+    }
+  },
+  bsctest: {
+    "BTC+": {  // id = 161
+      erc20: "0x21baBFc92181Eb8B59dBEe7610642C9802001A1f",
+      sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      slot: "71537721010806073081246783824165884300142888004147622358622326042010154547335",
+      poolId: "0xabea71e4a42c2f072d4e8b35aaf29bb7ac7cf1eeb8def8f9249c414f25081600",
+      navOracle: "0x36F243D5F334e9D2Cec2b7CA65c387FE50334eb8",
+      holdingValueSftId: 0,
+    }
+  },
+  avax_test: {
+    "BTC+": {  // id = 160
+      erc20: "0x21baBFc92181Eb8B59dBEe7610642C9802001A1f",
+      sft: "0xB85A099103De07AC3d2C498453a6599D273be701",
+      slot: "82540076049478059497578131006063978457972869406633224554247317638784859022346",
+      poolId: "0x2e3abd3de5544c2336315699d93b96a89c224b6dd009e902330ad71e71fe650f",
+      navOracle: "0x9c447c1805e3c15396372529dc6187aa0f111f83",
+      holdingValueSftId: 0,
+    }
+  },
+
   mainnet: {
     "SolvBTC DEX LP": {  // id = 343
       erc20: "0x32Bc653dbD08C70f4dDEF2Bab15915193A617D75",
@@ -42,6 +92,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x8c29858319614380024093dbee553f9337665756",
       holdingValueSftId: 0,
     },
+    "BTC+": {  // id = 369
+      erc20: "",
+      sft: "0x982D50f8557D57B748733a3fC3d55AeF40C46756",
+      slot: "41205841673005639847149500121682995149234831945788362172848570543901820544682",
+      poolId: "0x8c30d7ea7c682f3f8ec65beaba1c21755fc5c6976f4c979da06abee7c5890e8f",
+      navOracle: "0x8c29858319614380024093DBEE553F9337665756",
+      holdingValueSftId: 0,
+    }
   },
   bsc: {
     "SolvBTC Bera Vault": {  // id = 352
@@ -52,6 +110,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
       holdingValueSftId: 0,
     },
+    "BTC+": {  // id = 382
+      erc20: "",
+      sft: "0xB816018E5d421E8b809A4dc01aF179D86056eBDF",
+      slot: "24592276099547903220630407385420031398142992168886759555763382547555372204457",
+      poolId: "0xd3b1d3c5c203cd23f4fc80443559069b1e313302a10a86d774345dc4ad81b0f6",
+      navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
+      holdingValueSftId: 0,
+    }
   },
   avax: {
     "SolvBTC Avalanche": {  // id = 344
@@ -62,6 +128,34 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
       holdingValueSftId: 0,
     },
+    "BTC+": {  // id = 377
+      erc20: "",
+      sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
+      slot: "36703271827181127312932307612312487415416022537659443927211414675701642164902",
+      poolId: "0x2af9049acd74a38a57bf5299463042bd2b9a8d525bfbbe640f84d099651a77fc",
+      navOracle: "0x540a9DBBA1AE6250253ba8793714492ee357ac1D",
+      holdingValueSftId: 0,
+    }
+  },
+  arb: {
+    "BTC+": {  // id = 381
+      erc20: "",
+      sft: "0x22799DAA45209338B7f938edf251bdfD1E6dCB32",
+      slot: "16095908483922316978446615477725076245378370978589191975960036738376481881514",
+      poolId: "0x88b47de44e1954c8d5849c964ac424f6e636ca5b89f0eae4e47902bf5678841f",
+      navOracle: "0x6ec1fEC6c6AF53624733F671B490B8250Ff251eD",
+      holdingValueSftId: 0,
+    }
+  },
+  base: {
+    "BTC+": {  // id = 370
+      erc20: "",
+      sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
+      slot: "99970088811711827521112718820665619576616655498998017761949247984342410221832",
+      poolId: "0x8062a56325411007013e749ed9f1a2b39e676171122e88d5230012879af9c54b",
+      navOracle: "0x1210371F2E26a74827F250afDfdbE3091304a3b7",
+      holdingValueSftId: 0,
+    }
   },
   bob: {
     "SolvBTC Bera Vault": {  // id = 353
@@ -80,6 +174,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x1210371F2E26a74827F250afDfdbE3091304a3b7",
       holdingValueSftId: 0,
     },
+    "BTC+": {  // id = 374
+      erc20: "",
+      sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
+      slot: "50239110066830319465979424027597619674773086433141859038625178610188922862585",
+      poolId: "0xad64f76b02f1758f87254bf52340452a6589bc7975ba424edda8585384bfa736",
+      navOracle: "0x1210371F2E26a74827F250afDfdbE3091304a3b7",
+      holdingValueSftId: 0,
+    }
   },
   polygon: {
     "xSolvBTC": {
@@ -108,6 +210,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
       holdingValueSftId: 0,
     },
+    "BTC+": {  // id = 375
+      erc20: "",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
+      slot: "42320454102121781656531841632681565884776312789271798072269751933367200751556",
+      poolId: "0x7f712c24cedabb020f303f07650d19c94a93d71ca928ed614ece8b15aef85150",
+      navOracle: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
+      holdingValueSftId: 0,
+    }
   },
   ink: {
     "xSolvBTC": {
@@ -136,6 +246,14 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x1E6101728fD9920465dfA1562c5e371850103da2",
       holdingValueSftId: 0,
     },
+    "BTC+": {  // id = 376
+      erc20: "",
+      sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
+      slot: "7246483099056553764664504101259278760137287058377483514240137141904983688010",
+      poolId: "0x3d531b19bb21df9f08e2327e0acf63dd9ae416e782acbc3683cfd1851a536d15",
+      navOracle: "0x1E6101728fD9920465dfA1562c5e371850103da2",
+      holdingValueSftId: 0,
+    }
   },
   tac: {
     "xSolvBTC": {

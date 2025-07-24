@@ -8,7 +8,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenMultiAssetPoolAddress = (await deployments.get('SolvBTCYieldTokenMultiAssetPoolProxy')).address;
   const solvBTCYieldTokenMultiAssetPool = SolvBTCYieldTokenMultiAssetPoolFactory.attach(solvBTCYieldTokenMultiAssetPoolAddress);
 
-  const productInfos = require('./20399_export_SolvBTCYTInfos').SolvBTCYieldTokenInfos;
+  const productInfos = require('./20399_export_SolvBTCYTV3Infos').SolvBTCYieldTokenInfos;
 
   for (let productName in productInfos[network.name]) {
     let info = productInfos[network.name][productName];
