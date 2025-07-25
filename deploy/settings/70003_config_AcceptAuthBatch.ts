@@ -11,7 +11,7 @@ import colors from "colors";
 const iface = new ethers.utils.Interface(AuthData.getAuthAbi());
 
 const SAFE_ADDRESS = AuthData.getAdminByChain(network.name);
-const SIGNER_PRIVATE_KEY = getPrivateKey();
+// const SIGNER_PRIVATE_KEY = getPrivateKey();
 
 const createProposer = async function(hre: HardhatRuntimeEnvironment, safeAddress: string, signerKey: string): Promise<SafeProposer> {
   const signer = new ethers.Wallet(signerKey, hre.ethers.provider);
@@ -51,6 +51,7 @@ const createAcceptanceTransaction = async (contract: Contract, address: string, 
 const acceptAuthBatch: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log(`${colors.magenta(`*** Start accepting authorization for chain: ${hre.network.name} ***`)}`);
   try {
+    const SIGNER_PRIVATE_KEY = getPrivateKey();
     const proposer = await createProposer(hre, SAFE_ADDRESS, SIGNER_PRIVATE_KEY!);
     const authContracts = await AuthData.getAuthContracts();
 
