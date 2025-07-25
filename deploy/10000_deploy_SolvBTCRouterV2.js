@@ -593,7 +593,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       ],
       [
         "0x236aa50979D5f3De3Bd1Eeb40E81137F22ab794b", // currency - tBTC
-        "", // target token - BTC+
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
         ["0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f"], // path: tBTC -> SolvBTC -> BTC+
       ],
     ],
