@@ -36,6 +36,7 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
     bool private _isNavAbnormal;
 
     event SetNav(uint256 navTime, uint256 nav);
+    event SetIsNavAbnormal(bool isNavAbnormal);
 
     constructor() {
         _disableInitializers();
@@ -90,20 +91,21 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      */
     function setNav(uint256 nav_) external onlyAdmin {
         require(nav_ != 0, "XSolvBTCOracle: invalid nav");
-        require(nav_ >= _latestNav, "XSolvBTCOracle: nav cannot be reduced");
         require(
-            _latestUpdatedAt + SECONDS_PER_DAY < block.timestamp,
+            _latestUpdatedAt + SECONDS_PER_DAY <= block.timestamp,
             "XSolvBTCOracle: nav cannot be updated in the 24 hours"
         );
         uint256 poolWithdrawFeeRate = XSolvBTCPool(xSolvBTCPool).withdrawFeeRate();
         uint256 maxChangePercent = poolWithdrawFeeRate > 100 ? 100 : poolWithdrawFeeRate; // max change percent is 1%
         uint256 navGrowth = nav_ > _latestNav ? nav_ - _latestNav : _latestNav - nav_;
         require(
-            navGrowth <= _latestNav * maxChangePercent / 10000, "XSolvBTCOracle: nav growth over max change percent"
+            navGrowth * 10000 <= _latestNav * maxChangePercent, "XSolvBTCOracle: nav growth over max change percent"
         );
         _latestNav = nav_;
         _latestUpdatedAt = block.timestamp;
-        _isNavAbnormal = false;
+        if (_isNavAbnormal) {
+            _isNavAbnormal = false;
+        }
         emit SetNav(block.timestamp, nav_);
     }
 
@@ -131,6 +133,7 @@ contract XSolvBTCOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {
      */
     function setIsNavAbnormal(bool isNavAbnormal_) external onlyAdmin {
         _isNavAbnormal = isNavAbnormal_;
+        emit SetIsNavAbnormal(isNavAbnormal_);
     }
 
     /**
