@@ -101,16 +101,19 @@ contract XSolvBTCOracleTest is Test {
         vm.stopPrank();
     }
 
-    // Test setNav with reduced value
-    function test_RevertWhenSetNavReduced() public {
+    // Test setNav with reduced value (now allowed)
+    function test_SetNavReduced() public {
         // Advance time by 25 hours to allow nav update
         vm.warp(block.timestamp + 25 hours);
 
         vm.startPrank(ADMIN);
         oracle.setNav(1.005e18);
-        vm.expectRevert("XSolvBTCOracle: nav cannot be reduced");
-        oracle.setNav(1.004e18);
+
+        vm.warp(block.timestamp + 25 hours);
+        oracle.setNav(1.004e18); // Now allowed to reduce NAV
         vm.stopPrank();
+
+        assertEq(oracle.getNav(xSolvBTC), 1.004e18);
     }
 
     // Test setNav within 24 hours
@@ -142,8 +145,8 @@ contract XSolvBTCOracleTest is Test {
         assertEq(oracle.getNav(xSolvBTC), 1.006e18);
     }
 
-    // Test setNav with excessive growth
-    function test_RevertWhenSetNavExcessiveGrowth() public {
+    // Test setNav with excessive growth (increase)
+    function test_RevertWhenSetNavExcessiveGrowthIncrease() public {
         // Advance time by 25 hours to allow nav update
         vm.warp(block.timestamp + 25 hours);
 
@@ -152,6 +155,26 @@ contract XSolvBTCOracleTest is Test {
         // Set a high NAV value that would exceed the growth limit
         // Assuming withdrawFeeRate is 100 (1%), max change is 1%
         uint256 excessiveNav = 1.02e18; // 2% increase, which exceeds 1% limit
+
+        vm.expectRevert("XSolvBTCOracle: nav growth over max change percent");
+        oracle.setNav(excessiveNav);
+        vm.stopPrank();
+    }
+
+    // Test setNav with excessive growth (decrease)
+    function test_RevertWhenSetNavExcessiveGrowthDecrease() public {
+        // Advance time by 25 hours to allow nav update
+        vm.warp(block.timestamp + 25 hours);
+
+        vm.startPrank(ADMIN);
+        oracle.setNav(1.005e18); // Set initial NAV
+
+        // Advance time by another 25 hours
+        vm.warp(block.timestamp + 25 hours);
+
+        // Set a low NAV value that would exceed the decrease limit
+        // Assuming withdrawFeeRate is 100 (1%), max change is 1%
+        uint256 excessiveNav = 0.98e18; // 2% decrease, which exceeds 1% limit
 
         vm.expectRevert("XSolvBTCOracle: nav growth over max change percent");
         oracle.setNav(excessiveNav);
@@ -229,6 +252,28 @@ contract XSolvBTCOracleTest is Test {
         assertEq(oracle.getNav(xSolvBTC), 1e18);
     }
 
+    // Test NAV abnormal status reset when setting NAV
+    function test_NavAbnormalResetWhenSetNav() public {
+        vm.startPrank(ADMIN);
+        oracle.setIsNavAbnormal(true);
+        vm.stopPrank();
+
+        // Should revert when trying to get nav
+        vm.expectRevert("XSolvBTCOracle: nav is abnormal");
+        oracle.getNav(xSolvBTC);
+
+        // Advance time by 25 hours to allow nav update
+        vm.warp(block.timestamp + 25 hours);
+
+        // Set NAV should reset abnormal status
+        vm.startPrank(ADMIN);
+        oracle.setNav(1.005e18);
+        vm.stopPrank();
+
+        // Should work now
+        assertEq(oracle.getNav(xSolvBTC), 1.005e18);
+    }
+
     // Test setIsNavAbnormal by non-admin
     function test_RevertWhenSetIsNavAbnormalByNonAdmin() public {
         vm.startPrank(USER_1);
@@ -270,6 +315,14 @@ contract XSolvBTCOracleTest is Test {
         // Event emission is tested implicitly by successful execution
     }
 
+    // Test SetIsNavAbnormal event emission
+    function test_SetIsNavAbnormalEvent() public {
+        vm.startPrank(ADMIN);
+        oracle.setIsNavAbnormal(true);
+        vm.stopPrank();
+        // Event emission is tested implicitly by successful execution
+    }
+
     // Test initialization event emission
     function test_InitializeEvent() public {
         // Create a new oracle to test initialization event
@@ -283,8 +336,8 @@ contract XSolvBTCOracleTest is Test {
         vm.stopPrank();
     }
 
-    // Test edge case: nav growth exactly at the limit
-    function test_SetNavAtGrowthLimit() public {
+    // Test edge case: nav growth exactly at the limit (increase)
+    function test_SetNavAtGrowthLimitIncrease() public {
         // Advance time by 25 hours to allow nav update
         vm.warp(block.timestamp + 25 hours);
 
@@ -299,26 +352,51 @@ contract XSolvBTCOracleTest is Test {
         assertEq(oracle.getNav(xSolvBTC), navAtLimit);
     }
 
-    // Test multiple nav updates over time
+    // Test edge case: nav growth exactly at the limit (decrease)
+    function test_SetNavAtGrowthLimitDecrease() public {
+        // Advance time by 25 hours to allow nav update
+        vm.warp(block.timestamp + 25 hours);
+
+        vm.startPrank(ADMIN);
+        oracle.setNav(1.005e18); // Set initial NAV
+
+        // Advance time by another 25 hours
+        vm.warp(block.timestamp + 25 hours);
+
+        // Assuming withdrawFeeRate is 100 (1%), we can decrease by exactly 1%
+        uint256 navAtLimit = 0.995e18; // Exactly 1% decrease from 1.005e18
+
+        oracle.setNav(navAtLimit);
+        vm.stopPrank();
+
+        assertEq(oracle.getNav(xSolvBTC), navAtLimit);
+    }
+
+    // Test multiple nav updates over time (including decrease)
     function test_MultipleNavUpdates() public {
         // Advance time by 25 hours to allow first nav update
         vm.warp(block.timestamp + 25 hours);
 
         vm.startPrank(ADMIN);
 
-        // First update
+        // First update - increase
         oracle.setNav(1.005e18);
         assertEq(oracle.getNav(xSolvBTC), 1.005e18);
 
-        // Wait 25 hours and update again
+        // Wait 25 hours and update again - increase
         vm.warp(block.timestamp + 25 hours);
         oracle.setNav(1.01e18);
         assertEq(oracle.getNav(xSolvBTC), 1.01e18);
 
-        // Wait another 25 hours and update again
+        // Wait another 25 hours and update again - decrease
         vm.warp(block.timestamp + 25 hours);
-        oracle.setNav(1.015e18);
-        assertEq(oracle.getNav(xSolvBTC), 1.015e18);
+        oracle.setNav(1.008e18);
+        assertEq(oracle.getNav(xSolvBTC), 1.008e18);
+
+        // Wait another 25 hours and update again - decrease more
+        vm.warp(block.timestamp + 25 hours);
+        oracle.setNav(1.005e18);
+        assertEq(oracle.getNav(xSolvBTC), 1.005e18);
 
         vm.stopPrank();
     }
