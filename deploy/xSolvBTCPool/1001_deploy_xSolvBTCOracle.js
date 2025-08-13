@@ -13,9 +13,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const proxyName = contractName + 'Proxy';
 
   const versions = {
-    dev_sepolia: [],
-    sepolia: ["v1.1"],
-    bsctest: ["v1.1"],
+    dev_sepolia: ["v1.2"],
+    sepolia: ["v1.1", "v1.2"],
+    bsctest: ["v1.1", "v1.2"],
     mantle: ["v1.1"],
     bob: ["v1.1"],
   }
