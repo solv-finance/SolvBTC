@@ -27,7 +27,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     },
     bob: {
       feeRecipient: "0xA26DDC188B1C07d7F0dcb90827424b14DDa2e372",
-      withdrawFeeRate: 20, // 0.2%
+      withdrawFeeRate: 5, // 0.05%
     },
   };
 
