@@ -48,6 +48,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bsctest: ["v1.1"],
     mantle: ["v1.1"],
     bob: ["v1.1"],
+    bera: ["v1.1"],
   };
   const upgrades =
     versions[network.name]?.map((v) => {
