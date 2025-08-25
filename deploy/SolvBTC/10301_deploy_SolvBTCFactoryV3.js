@@ -10,6 +10,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     dev_sepolia: "_dev" + version,
     sepolia: "_tnt" + version,
     bsctest: "_tnt" + version,
+    amoy: "_tnt" + version,
+    ink_test: "_tnt" + version,
+    hyperevm_test: "_tnt" + version,
+    tac_test: "_tnt" + version,
   };
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;
@@ -18,6 +22,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const governor = deployer;
   const safeAdmins = {
     soneium: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    polygon: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    ink: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    hyperevm: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    tac: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
   const instance = await deploy("SolvBTCFactoryV3", {
@@ -30,6 +38,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "SolvBTCFactoryV3" + deterministicSuffix
       )
     ),
+    // HyperEVM config only ↓↓↓
+    // type: "evmUserModify",
+    // usingBigBlocks: true,
   });
   console.log(
     `* INFO: ${colors.yellow(`SolvBTCFactoryV3`)} deployed at ${colors.green(
@@ -37,12 +48,16 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     )} on ${colors.red(network.name)}`
   );
 
+  
+  const SolvBTCFactoryV3Factory = await ethers.getContractFactory('SolvBTCFactoryV3', deployer);
+  const solvBTCFactoryV3 = SolvBTCFactoryV3Factory.attach(instance.address);
+
   // transfer admin to safe wallet
   if (safeAdmins[network.name]) {
     const safeAdmin = safeAdmins[network.name];
-    const currentAdmin = await solvBTCYieldTokenFactoryV3.admin();
+    const currentAdmin = await solvBTCFactoryV3.admin();
     if (currentAdmin.toLowerCase() != safeAdmin.toLowerCase()) {
-      const transferAdminTx = await solvBTCYieldTokenFactoryV3.transferAdmin(safeAdmin);
+      const transferAdminTx = await solvBTCFactoryV3.transferAdmin(safeAdmin);
       console.log(`* INFO: Transfer admin to ${safeAdmin} at ${transferAdminTx.hash}`);
       await transferAdminTx.wait();
     }

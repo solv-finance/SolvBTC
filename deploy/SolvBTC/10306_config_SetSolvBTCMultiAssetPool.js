@@ -8,7 +8,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCMultiAssetPoolAddress = (await deployments.get('SolvBTCMultiAssetPoolProxy')).address;
   const solvBTCMultiAssetPool = SolvBTCMultiAssetPoolFactory.attach(solvBTCMultiAssetPoolAddress);
 
-  const solvBTCInfos = require('./10399_export_SolvBTCInfos').SolvBTCInfos;
+  const solvBTCInfos = require('./10399_export_SolvBTCV3Infos').SolvBTCInfos;
 
   const erc20InPool = await solvBTCMultiAssetPool.getERC20(solvBTCInfos[network.name].sft, solvBTCInfos[network.name].slot);
   if (erc20InPool == ethers.constants.AddressZero) {

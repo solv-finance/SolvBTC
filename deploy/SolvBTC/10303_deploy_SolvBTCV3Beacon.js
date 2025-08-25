@@ -9,8 +9,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCFactoryV3 = SolvBTCFactoryV3Factory.attach(solvBTCFactoryV3Address);
 
   const productType = 'Solv BTC';
-  const version = '_v3.0';
-  const implementation = (await deployments.get('SolvBTC' + version)).address;
+  const implementation = (await deployments.get('SolvBTC_v3.1')).address;
 
   let beaconAddress = await solvBTCFactoryV3.getBeacon(productType);
   let implAddress = await solvBTCFactoryV3.getImplementation(productType);

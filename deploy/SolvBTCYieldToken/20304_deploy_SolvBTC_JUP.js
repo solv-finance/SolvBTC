@@ -14,13 +14,12 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const tokenName = "SolvBTC Jupiter";
   const tokenSymbol = "SolvBTC.JUP";
 
-  const owners = {
-    soneium: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
-  };
-
   const blacklistManagers = {
     soneium: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+    hyperevm: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+    bob: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
   };
+  const blacklistManager = blacklistManagers[network.name];
 
   let proxyAddress = await solvBTCYieldTokenFactoryV3.getProxy(productType, productName);
   if (proxyAddress == ethers.constants.AddressZero) {
@@ -51,7 +50,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   }
 
   // set blacklist manager for SolvBTCYieldToken
-  const blacklistManager = blacklistManagers[network.name];
   const currentBlacklistManager = await solvBTCYieldTokenV3.blacklistManager();
   if (currentBlacklistManager.toLowerCase() == blacklistManager.toLowerCase()) {
     console.log(`* INFO: ${tokenSymbol} current blacklist manager is already ${currentBlacklistManager}`);

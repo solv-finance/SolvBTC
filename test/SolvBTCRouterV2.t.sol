@@ -40,11 +40,9 @@ contract SolvBTCRouterV2Test is Test {
         SolvBTCRouterV2 impl = new SolvBTCRouterV2();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl), address(proxyAdmin), 
-            abi.encodeWithSignature("initialize(address)", ADMIN)
+            abi.encodeWithSignature("initialize(address,address)", ADMIN, MARKET_ADDRESS)
         );
         solvBTCRouterV2 = SolvBTCRouterV2(address(proxy));
-
-        solvBTCRouterV2.setOpenFundMarket(MARKET_ADDRESS);
         
         solvBTCRouterV2.setPoolId(SOLVBTC, WBTC, SOLVBTC_WBTC_POOL_ID);
         solvBTCRouterV2.setPoolId(SOLVBTCBBN, SOLVBTC, SOLVBTC_BBN_POOL_ID);
@@ -67,14 +65,14 @@ contract SolvBTCRouterV2Test is Test {
         
         vm.startPrank(user);
         IERC20(WBTC).approve(address(solvBTCRouterV2), 10e8);
-        solvBTCRouterV2.deposit(SOLVBTC, WBTC, 10e8);
+        solvBTCRouterV2.deposit(SOLVBTC, WBTC, 10e8, 0, uint64(block.timestamp + 300));
         vm.stopPrank();
 
         uint256 wbtcBalanceAfter = IERC20(WBTC).balanceOf(user);
         uint256 solvBTCBalanceAfter = IERC20(SOLVBTC).balanceOf(user);
 
         assertEq(wbtcBalanceBefore - wbtcBalanceAfter, 10e8);
-        assertEq(solvBTCBalanceAfter - solvBTCBalanceBefore, 10e18);
+        assertEq(solvBTCBalanceAfter - solvBTCBalanceBefore, 10e18 * 1e8 / uint256(100250600));
     }
 
     function test_Deposit_WBTC_for_SOLVBTCBBN() public {
@@ -85,14 +83,14 @@ contract SolvBTCRouterV2Test is Test {
         
         vm.startPrank(user);
         IERC20(WBTC).approve(address(solvBTCRouterV2), 10e8);
-        solvBTCRouterV2.deposit(SOLVBTCBBN, WBTC, 10e8);
+        solvBTCRouterV2.deposit(SOLVBTCBBN, WBTC, 10e8, 0, uint64(block.timestamp + 300));
         vm.stopPrank();
 
         uint256 wbtcBalanceAfter = IERC20(WBTC).balanceOf(user);
         uint256 solvBTCBBNBalanceAfter = IERC20(SOLVBTCBBN).balanceOf(user);
 
         assertEq(wbtcBalanceBefore - wbtcBalanceAfter, 10e8);
-        assertEq(solvBTCBBNBalanceAfter - solvBTCBBNBalanceBefore, 10e18);
+        assertEq(solvBTCBBNBalanceAfter - solvBTCBBNBalanceBefore, 10e18 * 1e8 / uint256(100250600));
     }
 
     function test_WithdrawRequest() public {

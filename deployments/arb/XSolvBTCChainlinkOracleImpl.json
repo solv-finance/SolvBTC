@@ -1,0 +1,450 @@
+{
+  "address": "0x41F21f6eE1742e15775efcf52e0ecFD2CE8309C2",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidInitialization",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotInitializing",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "oldAdmin",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "NewAdmin",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "oldPendingAdmin",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newPendingAdmin",
+          "type": "address"
+        }
+      ],
+      "name": "NewPendingAdmin",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "aggregator",
+          "type": "address"
+        }
+      ],
+      "name": "SetAggregator",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "xSolvBTC",
+          "type": "address"
+        }
+      ],
+      "name": "SetXSolvBTC",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "acceptAdmin",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "aggregator",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "erc20_",
+          "type": "address"
+        }
+      ],
+      "name": "getNav",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "nav",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "aggregator_",
+          "type": "address"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "latestUpdatedAt",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "erc20_",
+          "type": "address"
+        }
+      ],
+      "name": "navDecimals",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pendingAdmin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "aggregator_",
+          "type": "address"
+        }
+      ],
+      "name": "setAggregator",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "xSolvBTC_",
+          "type": "address"
+        }
+      ],
+      "name": "setXSolvBTC",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newPendingAdmin_",
+          "type": "address"
+        }
+      ],
+      "name": "transferAdmin",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "xSolvBTC",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xc4c1b8827870a3fc1b8b611ee84539bdd04f4d6e75dcf33c64784031a209a769",
+  "receipt": {
+    "to": null,
+    "from": "0x2B16D65109F178ad5243C1f3D4683aaC62eFc41c",
+    "contractAddress": "0x41F21f6eE1742e15775efcf52e0ecFD2CE8309C2",
+    "transactionIndex": 10,
+    "gasUsed": "650005",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000080000000000000000000000000000000000000000000",
+    "blockHash": "0x344b4293d97a898920ea63a40d6909ed2973d1c134dcf5177c94a02f3e48cd43",
+    "transactionHash": "0xc4c1b8827870a3fc1b8b611ee84539bdd04f4d6e75dcf33c64784031a209a769",
+    "logs": [
+      {
+        "transactionIndex": 10,
+        "blockNumber": 372075817,
+        "transactionHash": "0xc4c1b8827870a3fc1b8b611ee84539bdd04f4d6e75dcf33c64784031a209a769",
+        "address": "0x41F21f6eE1742e15775efcf52e0ecFD2CE8309C2",
+        "topics": [
+          "0xc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2"
+        ],
+        "data": "0x000000000000000000000000000000000000000000000000ffffffffffffffff",
+        "logIndex": 62,
+        "blockHash": "0x344b4293d97a898920ea63a40d6909ed2973d1c134dcf5177c94a02f3e48cd43"
+      }
+    ],
+    "blockNumber": 372075817,
+    "cumulativeGasUsed": "3801709",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "a205108fbd165183189972c3d7b99dc9",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newAdmin\",\"type\":\"address\"}],\"name\":\"NewAdmin\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"oldPendingAdmin\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"newPendingAdmin\",\"type\":\"address\"}],\"name\":\"NewPendingAdmin\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"aggregator\",\"type\":\"address\"}],\"name\":\"SetAggregator\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"xSolvBTC\",\"type\":\"address\"}],\"name\":\"SetXSolvBTC\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"acceptAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"admin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"aggregator\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"erc20_\",\"type\":\"address\"}],\"name\":\"getNav\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"nav\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"aggregator_\",\"type\":\"address\"}],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"latestUpdatedAt\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"erc20_\",\"type\":\"address\"}],\"name\":\"navDecimals\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pendingAdmin\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"aggregator_\",\"type\":\"address\"}],\"name\":\"setAggregator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"xSolvBTC_\",\"type\":\"address\"}],\"name\":\"setXSolvBTC\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newPendingAdmin_\",\"type\":\"address\"}],\"name\":\"transferAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"xSolvBTC\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"This contract is an oracle that allows users to get the nav of xSolvBTC.The nav is the price of xSolvBTC in SolvBTC.The nav is obtained from the chainlink oracle.\",\"errors\":{\"InvalidInitialization()\":[{\"details\":\"The contract is already initialized.\"}],\"NotInitializing()\":[{\"details\":\"The contract is not initializing.\"}]},\"events\":{\"Initialized(uint64)\":{\"details\":\"Triggered when the contract has been initialized or reinitialized.\"}},\"kind\":\"dev\",\"methods\":{\"getNav(address)\":{\"params\":{\"erc20_\":\"The address of the erc20 token\"},\"returns\":{\"nav\":\"The nav of xSolvBTC\"}},\"initialize(address)\":{\"params\":{\"aggregator_\":\"The address of the chainlink aggregator for xSolvBTC\"}},\"latestUpdatedAt()\":{\"returns\":{\"_0\":\"latestUpdatedAt The latest update time of the nav\"}},\"navDecimals(address)\":{\"params\":{\"erc20_\":\"The address of the erc20 token\"},\"returns\":{\"_0\":\"decimals The decimals of the nav\"}},\"setAggregator(address)\":{\"params\":{\"aggregator_\":\"The address of the chainlink aggregator\"}},\"setXSolvBTC(address)\":{\"params\":{\"xSolvBTC_\":\"The address of the xSolvBTC\"}}},\"title\":\"ChainlinkOracle\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getNav(address)\":{\"notice\":\"Get the nav of xSolvBTC\"},\"initialize(address)\":{\"notice\":\"Initialize the contract\"},\"latestUpdatedAt()\":{\"notice\":\"Get the latest update time of the nav\"},\"navDecimals(address)\":{\"notice\":\"Get the decimals of the nav\"},\"setAggregator(address)\":{\"notice\":\"Set the chainlink aggregator address\"},\"setXSolvBTC(address)\":{\"notice\":\"Set the xSolvBTC address\"}},\"notice\":\"The oracle for xSolvBTC, which is a yield token of SolvBTC.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/oracle/XSolvBTCChainlinkOracle.sol\":\"XSolvBTCChainlinkOracle\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":1},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (proxy/utils/Initializable.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev This is a base contract to aid in writing upgradeable contracts, or any kind of contract that will be deployed\\n * behind a proxy. Since proxied contracts do not make use of a constructor, it's common to move constructor logic to an\\n * external initializer function, usually called `initialize`. It then becomes necessary to protect this initializer\\n * function so it can only be called once. The {initializer} modifier provided by this contract will have this effect.\\n *\\n * The initialization functions use a version number. Once a version number is used, it is consumed and cannot be\\n * reused. This mechanism prevents re-execution of each \\\"step\\\" but allows the creation of new initialization steps in\\n * case an upgrade adds a module that needs to be initialized.\\n *\\n * For example:\\n *\\n * [.hljs-theme-light.nopadding]\\n * ```solidity\\n * contract MyToken is ERC20Upgradeable {\\n *     function initialize() initializer public {\\n *         __ERC20_init(\\\"MyToken\\\", \\\"MTK\\\");\\n *     }\\n * }\\n *\\n * contract MyTokenV2 is MyToken, ERC20PermitUpgradeable {\\n *     function initializeV2() reinitializer(2) public {\\n *         __ERC20Permit_init(\\\"MyToken\\\");\\n *     }\\n * }\\n * ```\\n *\\n * TIP: To avoid leaving the proxy in an uninitialized state, the initializer function should be called as early as\\n * possible by providing the encoded function call as the `_data` argument to {ERC1967Proxy-constructor}.\\n *\\n * CAUTION: When used with inheritance, manual care must be taken to not invoke a parent initializer twice, or to ensure\\n * that all initializers are idempotent. This is not verified automatically as constructors are by Solidity.\\n *\\n * [CAUTION]\\n * ====\\n * Avoid leaving a contract uninitialized.\\n *\\n * An uninitialized contract can be taken over by an attacker. This applies to both a proxy and its implementation\\n * contract, which may impact the proxy. To prevent the implementation contract from being used, you should invoke\\n * the {_disableInitializers} function in the constructor to automatically lock it when it is deployed:\\n *\\n * [.hljs-theme-light.nopadding]\\n * ```\\n * /// @custom:oz-upgrades-unsafe-allow constructor\\n * constructor() {\\n *     _disableInitializers();\\n * }\\n * ```\\n * ====\\n */\\nabstract contract Initializable {\\n    /**\\n     * @dev Storage of the initializable contract.\\n     *\\n     * It's implemented on a custom ERC-7201 namespace to reduce the risk of storage collisions\\n     * when using with upgradeable contracts.\\n     *\\n     * @custom:storage-location erc7201:openzeppelin.storage.Initializable\\n     */\\n    struct InitializableStorage {\\n        /**\\n         * @dev Indicates that the contract has been initialized.\\n         */\\n        uint64 _initialized;\\n        /**\\n         * @dev Indicates that the contract is in the process of being initialized.\\n         */\\n        bool _initializing;\\n    }\\n\\n    // keccak256(abi.encode(uint256(keccak256(\\\"openzeppelin.storage.Initializable\\\")) - 1)) & ~bytes32(uint256(0xff))\\n    bytes32 private constant INITIALIZABLE_STORAGE = 0xf0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00;\\n\\n    /**\\n     * @dev The contract is already initialized.\\n     */\\n    error InvalidInitialization();\\n\\n    /**\\n     * @dev The contract is not initializing.\\n     */\\n    error NotInitializing();\\n\\n    /**\\n     * @dev Triggered when the contract has been initialized or reinitialized.\\n     */\\n    event Initialized(uint64 version);\\n\\n    /**\\n     * @dev A modifier that defines a protected initializer function that can be invoked at most once. In its scope,\\n     * `onlyInitializing` functions can be used to initialize parent contracts.\\n     *\\n     * Similar to `reinitializer(1)`, except that in the context of a constructor an `initializer` may be invoked any\\n     * number of times. This behavior in the constructor can be useful during testing and is not expected to be used in\\n     * production.\\n     *\\n     * Emits an {Initialized} event.\\n     */\\n    modifier initializer() {\\n        // solhint-disable-next-line var-name-mixedcase\\n        InitializableStorage storage $ = _getInitializableStorage();\\n\\n        // Cache values to avoid duplicated sloads\\n        bool isTopLevelCall = !$._initializing;\\n        uint64 initialized = $._initialized;\\n\\n        // Allowed calls:\\n        // - initialSetup: the contract is not in the initializing state and no previous version was\\n        //                 initialized\\n        // - construction: the contract is initialized at version 1 (no reininitialization) and the\\n        //                 current contract is just being deployed\\n        bool initialSetup = initialized == 0 && isTopLevelCall;\\n        bool construction = initialized == 1 && address(this).code.length == 0;\\n\\n        if (!initialSetup && !construction) {\\n            revert InvalidInitialization();\\n        }\\n        $._initialized = 1;\\n        if (isTopLevelCall) {\\n            $._initializing = true;\\n        }\\n        _;\\n        if (isTopLevelCall) {\\n            $._initializing = false;\\n            emit Initialized(1);\\n        }\\n    }\\n\\n    /**\\n     * @dev A modifier that defines a protected reinitializer function that can be invoked at most once, and only if the\\n     * contract hasn't been initialized to a greater version before. In its scope, `onlyInitializing` functions can be\\n     * used to initialize parent contracts.\\n     *\\n     * A reinitializer may be used after the original initialization step. This is essential to configure modules that\\n     * are added through upgrades and that require initialization.\\n     *\\n     * When `version` is 1, this modifier is similar to `initializer`, except that functions marked with `reinitializer`\\n     * cannot be nested. If one is invoked in the context of another, execution will revert.\\n     *\\n     * Note that versions can jump in increments greater than 1; this implies that if multiple reinitializers coexist in\\n     * a contract, executing them in the right order is up to the developer or operator.\\n     *\\n     * WARNING: Setting the version to 2**64 - 1 will prevent any future reinitialization.\\n     *\\n     * Emits an {Initialized} event.\\n     */\\n    modifier reinitializer(uint64 version) {\\n        // solhint-disable-next-line var-name-mixedcase\\n        InitializableStorage storage $ = _getInitializableStorage();\\n\\n        if ($._initializing || $._initialized >= version) {\\n            revert InvalidInitialization();\\n        }\\n        $._initialized = version;\\n        $._initializing = true;\\n        _;\\n        $._initializing = false;\\n        emit Initialized(version);\\n    }\\n\\n    /**\\n     * @dev Modifier to protect an initialization function so that it can only be invoked by functions with the\\n     * {initializer} and {reinitializer} modifiers, directly or indirectly.\\n     */\\n    modifier onlyInitializing() {\\n        _checkInitializing();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Reverts if the contract is not in an initializing state. See {onlyInitializing}.\\n     */\\n    function _checkInitializing() internal view virtual {\\n        if (!_isInitializing()) {\\n            revert NotInitializing();\\n        }\\n    }\\n\\n    /**\\n     * @dev Locks the contract, preventing any future reinitialization. This cannot be part of an initializer call.\\n     * Calling this in the constructor of a contract will prevent that contract from being initialized or reinitialized\\n     * to any version. It is recommended to use this to lock implementation contracts that are designed to be called\\n     * through proxies.\\n     *\\n     * Emits an {Initialized} event the first time it is successfully executed.\\n     */\\n    function _disableInitializers() internal virtual {\\n        // solhint-disable-next-line var-name-mixedcase\\n        InitializableStorage storage $ = _getInitializableStorage();\\n\\n        if ($._initializing) {\\n            revert InvalidInitialization();\\n        }\\n        if ($._initialized != type(uint64).max) {\\n            $._initialized = type(uint64).max;\\n            emit Initialized(type(uint64).max);\\n        }\\n    }\\n\\n    /**\\n     * @dev Returns the highest version that has been initialized. See {reinitializer}.\\n     */\\n    function _getInitializedVersion() internal view returns (uint64) {\\n        return _getInitializableStorage()._initialized;\\n    }\\n\\n    /**\\n     * @dev Returns `true` if the contract is currently initializing. See {onlyInitializing}.\\n     */\\n    function _isInitializing() internal view returns (bool) {\\n        return _getInitializableStorage()._initializing;\\n    }\\n\\n    /**\\n     * @dev Returns a pointer to the storage namespace.\\n     */\\n    // solhint-disable-next-line var-name-mixedcase\\n    function _getInitializableStorage() private pure returns (InitializableStorage storage $) {\\n        assembly {\\n            $.slot := INITIALIZABLE_STORAGE\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x631188737069917d2f909d29ce62c4d48611d326686ba6683e26b72a23bfac0b\",\"license\":\"MIT\"},\"contracts/ISolvBTCYieldTokenOracle.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.20;\\n\\ninterface ISolvBTCYieldTokenOracle {\\n    function getNav(address erc20) external view returns (uint256);\\n    function navDecimals(address erc20) external view returns (uint8);\\n}\\n\",\"keccak256\":\"0xa439635d003b7fb2e0ea5c190e576b5687f0c8d01a206c5f7288dae5866b4a92\",\"license\":\"MIT\"},\"contracts/access/AdminControlUpgradeable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.20;\\n\\nimport \\\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\\\";\\n\\nabstract contract AdminControlUpgradeable is Initializable {\\n\\n    event NewAdmin(address oldAdmin, address newAdmin);\\n    event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);\\n\\n    address public admin;\\n    address public pendingAdmin;\\n\\n    modifier onlyAdmin() {\\n        require(msg.sender == admin, \\\"only admin\\\");\\n        _;\\n    }\\n\\n    modifier onlyPendingAdmin() {\\n        require(msg.sender == pendingAdmin, \\\"only pending admin\\\");\\n        _;\\n    }\\n\\n    function __AdminControl_init(address admin_) internal onlyInitializing {\\n        __AdminControl_init_unchained(admin_);\\n    }\\n\\n    function __AdminControl_init_unchained(address admin_) internal onlyInitializing {\\n        admin = admin_;\\n        emit NewAdmin(address(0), admin_);\\n    }\\n\\n    function transferAdmin(address newPendingAdmin_) external virtual onlyAdmin {\\n        emit NewPendingAdmin(pendingAdmin, newPendingAdmin_);\\n        pendingAdmin = newPendingAdmin_;        \\n    }\\n\\n    function acceptAdmin() external virtual onlyPendingAdmin {\\n        emit NewAdmin(admin, pendingAdmin);\\n        admin = pendingAdmin;\\n        delete pendingAdmin;\\n    }\\n\\n    uint256[48] private __gap;\\n}\\n\",\"keccak256\":\"0xf7bde55289afe561d40407007b005a6cdc97d7cc3ec98e58866faeb80f63f883\",\"license\":\"MIT\"},\"contracts/oracle/XSolvBTCChainlinkOracle.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.20;\\n\\nimport \\\"../ISolvBTCYieldTokenOracle.sol\\\";\\nimport \\\"../access/AdminControlUpgradeable.sol\\\";\\n\\ninterface AggregatorV3Interface {\\n  function decimals() external view returns (uint8);\\n\\n  function latestRoundData()\\n    external\\n    view\\n    returns (\\n      uint80 roundId,\\n      int256 answer,\\n      uint256 startedAt,\\n      uint256 updatedAt,\\n      uint80 answeredInRound\\n    );\\n}\\n\\n/**\\n * @title ChainlinkOracle\\n * @notice The oracle for xSolvBTC, which is a yield token of SolvBTC.\\n * @dev This contract is an oracle that allows users to get the nav of xSolvBTC.\\n * @dev The nav is the price of xSolvBTC in SolvBTC.\\n * @dev The nav is obtained from the chainlink oracle.\\n */\\ncontract XSolvBTCChainlinkOracle is ISolvBTCYieldTokenOracle, AdminControlUpgradeable {\\n\\n    // The address of xSolvBTC\\n    address public xSolvBTC;\\n\\n    // The address of the chainlink aggregator for xSolvBTC\\n    address public aggregator;\\n\\n    event SetXSolvBTC(address indexed xSolvBTC);\\n    event SetAggregator(address indexed aggregator);\\n\\n    constructor() {\\n        _disableInitializers();\\n    }\\n\\n    /**\\n     * @notice Initialize the contract\\n     * @param aggregator_ The address of the chainlink aggregator for xSolvBTC\\n     */\\n    function initialize(address aggregator_) external initializer {\\n        __AdminControl_init(msg.sender);\\n        _setAggregator(aggregator_);\\n    }\\n\\n    /**\\n     * @notice Get the nav of xSolvBTC\\n     * @param erc20_ The address of the erc20 token\\n     * @return nav The nav of xSolvBTC\\n     */\\n    function getNav(address erc20_) external view override returns (uint256 nav) {\\n        require(erc20_ == xSolvBTC, \\\"XSolvBTCChainlinkOracle: invalid erc20 address\\\");\\n        (, int256 answer, , , ) = AggregatorV3Interface(aggregator).latestRoundData();\\n        require(answer > 0, \\\"XSolvBTCChainlinkOracle: invalid nav value\\\");\\n        nav = uint256(answer);\\n    }\\n\\n    /**\\n     * @notice Get the decimals of the nav\\n     * @param erc20_ The address of the erc20 token\\n     * @return decimals The decimals of the nav\\n     */\\n    function navDecimals(address erc20_) external view override returns (uint8) {\\n        require(erc20_ == xSolvBTC, \\\"XSolvBTCChainlinkOracle: invalid erc20 address\\\");\\n        return AggregatorV3Interface(aggregator).decimals();\\n    }\\n\\n    /**\\n     * @notice Get the latest update time of the nav\\n     * @return latestUpdatedAt The latest update time of the nav\\n     */\\n    function latestUpdatedAt() external view returns (uint256) {\\n        (, , , uint256 updatedAt, ) = AggregatorV3Interface(aggregator).latestRoundData();\\n        return updatedAt;\\n    }\\n\\n    /**\\n     * @notice Set the xSolvBTC address\\n     * @param xSolvBTC_ The address of the xSolvBTC\\n     */\\n    function setXSolvBTC(address xSolvBTC_) external onlyAdmin {\\n        require(xSolvBTC_ != address(0), \\\"XSolvBTCChainlinkOracle: invalid xSolvBTC address\\\");\\n        xSolvBTC = xSolvBTC_;\\n        emit SetXSolvBTC(xSolvBTC_);\\n    }\\n\\n    /**\\n     * @notice Set the chainlink aggregator address\\n     * @param aggregator_ The address of the chainlink aggregator\\n     */\\n    function setAggregator(address aggregator_) external onlyAdmin {\\n        _setAggregator(aggregator_);\\n    }\\n\\n    /**\\n     * @notice Set the chainlink aggregator address\\n     * @param aggregator_ The address of the chainlink aggregator\\n     */\\n    function _setAggregator(address aggregator_) internal {\\n        require(aggregator_ != address(0), \\\"XSolvBTCChainlinkOracle: invalid aggregator address\\\");\\n        aggregator = aggregator_;\\n        emit SetAggregator(aggregator_);\\n    }\\n\\n    uint256[48] private __gap;\\n}\\n\",\"keccak256\":\"0x1b9f271f773f29be0a25bee83e375ceb1e8ffefb4b490b66e064bae6625a7e47\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5061001961001e565b6100d0565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a00805468010000000000000000900460ff161561006e5760405163f92ee8a960e01b815260040160405180910390fd5b80546001600160401b03908116146100cd5780546001600160401b0319166001600160401b0390811782556040519081527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b50565b610a48806100df6000396000f3fe608060405234801561001057600080fd5b50600436106100a45760003560e01c80630e18b681146100a9578063245a7bfc146100b357806326782247146100e35780634d219e8f146100f657806375829def14610109578063918e220d1461011c578063a13c962014610132578063c4d66de814610145578063f851a44014610158578063f9120af61461016b578063fb5960081461017e578063ff554afa14610191575b600080fd5b6100b16101b6565b005b6033546100c6906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b6001546100c6906001600160a01b031681565b6032546100c6906001600160a01b031681565b6100b1610117366004610899565b61026a565b6101246102fd565b6040519081526020016100da565b6100b1610140366004610899565b610381565b6100b1610153366004610899565b610453565b6000546100c6906001600160a01b031681565b6100b1610179366004610899565b610555565b61012461018c366004610899565b61058b565b6101a461019f366004610899565b610686565b60405160ff90911681526020016100da565b6001546001600160a01b0316331461020a5760405162461bcd60e51b815260206004820152601260248201527137b7363c903832b73234b7339030b236b4b760711b60448201526064015b60405180910390fd5b6000546001546040516000805160206109f38339815191529261023b926001600160a01b03918216929116906108c9565b60405180910390a160018054600080546001600160a01b03199081166001600160a01b03841617909155169055565b6000546001600160a01b031633146102945760405162461bcd60e51b8152600401610201906108e3565b6001546040517fca4f2f25d0898edd99413412fb94012f9e54ec8142f9b093e7720646a95b16a9916102d3916001600160a01b039091169084906108c9565b60405180910390a1600180546001600160a01b0319166001600160a01b0392909216919091179055565b600080603360009054906101000a90046001600160a01b03166001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015610353573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103779190610923565b5095945050505050565b6000546001600160a01b031633146103ab5760405162461bcd60e51b8152600401610201906108e3565b6001600160a01b0381166104095760405162461bcd60e51b815260206004820152603160248201526000805160206109d38339815191526044820152702078536f6c76425443206164647265737360781b6064820152608401610201565b603280546001600160a01b0319166001600160a01b0383169081179091556040517ffe1f6f15fce9929f47e568d274c28c47a84039a517b6e80e96074d2e9f5d64b490600090a250565b600061045d61072d565b805490915060ff600160401b82041615906001600160401b03166000811580156104845750825b90506000826001600160401b031660011480156104a05750303b155b9050811580156104ae575080155b156104cc5760405163f92ee8a960e01b815260040160405180910390fd5b84546001600160401b031916600117855583156104f557845460ff60401b1916600160401b1785555b6104fe33610751565b61050786610762565b831561054d57845460ff60401b19168555604051600181527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b505050505050565b6000546001600160a01b0316331461057f5760405162461bcd60e51b8152600401610201906108e3565b61058881610762565b50565b6032546000906001600160a01b038381169116146105bb5760405162461bcd60e51b815260040161020190610973565b60335460408051633fabe5a360e21b815290516000926001600160a01b03169163feaf968c9160048083019260a09291908290030181865afa158015610605573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906106299190610923565b505050915050600081136106805760405162461bcd60e51b815260206004820152602a60248201526000805160206109d3833981519152604482015269206e61762076616c756560b01b6064820152608401610201565b92915050565b6032546000906001600160a01b038381169116146106b65760405162461bcd60e51b815260040161020190610973565b603360009054906101000a90046001600160a01b03166001600160a01b031663313ce5676040518163ffffffff1660e01b8152600401602060405180830381865afa158015610709573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061068091906109af565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a0090565b61075961080c565b61058881610833565b6001600160a01b0381166107c25760405162461bcd60e51b815260206004820152603360248201526000805160206109d38339815191526044820152722061676772656761746f72206164647265737360681b6064820152608401610201565b603380546001600160a01b0319166001600160a01b0383169081179091556040517fe3019176e17c666cf4037ff4eaf90f47c7eaa9d7445cac6c1577d7a6fb903b8f90600090a250565b61081461087f565b61083157604051631afcd79f60e31b815260040160405180910390fd5b565b61083b61080c565b600080546001600160a01b0319166001600160a01b0383161781556040516000805160206109f3833981519152916108749184906108c9565b60405180910390a150565b600061088961072d565b54600160401b900460ff16919050565b6000602082840312156108ab57600080fd5b81356001600160a01b03811681146108c257600080fd5b9392505050565b6001600160a01b0392831681529116602082015260400190565b6020808252600a908201526937b7363c9030b236b4b760b11b604082015260600190565b80516001600160501b038116811461091e57600080fd5b919050565b600080600080600060a0868803121561093b57600080fd5b61094486610907565b945060208601519350604086015192506060860151915061096760808701610907565b90509295509295909350565b6020808252602e908201526000805160206109d383398151915260408201526d206572633230206164647265737360901b606082015260800190565b6000602082840312156109c157600080fd5b815160ff811681146108c257600080fdfe58536f6c76425443436861696e6c696e6b4f7261636c653a20696e76616c6964f9ffabca9c8276e99321725bcb43fb076a6c66a54b7f21c4e8146d8519b417dca2646970667358221220f85e0e308d03c845fda9bab360eaa852fde4ae5bfbb82b9295d411e878622c5764736f6c63430008140033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100a45760003560e01c80630e18b681146100a9578063245a7bfc146100b357806326782247146100e35780634d219e8f146100f657806375829def14610109578063918e220d1461011c578063a13c962014610132578063c4d66de814610145578063f851a44014610158578063f9120af61461016b578063fb5960081461017e578063ff554afa14610191575b600080fd5b6100b16101b6565b005b6033546100c6906001600160a01b031681565b6040516001600160a01b0390911681526020015b60405180910390f35b6001546100c6906001600160a01b031681565b6032546100c6906001600160a01b031681565b6100b1610117366004610899565b61026a565b6101246102fd565b6040519081526020016100da565b6100b1610140366004610899565b610381565b6100b1610153366004610899565b610453565b6000546100c6906001600160a01b031681565b6100b1610179366004610899565b610555565b61012461018c366004610899565b61058b565b6101a461019f366004610899565b610686565b60405160ff90911681526020016100da565b6001546001600160a01b0316331461020a5760405162461bcd60e51b815260206004820152601260248201527137b7363c903832b73234b7339030b236b4b760711b60448201526064015b60405180910390fd5b6000546001546040516000805160206109f38339815191529261023b926001600160a01b03918216929116906108c9565b60405180910390a160018054600080546001600160a01b03199081166001600160a01b03841617909155169055565b6000546001600160a01b031633146102945760405162461bcd60e51b8152600401610201906108e3565b6001546040517fca4f2f25d0898edd99413412fb94012f9e54ec8142f9b093e7720646a95b16a9916102d3916001600160a01b039091169084906108c9565b60405180910390a1600180546001600160a01b0319166001600160a01b0392909216919091179055565b600080603360009054906101000a90046001600160a01b03166001600160a01b031663feaf968c6040518163ffffffff1660e01b815260040160a060405180830381865afa158015610353573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103779190610923565b5095945050505050565b6000546001600160a01b031633146103ab5760405162461bcd60e51b8152600401610201906108e3565b6001600160a01b0381166104095760405162461bcd60e51b815260206004820152603160248201526000805160206109d38339815191526044820152702078536f6c76425443206164647265737360781b6064820152608401610201565b603280546001600160a01b0319166001600160a01b0383169081179091556040517ffe1f6f15fce9929f47e568d274c28c47a84039a517b6e80e96074d2e9f5d64b490600090a250565b600061045d61072d565b805490915060ff600160401b82041615906001600160401b03166000811580156104845750825b90506000826001600160401b031660011480156104a05750303b155b9050811580156104ae575080155b156104cc5760405163f92ee8a960e01b815260040160405180910390fd5b84546001600160401b031916600117855583156104f557845460ff60401b1916600160401b1785555b6104fe33610751565b61050786610762565b831561054d57845460ff60401b19168555604051600181527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d29060200160405180910390a15b505050505050565b6000546001600160a01b0316331461057f5760405162461bcd60e51b8152600401610201906108e3565b61058881610762565b50565b6032546000906001600160a01b038381169116146105bb5760405162461bcd60e51b815260040161020190610973565b60335460408051633fabe5a360e21b815290516000926001600160a01b03169163feaf968c9160048083019260a09291908290030181865afa158015610605573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906106299190610923565b505050915050600081136106805760405162461bcd60e51b815260206004820152602a60248201526000805160206109d3833981519152604482015269206e61762076616c756560b01b6064820152608401610201565b92915050565b6032546000906001600160a01b038381169116146106b65760405162461bcd60e51b815260040161020190610973565b603360009054906101000a90046001600160a01b03166001600160a01b031663313ce5676040518163ffffffff1660e01b8152600401602060405180830381865afa158015610709573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061068091906109af565b7ff0c57e16840df040f15088dc2f81fe391c3923bec73e23a9662efc9c229c6a0090565b61075961080c565b61058881610833565b6001600160a01b0381166107c25760405162461bcd60e51b815260206004820152603360248201526000805160206109d38339815191526044820152722061676772656761746f72206164647265737360681b6064820152608401610201565b603380546001600160a01b0319166001600160a01b0383169081179091556040517fe3019176e17c666cf4037ff4eaf90f47c7eaa9d7445cac6c1577d7a6fb903b8f90600090a250565b61081461087f565b61083157604051631afcd79f60e31b815260040160405180910390fd5b565b61083b61080c565b600080546001600160a01b0319166001600160a01b0383161781556040516000805160206109f3833981519152916108749184906108c9565b60405180910390a150565b600061088961072d565b54600160401b900460ff16919050565b6000602082840312156108ab57600080fd5b81356001600160a01b03811681146108c257600080fd5b9392505050565b6001600160a01b0392831681529116602082015260400190565b6020808252600a908201526937b7363c9030b236b4b760b11b604082015260600190565b80516001600160501b038116811461091e57600080fd5b919050565b600080600080600060a0868803121561093b57600080fd5b61094486610907565b945060208601519350604086015192506060860151915061096760808701610907565b90509295509295909350565b6020808252602e908201526000805160206109d383398151915260408201526d206572633230206164647265737360901b606082015260800190565b6000602082840312156109c157600080fd5b815160ff811681146108c257600080fdfe58536f6c76425443436861696e6c696e6b4f7261636c653a20696e76616c6964f9ffabca9c8276e99321725bcb43fb076a6c66a54b7f21c4e8146d8519b417dca2646970667358221220f85e0e308d03c845fda9bab360eaa852fde4ae5bfbb82b9295d411e878622c5764736f6c63430008140033",
+  "devdoc": {
+    "details": "This contract is an oracle that allows users to get the nav of xSolvBTC.The nav is the price of xSolvBTC in SolvBTC.The nav is obtained from the chainlink oracle.",
+    "errors": {
+      "InvalidInitialization()": [
+        {
+          "details": "The contract is already initialized."
+        }
+      ],
+      "NotInitializing()": [
+        {
+          "details": "The contract is not initializing."
+        }
+      ]
+    },
+    "events": {
+      "Initialized(uint64)": {
+        "details": "Triggered when the contract has been initialized or reinitialized."
+      }
+    },
+    "kind": "dev",
+    "methods": {
+      "getNav(address)": {
+        "params": {
+          "erc20_": "The address of the erc20 token"
+        },
+        "returns": {
+          "nav": "The nav of xSolvBTC"
+        }
+      },
+      "initialize(address)": {
+        "params": {
+          "aggregator_": "The address of the chainlink aggregator for xSolvBTC"
+        }
+      },
+      "latestUpdatedAt()": {
+        "returns": {
+          "_0": "latestUpdatedAt The latest update time of the nav"
+        }
+      },
+      "navDecimals(address)": {
+        "params": {
+          "erc20_": "The address of the erc20 token"
+        },
+        "returns": {
+          "_0": "decimals The decimals of the nav"
+        }
+      },
+      "setAggregator(address)": {
+        "params": {
+          "aggregator_": "The address of the chainlink aggregator"
+        }
+      },
+      "setXSolvBTC(address)": {
+        "params": {
+          "xSolvBTC_": "The address of the xSolvBTC"
+        }
+      }
+    },
+    "title": "ChainlinkOracle",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getNav(address)": {
+        "notice": "Get the nav of xSolvBTC"
+      },
+      "initialize(address)": {
+        "notice": "Initialize the contract"
+      },
+      "latestUpdatedAt()": {
+        "notice": "Get the latest update time of the nav"
+      },
+      "navDecimals(address)": {
+        "notice": "Get the decimals of the nav"
+      },
+      "setAggregator(address)": {
+        "notice": "Set the chainlink aggregator address"
+      },
+      "setXSolvBTC(address)": {
+        "notice": "Set the xSolvBTC address"
+      }
+    },
+    "notice": "The oracle for xSolvBTC, which is a yield token of SolvBTC.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 289,
+        "contract": "contracts/oracle/XSolvBTCChainlinkOracle.sol:XSolvBTCChainlinkOracle",
+        "label": "admin",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 291,
+        "contract": "contracts/oracle/XSolvBTCChainlinkOracle.sol:XSolvBTCChainlinkOracle",
+        "label": "pendingAdmin",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      },
+      {
+        "astId": 386,
+        "contract": "contracts/oracle/XSolvBTCChainlinkOracle.sol:XSolvBTCChainlinkOracle",
+        "label": "__gap",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_array(t_uint256)48_storage"
+      },
+      {
+        "astId": 417,
+        "contract": "contracts/oracle/XSolvBTCChainlinkOracle.sol:XSolvBTCChainlinkOracle",
+        "label": "xSolvBTC",
+        "offset": 0,
+        "slot": "50",
+        "type": "t_address"
+      },
+      {
+        "astId": 419,
+        "contract": "contracts/oracle/XSolvBTCChainlinkOracle.sol:XSolvBTCChainlinkOracle",
+        "label": "aggregator",
+        "offset": 0,
+        "slot": "51",
+        "type": "t_address"
+      },
+      {
+        "astId": 600,
+        "contract": "contracts/oracle/XSolvBTCChainlinkOracle.sol:XSolvBTCChainlinkOracle",
+        "label": "__gap",
+        "offset": 0,
+        "slot": "52",
+        "type": "t_array(t_uint256)48_storage"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_uint256)48_storage": {
+        "base": "t_uint256",
+        "encoding": "inplace",
+        "label": "uint256[48]",
+        "numberOfBytes": "1536"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

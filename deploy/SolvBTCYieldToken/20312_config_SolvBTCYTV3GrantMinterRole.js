@@ -9,8 +9,8 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenMultiAssetPoolAddressInConfig = require('./20099_export_SolvBTCYTInfos').SolvBTCYieldTokenMultiAssetPoolAddresses[network.name];
   assert(solvBTCYieldTokenMultiAssetPoolAddress == solvBTCYieldTokenMultiAssetPoolAddressInConfig, 'pool address not matched');
 
-  const solvBTCYieldTokenInfos = require('./20399_export_SolvBTCYTInfos').SolvBTCYieldTokenInfos;
-
+  const solvBTCYieldTokenInfos = require('./20399_export_SolvBTCYTV3Infos').SolvBTCYieldTokenInfos;
+  
   const SolvBTCYieldTokenV3Factory = await ethers.getContractFactory('SolvBTCYieldTokenV3', deployer);
 
   for (let productName in solvBTCYieldTokenInfos[network.name]) {

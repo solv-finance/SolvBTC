@@ -9,8 +9,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCYieldTokenFactoryV3 = SolvBTCYieldTokenFactoryV3Factory.attach(solvBTCYieldTokenFactoryV3Address);
 
   const productType = 'SolvBTC Yield Token';
-  const version = '_v3.0';
-  const implementation = (await deployments.get('SolvBTCYieldToken' + version)).address;
+  const implementation = (await deployments.get('SolvBTCYieldToken_v3.1')).address;
 
   let beaconAddress = await solvBTCYieldTokenFactoryV3.getBeacon(productType);
   let implAddress = await solvBTCYieldTokenFactoryV3.getImplementation(productType);

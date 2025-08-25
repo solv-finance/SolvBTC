@@ -3,7 +3,7 @@ const { txWait } = require("../utils/deployUtils");
 const assert = require("assert");
 const { network } = require("hardhat");
 
-const oldAdmin = "0x55C09707Fd7aFD670e82A62FaeE312903940013E";
+const oldAdmin = "0xfDf6B2caB8cC6D36926A3d1cE99775E6653Ae9F1";
 const newDefaultAdmin = "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D";
 const newAdmins = {
   soneium: "0x6DDb2894cb7C33A271B89dE76e1f9e0eb78a6BdC",
@@ -67,14 +67,16 @@ module.exports = async ({ getNamedAccounts, network }) => {
   const { deployer } = await getNamedAccounts();
 
   const SolvBTCFactory = await ethers.getContractFactory("SolvBTC", deployer);
-  const solvBTCAddress = require("../SolvBTC/10399_export_SolvBTCInfos").SolvBTCInfos[network.name].erc20;
-  const solvBTC = SolvBTCFactory.attach(solvBTCAddress);
 
   // SolvBTC
-  await transferAdminAndOwner("SolvBTC", solvBTC);
+  const solvBTCInfo = require("../SolvBTC/10399_export_SolvBTCV3Infos").SolvBTCInfos[network.name];
+  if (solvBTCInfo) {
+    const solvBTC = SolvBTCFactory.attach(solvBTCInfo.erc20);
+    await transferAdminAndOwner("SolvBTC", solvBTC);
+  }
 
   // SolvBTCYieldTokens
-  const solvBTCYieldTokenInfos = require("../SolvBTCYieldToken/20399_export_SolvBTCYTInfos").SolvBTCYieldTokenInfos;
+  const solvBTCYieldTokenInfos = require("../SolvBTCYieldToken/20399_export_SolvBTCYTV3Infos").SolvBTCYieldTokenInfos;
   for (let productName in solvBTCYieldTokenInfos[network.name]) {
     let yieldTokenAddress = solvBTCYieldTokenInfos[network.name][productName].erc20;
     let yieldToken = SolvBTCFactory.attach(yieldTokenAddress);

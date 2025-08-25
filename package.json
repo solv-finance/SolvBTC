@@ -34,6 +34,9 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "5.0.1",
-    "@openzeppelin/contracts-upgradeable": "5.0.1"
+    "@openzeppelin/contracts-upgradeable": "5.0.1",
+    "@safe-global/api-kit": "^4.0.0",
+    "@safe-global/protocol-kit": "^6.1.0",
+    "@safe-global/types-kit": "^3.0.0"
   }
 }
