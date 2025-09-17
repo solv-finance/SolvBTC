@@ -5,6 +5,7 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./access/AdminControlUpgradeable.sol";
 import "./access/GovernorControlUpgradeable.sol";
+import "./oracle/SubscriptionFeeOracle.sol";
 import "./utils/ERC20TransferHelper.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./external/IERC3525.sol";
@@ -32,6 +33,12 @@ contract SolvBTCRouter is
         address currency,
         uint256 currencyAmount
     );
+    event CollectSubscriptionFee(
+        address indexed payer,
+        address indexed currency,
+        address indexed feeReceiver,
+        uint256 feeAmount
+    );
     event CreateRedemption(
         bytes32 indexed poolId,
         address indexed redeemer,
@@ -50,12 +57,15 @@ contract SolvBTCRouter is
     event SetSolvBTCMultiAssetPool(
         address indexed previousSolvBTCMultiAssetPool, address indexed newSolvBTCMultiAssetPool
     );
+    event SetSubscriptionFeeOracle(address subscriptionFeeOracle);
 
     address public openFundMarket;
     address public solvBTCMultiAssetPool;
 
     // sft address => sft slot => holding sft id
     mapping(address => mapping(uint256 => uint256)) public holdingSftIds;
+
+    address public subscriptionFeeOracle;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -246,11 +256,26 @@ contract SolvBTCRouter is
         PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
         IERC3525 openFundShare = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
+        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
 
         ERC20TransferHelper.doTransferIn(poolInfo.currency, msg.sender, currencyAmount_);
-        ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmount_);
+
+        // collect subscription fee
+        uint256 feeAmount = 0;
+        {
+            (uint64 feeRate, address feeReceiver) = 
+                SubscriptionFeeOracle(subscriptionFeeOracle).getSubscriptionFee(solvBTC, poolInfo.currency);
+            if (feeRate > 0) {
+                feeAmount = (currencyAmount_ * feeRate) / 1e8;
+                ERC20TransferHelper.doTransferOut(poolInfo.currency, payable(feeReceiver), feeAmount);
+                emit CollectSubscriptionFee(msg.sender, poolInfo.currency, feeReceiver, feeAmount);
+            }
+        }
+
+        uint256 currencyAmountAfterFee = currencyAmount_ - feeAmount;
+        ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmountAfterFee);
         shareValue_ =
-            IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmount_, 0, uint64(block.timestamp + 300));
+            IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmountAfterFee, 0, uint64(block.timestamp + 300));
 
         uint256 shareCount = openFundShare.balanceOf(address(this));
         uint256 shareId = openFundShare.tokenOfOwnerByIndex(address(this), shareCount - 1);
@@ -260,8 +285,6 @@ contract SolvBTCRouter is
         openFundShare.approve(solvBTCMultiAssetPool, shareId);
         ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).deposit(address(openFundShare), shareId, shareValue_);
 
-        address solvBTC =
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
         ERC20TransferHelper.doTransferOut(solvBTC, payable(msg.sender), shareValue_);
 
         emit CreateSubscription(poolId_, msg.sender, solvBTC, shareValue_, poolInfo.currency, currencyAmount_);
@@ -357,5 +380,11 @@ contract SolvBTCRouter is
         solvBTCMultiAssetPool = solvBTCMultiAssetPool_;
     }
 
-    uint256[47] private __gap;
+    function setSubscriptionFeeOracle(address subscriptionFeeOracle_) external virtual onlyAdmin {
+        require(subscriptionFeeOracle_ != address(0), "SolvBTCRouterV2: invalid subscriptionFeeOracle");
+        subscriptionFeeOracle = subscriptionFeeOracle_;
+        emit SetSubscriptionFeeOracle(subscriptionFeeOracle_);
+    }
+
+    uint256[46] private __gap;
 }

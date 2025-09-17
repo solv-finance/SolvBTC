@@ -5,6 +5,7 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "./access/AdminControlUpgradeable.sol";
+import "./access/CallerControlUpgradeable.sol";
 import "./IxSolvBTCPool.sol";
 import "./ISolvBTCYieldToken.sol";
 import "./ISolvBTCYieldTokenOracle.sol";
@@ -17,7 +18,7 @@ import "./ISolvBTCYieldTokenOracle.sol";
  * @dev Withdraw: Burns xSolvBTC, mints SolvBTC.
  * @dev The withdraw fee will be deducted from the solvBTC, and the fee will be sent to the fee recipient.
  */
-contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControlUpgradeable {
+contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControlUpgradeable, CallerControlUpgradeable {
     struct XSolvBTCPoolStorage {
         address solvBTC;
         address xSolvBTC;
@@ -104,7 +105,14 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
      * @param solvBtcAmount_ The amount of solvBTC to deposit
      * @return xSolvBtcAmount The amount of xSolvBTC received
      */
-    function deposit(uint256 solvBtcAmount_) external virtual override nonReentrant returns (uint256 xSolvBtcAmount) {
+    function deposit(uint256 solvBtcAmount_) 
+        external 
+        virtual 
+        override 
+        nonReentrant 
+        onlyAllowedCaller 
+        returns (uint256 xSolvBtcAmount) 
+    {
         require(solvBtcAmount_ > 0, "xSolvBTCPool: deposit amount cannot be 0");
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
         require($.depositAllowed, "xSolvBTCPool: deposit not allowed");
@@ -126,7 +134,14 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
      * @param xSolvBtcAmount_ The amount of xSolvBTC to withdraw
      * @return solvBtcAmount The amount of solvBTC received
      */
-    function withdraw(uint256 xSolvBtcAmount_) external virtual override nonReentrant returns (uint256 solvBtcAmount) {
+    function withdraw(uint256 xSolvBtcAmount_) 
+        external 
+        virtual 
+        override 
+        nonReentrant 
+        onlyAllowedCaller 
+        returns (uint256 solvBtcAmount) 
+    {
         require(xSolvBtcAmount_ > 0, "xSolvBTCPool: withdraw amount cannot be 0");
 
         XSolvBTCPoolStorage storage $ = _getXSolvBTCPoolStorage();
@@ -260,5 +275,12 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         MultiplierStorage storage $ = _getMultiplierStorage();
         emit SetMaxMultiplier($.maxMultiplier, maxMultiplier_);
         $.maxMultiplier = maxMultiplier_;
+    }
+
+    function setCallerAllowedOnlyAdmin(address[] calldata callers_, bool allowed) external virtual onlyAdmin {
+        for (uint256 i = 0; i < callers_.length; i++) {
+            require(callers_[i] != address(0), "XSolvBTCPool: caller is zero address");
+            _setCallerAllowed(callers_[i], allowed);
+        }
     }
 }

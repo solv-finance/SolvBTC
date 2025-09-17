@@ -5,12 +5,13 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "./access/AdminControlUpgradeable.sol";
+import "./access/CallerControlUpgradeable.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./external/IERC3525.sol";
 import "./ISolvBTCMultiAssetPool.sol";
 import "./ISolvBTC.sol";
 
-contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgradeable, AdminControlUpgradeable {
+contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgradeable, AdminControlUpgradeable, CallerControlUpgradeable {
     struct SftSlotInfo {
         uint256 holdingValueSftId;
         address erc20;
@@ -39,7 +40,13 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
     }
 
-    function deposit(address sft_, uint256 sftId_, uint256 value_) external virtual override nonReentrant {
+    function deposit(address sft_, uint256 sftId_, uint256 value_) 
+        external 
+        virtual 
+        override 
+        nonReentrant 
+        onlyAllowedCaller 
+    {
         require(value_ > 0, "SolvBTCMultiAssetPool: deposit amount cannot be 0");
         require(msg.sender == IERC3525(sft_).ownerOf(sftId_), "SolvBTCMultiAssetPool: caller is not sft owner");
 
@@ -75,6 +82,7 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         virtual
         override
         nonReentrant
+        onlyAllowedCaller
         returns (uint256 toSftId_)
     {
         require(value_ > 0, "SolvBTCMultiAssetPool: withdraw amount cannot be 0");
@@ -135,6 +143,13 @@ contract SolvBTCMultiAssetPool is ISolvBTCMultiAssetPool, ReentrancyGuardUpgrade
         sftSlotInfo.depositAllowed = depositAllowed_;
         sftSlotInfo.withdrawAllowed = withdrawAllowed_;
         emit SftSlotAllowedChanged(sft_, slot_, depositAllowed_, withdrawAllowed_);
+    }
+
+    function setCallerAllowedOnlyAdmin(address[] calldata callers_, bool allowed) external virtual onlyAdmin {
+        for (uint256 i = 0; i < callers_.length; i++) {
+            require(callers_[i] != address(0), "SolvBTCMultiAssetPool: caller is zero address");
+            _setCallerAllowed(callers_[i], allowed);
+        }
     }
 
     function isSftSlotDepositAllowed(address sft_, uint256 slot_) public view virtual override returns (bool) {
