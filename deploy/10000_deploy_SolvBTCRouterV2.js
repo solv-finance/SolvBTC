@@ -205,6 +205,11 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
         "0xd3b1d3c5c203cd23f4fc80443559069b1e313302a10a86d774345dc4ad81b0f6", // 382 fund pool ID
       ],
+      [
+        "", // target token - SolvBTC.RWA
+        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
+        "0x792c824f8f8defb1ee915e99659fca391501afb15f6a19b95276100883d5a085", // 384 fund pool ID
+      ],
     ],
     mantle: [
       [
@@ -550,6 +555,11 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
         ["0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7"], // path - SolvBTC
       ],
+      [
+        "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // currency - BTCB
+        "", // target token - SolvBTC.RWA
+        ["0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7"], // path - SolvBTC
+      ],
     ],
     avax: [
       [
@@ -805,6 +815,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
         "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
       ], // BTC+
+      [
+        "",
+        "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
+      ], // SolvBTC.RWA
     ],
     mantle: [
       [

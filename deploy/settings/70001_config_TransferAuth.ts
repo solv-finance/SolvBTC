@@ -18,8 +18,8 @@ async function transferAdmin(contractAddress: string, newAdmin: string, funcName
     console.log(colors.red(`* Operation failed: Current admin ${currentAdmin} does not match deployer ${deployer.address}`));
   } else {
     const tx = await contract[funcName](newAdmin);
-      console.log(`* Transferring admin to ${newAdmin} at tx ${tx.hash}`);
-      await txWait(tx);
+    console.log(`* Transferring admin to ${newAdmin} at tx ${tx.hash}`);
+    await txWait(tx);
   }
 }
 

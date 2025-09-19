@@ -207,7 +207,7 @@ const config: HardhatUserConfig = {
     arb: {
       url:
         process.env.ARB_URL ||
-        `https://arb.getblock.io/${process.env.GETBLOCK_KEY}/mainnet/`,
+        `https://arbitrum-one-rpc.publicnode.com`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
     mantle: {
