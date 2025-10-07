@@ -5,7 +5,7 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./access/AdminControlUpgradeable.sol";
 import "./access/GovernorControlUpgradeable.sol";
-import "./oracle/SubscriptionFeeOracle.sol";
+import "./FeeManager.sol";
 import "./utils/ERC20TransferHelper.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./external/IERC3525.sol";
@@ -33,7 +33,7 @@ contract SolvBTCRouter is
         address currency,
         uint256 currencyAmount
     );
-    event CollectSubscriptionFee(
+    event CollectDepositFee(
         address indexed payer,
         address indexed currency,
         address indexed feeReceiver,
@@ -57,7 +57,7 @@ contract SolvBTCRouter is
     event SetSolvBTCMultiAssetPool(
         address indexed previousSolvBTCMultiAssetPool, address indexed newSolvBTCMultiAssetPool
     );
-    event SetSubscriptionFeeOracle(address subscriptionFeeOracle);
+    event SetFeeManager(address feeManager);
 
     address public openFundMarket;
     address public solvBTCMultiAssetPool;
@@ -65,7 +65,7 @@ contract SolvBTCRouter is
     // sft address => sft slot => holding sft id
     mapping(address => mapping(uint256 => uint256)) public holdingSftIds;
 
-    address public subscriptionFeeOracle;
+    address public feeManager;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -260,19 +260,18 @@ contract SolvBTCRouter is
 
         ERC20TransferHelper.doTransferIn(poolInfo.currency, msg.sender, currencyAmount_);
 
-        // collect subscription fee
-        uint256 feeAmount = 0;
+        // collect deposit fee
+        uint256 currencyAmountAfterFee = currencyAmount_;
         {
-            (uint64 feeRate, address feeReceiver) = 
-                SubscriptionFeeOracle(subscriptionFeeOracle).getSubscriptionFee(solvBTC, poolInfo.currency);
-            if (feeRate > 0) {
-                feeAmount = (currencyAmount_ * feeRate) / 1e8;
+            (uint256 feeAmount, address feeReceiver) = 
+                FeeManager(feeManager).getDepositFee(solvBTC, poolInfo.currency, currencyAmount_);
+            if (feeAmount > 0) {
+                currencyAmountAfterFee -= feeAmount;
                 ERC20TransferHelper.doTransferOut(poolInfo.currency, payable(feeReceiver), feeAmount);
-                emit CollectSubscriptionFee(msg.sender, poolInfo.currency, feeReceiver, feeAmount);
+                emit CollectDepositFee(msg.sender, poolInfo.currency, feeReceiver, feeAmount);
             }
         }
 
-        uint256 currencyAmountAfterFee = currencyAmount_ - feeAmount;
         ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmountAfterFee);
         shareValue_ =
             IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmountAfterFee, 0, uint64(block.timestamp + 300));
@@ -380,10 +379,10 @@ contract SolvBTCRouter is
         solvBTCMultiAssetPool = solvBTCMultiAssetPool_;
     }
 
-    function setSubscriptionFeeOracle(address subscriptionFeeOracle_) external virtual onlyAdmin {
-        require(subscriptionFeeOracle_ != address(0), "SolvBTCRouterV2: invalid subscriptionFeeOracle");
-        subscriptionFeeOracle = subscriptionFeeOracle_;
-        emit SetSubscriptionFeeOracle(subscriptionFeeOracle_);
+    function setFeeManager(address feeManager_) external virtual onlyAdmin {
+        require(feeManager_ != address(0), "SolvBTCRouter: invalid fee manager");
+        feeManager = feeManager_;
+        emit SetFeeManager(feeManager_);
     }
 
     uint256[46] private __gap;

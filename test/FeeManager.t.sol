@@ -4,7 +4,7 @@ pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
-import "../contracts/oracle/SubscriptionFeeOracle.sol";
+import "../contracts/FeeManager.sol";
 import "../contracts/SolvBTCYieldToken.sol";
 import "../contracts/SolvBTCRouter.sol";
 import "../contracts/SolvBTCRouterV2.sol";
@@ -18,15 +18,15 @@ interface IProxyAdmin {
 }
 
 // fork bnb chain mainnet at block 61300000
-contract SubscriptionFeeOracleTest is Test {
+contract FeeManagerTest is Test {
 
-    SolvBTCRouter internal solvbtcrouter = SolvBTCRouter(0x5c1215712F174dF2Cbc653eDce8B53FA4CAF2201);
+    SolvBTCRouter internal solvbtcRouter = SolvBTCRouter(0x5c1215712F174dF2Cbc653eDce8B53FA4CAF2201);
     SolvBTCRouter internal lstRouter = SolvBTCRouter(0x8EC6Ef69a423045cEa97d2Bd0D768D042A130aA7);
     SolvBTCRouterV2 internal solvbtcRouterV2 = SolvBTCRouterV2(0x67035877F5c12202c387d1698274C2aBF28F3678);
     SolvBTCMultiAssetPool internal solvbtcPool = SolvBTCMultiAssetPool(0x1FF72318deeD339e724e3c8deBCD528dC013D845);
     SolvBTCMultiAssetPool internal lstPool = SolvBTCMultiAssetPool(0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A);
     XSolvBTCPool internal xsolvbtcPool = XSolvBTCPool(0xF50860533D209E44dbe02F58B77EA85a8bfC28a3);
-    SubscriptionFeeOracle internal subscriptionFeeOracle;
+    FeeManager internal feeManager;
 
     ProxyAdmin internal proxyAdmin = ProxyAdmin(0x336eaa590faD054B70E845ff9f4052c2B8DF96F8);
 
@@ -49,14 +49,14 @@ contract SubscriptionFeeOracleTest is Test {
     address internal feeReceiver = makeAddr("fee receiver");
     address internal user_1 = makeAddr("user 1");
 
-    event SetSubscriptionFee(address indexed targetToken, address indexed currency, uint64 feeRate, address feeReceiver);
-    event CollectSubscriptionFee(address indexed payer, address indexed currency, address indexed feeReceiver, uint256 feeAmount);
+    event SetDepositFee(address indexed targetToken, address indexed currency, uint64 feeRate, address feeReceiver);
+    event CollectDepositFee(address indexed payer, address indexed currency, address indexed feeReceiver, uint256 feeAmount);
 
     function setUp() public {
         //fork eth mainnet
         vm.createSelectFork(vm.envString("BSC_RPC_URL"), 61300000);
 
-        _deploySubscriptionFeeOracle();
+        _deployFeeManager();
         _upgradeSolvBTCRouter();
         _upgradeLstRouter();
         _upgradeSolvBTCRouterV2();
@@ -66,64 +66,64 @@ contract SubscriptionFeeOracleTest is Test {
     }
 
     function test_StatusAfterUpgrade() public {
-        assertEq(subscriptionFeeOracle.owner(), OWNER);
-        assertEq(solvbtcrouter.subscriptionFeeOracle(), address(subscriptionFeeOracle));
-        assertEq(solvbtcRouterV2.subscriptionFeeOracle(), address(subscriptionFeeOracle));
-        assertEq(solvbtcPool.isCallerAllowed(address(solvbtcrouter)), true);
+        assertEq(feeManager.owner(), OWNER);
+        assertEq(solvbtcRouter.feeManager(), address(feeManager));
+        assertEq(solvbtcRouterV2.feeManager(), address(feeManager));
+        assertEq(solvbtcPool.isCallerAllowed(address(solvbtcRouter)), true);
         assertEq(solvbtcPool.isCallerAllowed(address(solvbtcRouterV2)), true);
-        assertEq(solvbtcPool.isCallerAllowed(address(subscriptionFeeOracle)), false);
-        assertEq(lstPool.isCallerAllowed(address(solvbtcrouter)), true);
+        assertEq(solvbtcPool.isCallerAllowed(address(lstRouter)), false);
+        assertEq(lstPool.isCallerAllowed(address(lstRouter)), true);
         assertEq(lstPool.isCallerAllowed(address(solvbtcRouterV2)), true);
-        assertEq(lstPool.isCallerAllowed(address(subscriptionFeeOracle)), false);
-        assertEq(xsolvbtcPool.isCallerAllowed(address(solvbtcrouter)), true);
+        assertEq(lstPool.isCallerAllowed(address(solvbtcRouter)), false);
         assertEq(xsolvbtcPool.isCallerAllowed(address(solvbtcRouterV2)), true);
-        assertEq(xsolvbtcPool.isCallerAllowed(address(subscriptionFeeOracle)), false);
+        assertEq(xsolvbtcPool.isCallerAllowed(address(solvbtcRouter)), false);
+        assertEq(xsolvbtcPool.isCallerAllowed(address(lstRouter)), false);
     }
 
-    function test_SetSubscriptionFee() public {
+    function test_SetDepositFee() public {
         vm.startPrank(OWNER);
         vm.expectEmit();
-        emit SetSubscriptionFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
-        (uint64 feeRate_, address feeReceiver_) = subscriptionFeeOracle.getSubscriptionFee(SOLVBTC, BTCB);
-        assertEq(feeRate_, 0.01e8);
+        emit SetDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        (uint256 feeAmount_, address feeReceiver_) = feeManager.getDepositFee(SOLVBTC, BTCB, 1e8);
+        assertEq(feeAmount_, 0.01e8);
         assertEq(feeReceiver_, feeReceiver);
 
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 0, address(0));
-        (feeRate_, feeReceiver_) = subscriptionFeeOracle.getSubscriptionFee(SOLVBTC, BTCB);
-        assertEq(feeRate_, 0);
+        feeManager.setDepositFee(SOLVBTC, BTCB, 0, address(0));
+        (feeAmount_, feeReceiver_) = feeManager.getDepositFee(SOLVBTC, BTCB, 1e8);
+        assertEq(feeAmount_, 0);
         assertEq(feeReceiver_, address(0));
         vm.stopPrank();
     }
 
-    function test_RevertWhenSetSubscriptionFeeByNonOwner() public {
+    function test_RevertWhenSetDepositFeeByNonOwner() public {
         vm.startPrank(randomContract);
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", randomContract));
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
         vm.stopPrank();
     }
 
-    function test_RevertWhenSetSubscriptionFeeWithZeroAddress() public {
+    function test_RevertWhenSetDepositFeeWithZeroAddress() public {
         vm.startPrank(OWNER);
-        vm.expectRevert("SubscriptionFeeOracle: targetToken is zero address");
-        subscriptionFeeOracle.setSubscriptionFee(address(0), BTCB, 0.01e8, feeReceiver);
-        vm.expectRevert("SubscriptionFeeOracle: currency is zero address");
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, address(0), 0.01e8, feeReceiver);
+        vm.expectRevert("FeeManager: targetToken is zero address");
+        feeManager.setDepositFee(address(0), BTCB, 0.01e8, feeReceiver);
+        vm.expectRevert("FeeManager: currency is zero address");
+        feeManager.setDepositFee(SOLVBTC, address(0), 0.01e8, feeReceiver);
         vm.stopPrank();
     }
 
-    function test_RevertWhenSetSubscriptionFeeWithInvalidFeeParams() public {
+    function test_RevertWhenSetDepositFeeWithInvalidFeeParams() public {
         vm.startPrank(OWNER);
-        vm.expectRevert("SubscriptionFeeOracle: feeRate exceeds 100%");
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 1.01e8, feeReceiver);
-        vm.expectRevert("SubscriptionFeeOracle: feeReceiver is zero address");
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 0.1e8, address(0));
+        vm.expectRevert("FeeManager: feeRate exceeds 100%");
+        feeManager.setDepositFee(SOLVBTC, BTCB, 1.01e8, feeReceiver);
+        vm.expectRevert("FeeManager: feeReceiver is zero address");
+        feeManager.setDepositFee(SOLVBTC, BTCB, 0.1e8, address(0));
         vm.stopPrank();
     }
 
     function test_SubscribeSolvbtcWithRouter() public {
         vm.startPrank(OWNER);
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -133,10 +133,10 @@ contract SubscriptionFeeOracleTest is Test {
         uint256 feeReceiverSolvbtcBalanceBefore = IERC20(SOLVBTC).balanceOf(feeReceiver);
 
         vm.startPrank(user_1);
-        IERC20(BTCB).approve(address(solvbtcrouter), 1 ether);
+        IERC20(BTCB).approve(address(solvbtcRouter), 1 ether);
         vm.expectEmit();
-        emit CollectSubscriptionFee(user_1, BTCB, feeReceiver, 0.01 ether);
-        solvbtcrouter.createSubscription(SOLVBTC_POOL_ID, 1 ether);
+        emit CollectDepositFee(user_1, BTCB, feeReceiver, 0.01 ether);
+        solvbtcRouter.createSubscription(SOLVBTC_POOL_ID, 1 ether);
         vm.stopPrank();
 
         uint256 userBtcbBalanceAfter = IERC20(BTCB).balanceOf(user_1);
@@ -152,7 +152,7 @@ contract SubscriptionFeeOracleTest is Test {
 
     function test_SubscribeLstWithRouter() public {
         vm.startPrank(OWNER);
-        subscriptionFeeOracle.setSubscriptionFee(BTCPLUS, SOLVBTC, 0.015e8, feeReceiver);
+        feeManager.setDepositFee(BTCPLUS, SOLVBTC, 0.015e8, feeReceiver);
         vm.stopPrank();
 
         deal(SOLVBTC, user_1, 100 ether);
@@ -164,7 +164,7 @@ contract SubscriptionFeeOracleTest is Test {
         vm.startPrank(user_1);
         IERC20(SOLVBTC).approve(address(lstRouter), 1 ether);
         vm.expectEmit();
-        emit CollectSubscriptionFee(user_1, SOLVBTC, feeReceiver, 0.015 ether);
+        emit CollectDepositFee(user_1, SOLVBTC, feeReceiver, 0.015 ether);
         lstRouter.createSubscription(BTCPLUS_POOL_ID, 1 ether);
         vm.stopPrank();
 
@@ -182,7 +182,7 @@ contract SubscriptionFeeOracleTest is Test {
 
     function test_SubscribeSolvbtcWithRouterV2() public {
         vm.startPrank(OWNER);
-        subscriptionFeeOracle.setSubscriptionFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -194,7 +194,7 @@ contract SubscriptionFeeOracleTest is Test {
         vm.startPrank(user_1);
         IERC20(BTCB).approve(address(solvbtcRouterV2), 1 ether);
         vm.expectEmit();
-        emit CollectSubscriptionFee(user_1, BTCB, feeReceiver, 0.01 ether);
+        emit CollectDepositFee(user_1, BTCB, feeReceiver, 0.01 ether);
         solvbtcRouterV2.deposit(SOLVBTC, BTCB, 1 ether, 0.9 ether, uint64(block.timestamp + 300));
         vm.stopPrank();
 
@@ -211,7 +211,7 @@ contract SubscriptionFeeOracleTest is Test {
 
     function test_SubscribeLstWithRouterV2() public {
         vm.startPrank(OWNER);
-        subscriptionFeeOracle.setSubscriptionFee(BTCPLUS, BTCB, 0.02e8, feeReceiver);
+        feeManager.setDepositFee(BTCPLUS, BTCB, 0.02e8, feeReceiver);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -223,7 +223,7 @@ contract SubscriptionFeeOracleTest is Test {
         vm.startPrank(user_1);
         IERC20(BTCB).approve(address(solvbtcRouterV2), 1 ether);
         vm.expectEmit();
-        emit CollectSubscriptionFee(user_1, BTCB, feeReceiver, 0.02 ether);
+        emit CollectDepositFee(user_1, BTCB, feeReceiver, 0.02 ether);
         solvbtcRouterV2.deposit(BTCPLUS, BTCB, 1 ether, 0.9 ether, uint64(block.timestamp + 300));
         vm.stopPrank();
 
@@ -241,7 +241,7 @@ contract SubscriptionFeeOracleTest is Test {
 
     function test_SubscribeXSolvbtcWithRouterV2() public {
         vm.startPrank(OWNER);
-        subscriptionFeeOracle.setSubscriptionFee(XSOLVBTC, BTCB, 0.02e8, feeReceiver);
+        feeManager.setDepositFee(XSOLVBTC, BTCB, 0.02e8, feeReceiver);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -253,7 +253,7 @@ contract SubscriptionFeeOracleTest is Test {
         vm.startPrank(user_1);
         IERC20(BTCB).approve(address(solvbtcRouterV2), 1 ether);
         vm.expectEmit();
-        emit CollectSubscriptionFee(user_1, BTCB, feeReceiver, 0.02 ether);
+        emit CollectDepositFee(user_1, BTCB, feeReceiver, 0.02 ether);
         solvbtcRouterV2.deposit(XSOLVBTC, BTCB, 1 ether, 0.9 ether, uint64(block.timestamp + 300));
         vm.stopPrank();
 
@@ -278,12 +278,12 @@ contract SubscriptionFeeOracleTest is Test {
         vm.stopPrank();
 
         address[] memory callers = new address[](1);
-        callers[0] = address(solvbtcrouter);
+        callers[0] = address(solvbtcRouter);
         vm.startPrank(ADMIN);
         solvbtcPool.setCallerAllowedOnlyAdmin(callers, false);
         vm.stopPrank();
 
-        vm.startPrank(address(solvbtcrouter));
+        vm.startPrank(address(solvbtcRouter));
         vm.expectRevert("CallerControl: caller not allowed");
         solvbtcPool.deposit(makeAddr("sft"), 1, 1 ether);
         vm.expectRevert("CallerControl: caller not allowed");
@@ -300,12 +300,12 @@ contract SubscriptionFeeOracleTest is Test {
         vm.stopPrank();
 
         address[] memory callers = new address[](1);
-        callers[0] = address(solvbtcrouter);
+        callers[0] = address(solvbtcRouter);
         vm.startPrank(ADMIN);
         lstPool.setCallerAllowedOnlyAdmin(callers, false);
         vm.stopPrank();
 
-        vm.startPrank(address(solvbtcrouter));
+        vm.startPrank(address(solvbtcRouter));
         vm.expectRevert("CallerControl: caller not allowed");
         lstPool.deposit(makeAddr("sft"), 1, 1 ether);
         vm.expectRevert("CallerControl: caller not allowed");
@@ -322,12 +322,12 @@ contract SubscriptionFeeOracleTest is Test {
         vm.stopPrank();
 
         address[] memory callers = new address[](1);
-        callers[0] = address(solvbtcrouter);
+        callers[0] = address(solvbtcRouter);
         vm.startPrank(ADMIN);
         xsolvbtcPool.setCallerAllowedOnlyAdmin(callers, false);
         vm.stopPrank();
 
-        vm.startPrank(address(solvbtcrouter));
+        vm.startPrank(address(solvbtcRouter));
         vm.expectRevert("CallerControl: caller not allowed");
         xsolvbtcPool.deposit(1 ether);
         vm.expectRevert("CallerControl: caller not allowed");
@@ -338,24 +338,24 @@ contract SubscriptionFeeOracleTest is Test {
 
     /** Internal functions */
 
-    function _deploySubscriptionFeeOracle() internal {
+    function _deployFeeManager() internal {
         vm.startPrank(OWNER);
-        SubscriptionFeeOracle impl = new SubscriptionFeeOracle();
+        FeeManager impl = new FeeManager();
         TransparentUpgradeableProxy proxy = new TransparentUpgradeableProxy(
             address(impl), address(proxyAdmin), abi.encodeWithSignature("initialize()")
         );
-        subscriptionFeeOracle = SubscriptionFeeOracle(address(proxy));
+        feeManager = FeeManager(address(proxy));
         vm.stopPrank();
     }
 
     function _upgradeSolvBTCRouter() internal {
         vm.startPrank(OWNER);
         SolvBTCRouter impl = new SolvBTCRouter();
-        IProxyAdmin(address(proxyAdmin)).upgrade(ITransparentUpgradeableProxy(address(solvbtcrouter)), address(impl));
+        IProxyAdmin(address(proxyAdmin)).upgrade(ITransparentUpgradeableProxy(address(solvbtcRouter)), address(impl));
         vm.stopPrank();
 
         vm.startPrank(ADMIN);
-        solvbtcrouter.setSubscriptionFeeOracle(address(subscriptionFeeOracle));
+        solvbtcRouter.setFeeManager(address(feeManager));
         vm.stopPrank();
     }
 
@@ -366,7 +366,7 @@ contract SubscriptionFeeOracleTest is Test {
         vm.stopPrank();
 
         vm.startPrank(ADMIN);
-        lstRouter.setSubscriptionFeeOracle(address(subscriptionFeeOracle));
+        lstRouter.setFeeManager(address(feeManager));
         vm.stopPrank();
     }
 
@@ -377,7 +377,7 @@ contract SubscriptionFeeOracleTest is Test {
         vm.stopPrank();
 
         vm.startPrank(ADMIN);
-        solvbtcRouterV2.setSubscriptionFeeOracle(address(subscriptionFeeOracle));
+        solvbtcRouterV2.setFeeManager(address(feeManager));
         vm.stopPrank();
     }
 
@@ -387,10 +387,9 @@ contract SubscriptionFeeOracleTest is Test {
         IProxyAdmin(address(proxyAdmin)).upgrade(ITransparentUpgradeableProxy(address(solvbtcPool)), address(impl));
         vm.stopPrank();
 
-        address[] memory callers = new address[](3);
-        callers[0] = address(solvbtcrouter);
-        callers[1] = address(lstRouter);
-        callers[2] = address(solvbtcRouterV2);
+        address[] memory callers = new address[](2);
+        callers[0] = address(solvbtcRouter);
+        callers[1] = address(solvbtcRouterV2);
         vm.startPrank(ADMIN);
         solvbtcPool.setCallerAllowedOnlyAdmin(callers, true);
         vm.stopPrank();
@@ -402,10 +401,9 @@ contract SubscriptionFeeOracleTest is Test {
         IProxyAdmin(address(proxyAdmin)).upgrade(ITransparentUpgradeableProxy(address(lstPool)), address(impl));
         vm.stopPrank();
 
-        address[] memory callers = new address[](3);
-        callers[0] = address(solvbtcrouter);
-        callers[1] = address(lstRouter);
-        callers[2] = address(solvbtcRouterV2);
+        address[] memory callers = new address[](2);
+        callers[0] = address(lstRouter);
+        callers[1] = address(solvbtcRouterV2);
         vm.startPrank(ADMIN);
         lstPool.setCallerAllowedOnlyAdmin(callers, true);
         vm.stopPrank();
@@ -417,10 +415,8 @@ contract SubscriptionFeeOracleTest is Test {
         IProxyAdmin(address(proxyAdmin)).upgrade(ITransparentUpgradeableProxy(address(xsolvbtcPool)), address(impl));
         vm.stopPrank();
 
-        address[] memory callers = new address[](3);
-        callers[0] = address(solvbtcrouter);
-        callers[1] = address(lstRouter);
-        callers[2] = address(solvbtcRouterV2);
+        address[] memory callers = new address[](1);
+        callers[0] = address(solvbtcRouterV2);
         vm.startPrank(ADMIN);
         xsolvbtcPool.setCallerAllowedOnlyAdmin(callers, true);
         vm.stopPrank();

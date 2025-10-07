@@ -14,7 +14,7 @@ import {ERC20TransferHelper} from "./utils/ERC20TransferHelper.sol";
 import {ERC3525TransferHelper} from "./utils/ERC3525TransferHelper.sol";
 import {ISolvBTCMultiAssetPool} from "./ISolvBTCMultiAssetPool.sol";
 import {IxSolvBTCPool} from "./IxSolvBTCPool.sol";
-import {SubscriptionFeeOracle} from "./oracle/SubscriptionFeeOracle.sol";
+import {FeeManager} from "./FeeManager.sol";
 
 contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable {
     event Deposit(
@@ -26,7 +26,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         address[] path,
         bytes32[] poolIds
     );
-    event CollectSubscriptionFee(
+    event CollectDepositFee(
         address indexed payer,
         address indexed currency,
         address indexed feeReceiver,
@@ -54,7 +54,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
     event SetPath(address indexed currency, address indexed targetToken, address[] path);
     event SetPoolId(address indexed targetToken, address indexed currency, bytes32 indexed poolId);
     event SetMultiAssetPool(address indexed token, address indexed multiAssetPool);
-    event SetSubscriptionFeeOracle(address subscriptionFeeOracle);
+    event SetFeeManager(address feeManager);
 
     // the address of openFundMarket
     address public openFundMarket;
@@ -71,7 +71,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
     // ERC20 => multiAssetPool
     mapping(address => address) public multiAssetPools;
 
-    address public subscriptionFeeOracle;
+    address public feeManager;
 
     // use a special poolId to represent the xSolvBTC pool
     bytes32 public constant X_SOLV_BTC_POOL_ID =
@@ -112,13 +112,11 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         require(currencyAmount_ > 0, "SolvBTCRouterV2: invalid currency amount");
         ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
 
-        // collect subscription fee
-        uint256 feeAmount = 0;
-        (uint64 feeRate, address feeReceiver) = SubscriptionFeeOracle(subscriptionFeeOracle).getSubscriptionFee(targetToken_, currency_);
-        if (feeRate > 0) {
-            feeAmount = (currencyAmount_ * feeRate) / 1e8;
+        // collect deposit fee
+        (uint256 feeAmount, address feeReceiver) = FeeManager(feeManager).getDepositFee(targetToken_, currency_, currencyAmount_);
+        if (feeAmount > 0) {
             ERC20TransferHelper.doTransferOut(currency_, payable(feeReceiver), feeAmount);
-            emit CollectSubscriptionFee(msg.sender, currency_, feeReceiver, feeAmount);
+            emit CollectDepositFee(msg.sender, currency_, feeReceiver, feeAmount);
         }
 
         address[] memory path = paths[currency_][targetToken_];
@@ -383,12 +381,12 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
 
     /**
      * @notice Set the subscriptionFeeOracle address
-     * @param subscriptionFeeOracle_ The subscriptionFeeOracle address
+     * @param feeManager_ The feeManager address
      */
-    function setSubscriptionFeeOracle(address subscriptionFeeOracle_) external onlyOwner {
-        require(subscriptionFeeOracle_ != address(0), "SolvBTCRouterV2: invalid subscriptionFeeOracle");
-        subscriptionFeeOracle = subscriptionFeeOracle_;
-        emit SetSubscriptionFeeOracle(subscriptionFeeOracle_);
+    function setFeeManager(address feeManager_) external onlyOwner {
+        require(feeManager_ != address(0), "SolvBTCRouterV2: invalid fee manager");
+        feeManager = feeManager_;
+        emit SetFeeManager(feeManager_);
     }
 
     uint256[44] private __gap;
