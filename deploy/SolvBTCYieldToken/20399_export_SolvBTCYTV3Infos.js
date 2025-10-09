@@ -125,6 +125,14 @@ const SolvBTCYieldTokenInfos = {
       poolId: "0x792c824f8f8defb1ee915e99659fca391501afb15f6a19b95276100883d5a085",
       navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
       holdingValueSftId: 0,
+    },
+    "SolvBTC STRK": {  // id = 385
+      erc20: "",
+      sft: "0xB816018E5d421E8b809A4dc01aF179D86056eBDF",
+      slot: "96769443930056329511588541192307341956720182465136209356917630248954824803563",
+      poolId: "0xc00e76915c5091b4ec0d8aeb9626cffa73f20cfe666d5c7108c41e9a34e91532",
+      navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
+      holdingValueSftId: 0,
     }
   },
   avax: {
