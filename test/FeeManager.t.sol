@@ -84,12 +84,15 @@ contract FeeManagerTest is Test {
         vm.startPrank(OWNER);
         vm.expectEmit();
         emit SetDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
-        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         (uint256 feeAmount_, address feeReceiver_) = feeManager.getDepositFee(SOLVBTC, BTCB, 1e8);
         assertEq(feeAmount_, 0.01e8);
         assertEq(feeReceiver_, feeReceiver);
 
-        feeManager.setDepositFee(SOLVBTC, BTCB, 0, address(0));
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 0, address(0));
+        feeManager.setDepositFees(params);
         (feeAmount_, feeReceiver_) = feeManager.getDepositFee(SOLVBTC, BTCB, 1e8);
         assertEq(feeAmount_, 0);
         assertEq(feeReceiver_, address(0));
@@ -99,31 +102,41 @@ contract FeeManagerTest is Test {
     function test_RevertWhenSetDepositFeeByNonOwner() public {
         vm.startPrank(randomContract);
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", randomContract));
-        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
     }
 
     function test_RevertWhenSetDepositFeeWithZeroAddress() public {
         vm.startPrank(OWNER);
         vm.expectRevert("FeeManager: targetToken is zero address");
-        feeManager.setDepositFee(address(0), BTCB, 0.01e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(address(0), BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.expectRevert("FeeManager: currency is zero address");
-        feeManager.setDepositFee(SOLVBTC, address(0), 0.01e8, feeReceiver);
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, address(0), 0.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
     }
 
     function test_RevertWhenSetDepositFeeWithInvalidFeeParams() public {
         vm.startPrank(OWNER);
         vm.expectRevert("FeeManager: feeRate exceeds 100%");
-        feeManager.setDepositFee(SOLVBTC, BTCB, 1.01e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 1.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.expectRevert("FeeManager: feeReceiver is zero address");
-        feeManager.setDepositFee(SOLVBTC, BTCB, 0.1e8, address(0));
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 0.1e8, address(0));
+        feeManager.setDepositFees(params);
         vm.stopPrank();
     }
 
     function test_SubscribeSolvbtcWithRouter() public {
         vm.startPrank(OWNER);
-        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -152,7 +165,9 @@ contract FeeManagerTest is Test {
 
     function test_SubscribeLstWithRouter() public {
         vm.startPrank(OWNER);
-        feeManager.setDepositFee(BTCPLUS, SOLVBTC, 0.015e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(BTCPLUS, SOLVBTC, 0.015e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
 
         deal(SOLVBTC, user_1, 100 ether);
@@ -182,7 +197,9 @@ contract FeeManagerTest is Test {
 
     function test_SubscribeSolvbtcWithRouterV2() public {
         vm.startPrank(OWNER);
-        feeManager.setDepositFee(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(SOLVBTC, BTCB, 0.01e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -211,7 +228,9 @@ contract FeeManagerTest is Test {
 
     function test_SubscribeLstWithRouterV2() public {
         vm.startPrank(OWNER);
-        feeManager.setDepositFee(BTCPLUS, BTCB, 0.02e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(BTCPLUS, BTCB, 0.02e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);
@@ -241,7 +260,9 @@ contract FeeManagerTest is Test {
 
     function test_SubscribeXSolvbtcWithRouterV2() public {
         vm.startPrank(OWNER);
-        feeManager.setDepositFee(XSOLVBTC, BTCB, 0.02e8, feeReceiver);
+        FeeManager.DepositFeeParam[] memory params = new FeeManager.DepositFeeParam[](1);
+        params[0] = FeeManager.DepositFeeParam(XSOLVBTC, BTCB, 0.02e8, feeReceiver);
+        feeManager.setDepositFees(params);
         vm.stopPrank();
 
         deal(BTCB, user_1, 100 ether);

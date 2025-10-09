@@ -19,6 +19,13 @@ contract FeeManager is Ownable2StepUpgradeable {
         address feeReceiver;
     }
 
+    struct DepositFeeParam {
+        address targetToken;
+        address currency;
+        uint64 feeRate;
+        address feeReceiver;
+    }
+
     struct FeeManagerStorage {
         // targetToken => currency => DepositFee
         mapping(address => mapping(address => DepositFee)) _depositFees;
@@ -38,23 +45,22 @@ contract FeeManager is Ownable2StepUpgradeable {
         __Ownable_init(msg.sender);
     }
 
-    function setDepositFee(
-        address targetToken_,
-        address currency_,
-        uint64 feeRate_,
-        address feeReceiver_
-    ) 
-        external 
-        onlyOwner 
-    {
-        require(targetToken_ != address(0), "FeeManager: targetToken is zero address");
-        require(currency_ != address(0), "FeeManager: currency is zero address");
-        require(feeRate_ <= 1e8, "FeeManager: feeRate exceeds 100%");
-        require(feeRate_ == 0 || feeReceiver_ != address(0), "FeeManager: feeReceiver is zero address");
+    function setDepositFees(DepositFeeParam[] calldata params) external onlyOwner {
+        for (uint256 i = 0; i < params.length; i++) {
+            address targetToken = params[i].targetToken;
+            address currency = params[i].currency;
+            uint64 feeRate = params[i].feeRate;
+            address feeReceiver = params[i].feeReceiver;
 
-        FeeManagerStorage storage $ = _getFeeManagerStorage();
-        $._depositFees[targetToken_][currency_] = DepositFee(feeRate_, feeReceiver_);
-        emit SetDepositFee(targetToken_, currency_, feeRate_, feeReceiver_);
+            require(targetToken != address(0), "FeeManager: targetToken is zero address");
+            require(currency != address(0), "FeeManager: currency is zero address");
+            require(feeRate <= 1e8, "FeeManager: feeRate exceeds 100%");
+            require(feeRate == 0 || feeReceiver != address(0), "FeeManager: feeReceiver is zero address");
+
+            FeeManagerStorage storage $ = _getFeeManagerStorage();
+            $._depositFees[targetToken][currency] = DepositFee(feeRate, feeReceiver);
+            emit SetDepositFee(targetToken, currency, feeRate, feeReceiver);
+        }
     }
 
     function getDepositFee(address targetToken_, address currency_, uint256 amount_) 
