@@ -281,6 +281,16 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 0,
     },
   },
+  rootstock: {
+    "BTC+": {  // id = 386
+      erc20: "",
+      sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
+      slot: "97075096825935347873451002273595650358517702021537590436500585382048116226529",
+      poolId: "0x0487e6f7eb5b48ed910a8720b380ba97e89354ab91db4a24b3bd462bed7b21ee",
+      navOracle: "0x443E5e0434E51db27717Db447aF2631f0355e7f8",
+      holdingValueSftId: 0,
+    }
+  }
 };
 
 module.exports = {

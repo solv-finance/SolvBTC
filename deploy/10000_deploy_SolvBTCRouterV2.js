@@ -19,6 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     bera: "0x56a4d805d7A292f03Ead5Be31E0fFB8f7d0E3B48",
     hyperevm: "0x48780A97Cd325B8E03661F17a848159e14aaec8D",
     base: "0xf5a247157656678398B08d3eFa1673358C611A3f",
+    rootstock: "0x6c8dA184B019E6C4Baa710113c0d9DE68A693B1f",
   };
 
   // target token, currency, poolId
@@ -353,6 +354,18 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
         "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", // currency - SolvBTC
         "0x3d531b19bb21df9f08e2327e0acf63dd9ae416e782acbc3683cfd1851a536d15", // 376 fund pool ID
+      ],
+    ],
+    rootstock: [
+      [
+        "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", // target token - SolvBTC
+        "0x542FDA317318eBf1d3DeAF76E0B632741a7e677d", // currency - wrBTC
+        "0xf565aa1c019284a525d3157a65249ab8eae5792d52607b5469304b883afe1298", // 334 fund pool ID
+      ],
+      [
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
+        "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", // currency - SolvBTC
+        "0x0487e6f7eb5b48ed910a8720b380ba97e89354ab91db4a24b3bd462bed7b21ee", // 386 fund pool ID
       ],
     ],
   };
@@ -691,6 +704,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         ["0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3"], // path: UBTC -> SolvBTC -> BTC+
       ],
     ],
+    rootstock: [
+      [
+        "0x542FDA317318eBf1d3DeAF76E0B632741a7e677d", // currency - wrBTC
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
+        ["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77"], // path: UBTC -> SolvBTC -> BTC+
+      ],
+    ],
   };
 
   const multiAssetPools = {
@@ -938,6 +958,16 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
         "0x2DC5392c35e6682ed27EDE187AC159BA020a5eda",
+      ], // BTC+
+    ],
+    rootstock: [
+      [
+        "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",
+        "0xf4F39602D0a6C8f60C23208819140F2C3FA1662C",
+      ], // SolvBTC
+      [
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
+        "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
       ], // BTC+
     ],
   };
