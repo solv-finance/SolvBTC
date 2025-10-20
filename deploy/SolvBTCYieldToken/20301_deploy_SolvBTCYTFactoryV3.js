@@ -34,6 +34,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ink: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     hyperevm: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     tac: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    rootstock: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
   const instance = await deploy("SolvBTCYieldTokenFactoryV3", {

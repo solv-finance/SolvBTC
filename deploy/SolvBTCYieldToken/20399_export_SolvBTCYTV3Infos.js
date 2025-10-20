@@ -17,6 +17,7 @@ const SolvBTCYieldTokenFactoryV3Addresses = {
   ink: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   hyperevm: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
   tac: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
+  rootstock: "0xd83EDb24948eEfAF30d9b2f30FbDeC90e1cdc25f",
 };
 
 const SolvBTCYieldTokenV3BeaconAddresses = {
@@ -38,6 +39,7 @@ const SolvBTCYieldTokenV3BeaconAddresses = {
   ink: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   hyperevm: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
   tac: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
+  rootstock: "0xFE2E0c4249DCB69F219dd2BE918EB1cef9E5dAf2",
 };
 
 const SolvBTCYieldTokenInfos = {
@@ -283,7 +285,7 @@ const SolvBTCYieldTokenInfos = {
   },
   rootstock: {
     "BTC+": {  // id = 386
-      erc20: "",
+      erc20: "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
       sft: "0x29F870Ed75B4632301946bB935433605f39d515E",
       slot: "97075096825935347873451002273595650358517702021537590436500585382048116226529",
       poolId: "0x0487e6f7eb5b48ed910a8720b380ba97e89354ab91db4a24b3bd462bed7b21ee",

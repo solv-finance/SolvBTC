@@ -359,7 +359,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     rootstock: [
       [
         "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77", // target token - SolvBTC
-        "0x542FDA317318eBf1d3DeAF76E0B632741a7e677d", // currency - wrBTC
+        "0x542fda317318ebf1d3deaf76e0b632741a7e677d", // currency - wrBTC
         "0xf565aa1c019284a525d3157a65249ab8eae5792d52607b5469304b883afe1298", // 334 fund pool ID
       ],
       [
@@ -706,7 +706,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ],
     rootstock: [
       [
-        "0x542FDA317318eBf1d3DeAF76E0B632741a7e677d", // currency - wrBTC
+        "0x542fda317318ebf1d3deaf76e0b632741a7e677d", // currency - wrBTC
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
         ["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77"], // path: UBTC -> SolvBTC -> BTC+
       ],
