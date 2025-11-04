@@ -34,10 +34,7 @@ contract SolvBTCRouter is
         uint256 currencyAmount
     );
     event CollectDepositFee(
-        address indexed payer,
-        address indexed currency,
-        address indexed feeReceiver,
-        uint256 feeAmount
+        address indexed payer, address indexed currency, address indexed feeReceiver, uint256 feeAmount
     );
     event CreateRedemption(
         bytes32 indexed poolId,
@@ -256,15 +253,17 @@ contract SolvBTCRouter is
         PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
         IERC3525 openFundShare = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
-        address solvBTC = ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
 
         ERC20TransferHelper.doTransferIn(poolInfo.currency, msg.sender, currencyAmount_);
 
         // collect deposit fee
         uint256 currencyAmountAfterFee = currencyAmount_;
         {
-            (uint256 feeAmount, address feeReceiver) = 
+            (uint256 feeAmount, address feeReceiver) =
                 FeeManager(feeManager).getDepositFee(solvBTC, poolInfo.currency, currencyAmount_);
+            require(feeAmount <= currencyAmount_, "SolvBTCRouter: fee amount exceeds currency amount");
             if (feeAmount > 0) {
                 currencyAmountAfterFee -= feeAmount;
                 ERC20TransferHelper.doTransferOut(poolInfo.currency, payable(feeReceiver), feeAmount);

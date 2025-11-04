@@ -27,10 +27,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         bytes32[] poolIds
     );
     event CollectDepositFee(
-        address indexed payer,
-        address indexed currency,
-        address indexed feeReceiver,
-        uint256 feeAmount
+        address indexed payer, address indexed currency, address indexed feeReceiver, uint256 feeAmount
     );
     event WithdrawRequest(
         address indexed targetToken,
@@ -103,17 +100,20 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
      * @param expireTime_ The expire time
      * @return targetTokenAmount_ The targetToken amount to receive
      */
-    function deposit(address targetToken_, address currency_, uint256 currencyAmount_, uint256 minimumTargetTokenAmount_, uint64 expireTime_)
-        external
-        virtual
-        nonReentrant
-        returns (uint256 targetTokenAmount_)
-    {
+    function deposit(
+        address targetToken_,
+        address currency_,
+        uint256 currencyAmount_,
+        uint256 minimumTargetTokenAmount_,
+        uint64 expireTime_
+    ) external virtual nonReentrant returns (uint256 targetTokenAmount_) {
         require(currencyAmount_ > 0, "SolvBTCRouterV2: invalid currency amount");
         ERC20TransferHelper.doTransferIn(currency_, msg.sender, currencyAmount_);
 
         // collect deposit fee
-        (uint256 feeAmount, address feeReceiver) = FeeManager(feeManager).getDepositFee(targetToken_, currency_, currencyAmount_);
+        (uint256 feeAmount, address feeReceiver) =
+            FeeManager(feeManager).getDepositFee(targetToken_, currency_, currencyAmount_);
+        require(feeAmount <= currencyAmount_, "SolvBTCRouterV2: fee amount exceeds currency amount");
         if (feeAmount > 0) {
             ERC20TransferHelper.doTransferOut(currency_, payable(feeReceiver), feeAmount);
             emit CollectDepositFee(msg.sender, currency_, feeReceiver, feeAmount);
@@ -169,8 +169,7 @@ contract SolvBTCRouterV2 is ReentrancyGuardUpgradeable, Ownable2StepUpgradeable 
         );
 
         ERC20TransferHelper.doApprove(currency_, _openFundMarket, currencyAmount_);
-        targetTokenAmount_ =
-            IOpenFundMarket(_openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, expireTime_);
+        targetTokenAmount_ = IOpenFundMarket(_openFundMarket).subscribe(targetPoolId, currencyAmount_, 0, expireTime_);
 
         uint256 shareCount = share.balanceOf(address(this));
         uint256 shareId = share.tokenOfOwnerByIndex(address(this), shareCount - 1);
