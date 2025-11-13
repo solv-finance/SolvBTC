@@ -192,16 +192,6 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         $.redemptionVault = redemptionVault_;
     }
 
-    function maxSingleWithdrawAmount() external view virtual returns (uint256) {
-        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
-        return $.rateLimit.maxSingleWithdrawAmount;
-    }
-
-    function maxWindowWithdrawAmount() external view virtual returns (uint256) {
-        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
-        return $.rateLimit.maxWindowWithdrawAmount;
-    }
-
     function rateLimit() external view virtual returns (RateLimit memory) {
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
         return $.rateLimit;

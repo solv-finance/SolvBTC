@@ -148,4 +148,119 @@ contract BTCPlusRedeemTest is Test {
         vm.prank(user);
         redeem.withdrawBTCPlus(singleLimit);
     }
+
+    function testWithdrawZeroAmountReverts() public {
+        vm.prank(user);
+        vm.expectRevert("BTCPlusRedeem: amount cannot be 0");
+        redeem.withdrawBTCPlus(0);
+    }
+
+    function testWithdrawAtMaxSingleLimitBoundary() public {
+        uint256 limit = 5e16;
+        redeem.setMaxSingleWithdrawAmount(limit);
+
+        vm.prank(user);
+        redeem.withdrawBTCPlus(limit);
+
+        vm.prank(user);
+        vm.expectRevert("BTCPlusRedeem: amount exceeds single withdraw amount");
+        redeem.withdrawBTCPlus(limit + 1);
+    }
+
+    function testSetMaxSingleWithdrawAmountOnlyAdmin() public {
+        uint256 newLimit = 2e16;
+        vm.prank(user);
+        vm.expectRevert("only admin");
+        redeem.setMaxSingleWithdrawAmount(newLimit);
+
+        redeem.setMaxSingleWithdrawAmount(newLimit);
+        BTCPlusRedeem.RateLimit memory info = redeem.rateLimit();
+        assertEq(info.maxSingleWithdrawAmount, newLimit, "max single withdraw amount not updated");
+    }
+
+    function testSetMaxWindowWithdrawAmountValidations() public {
+        vm.prank(user);
+        vm.expectRevert("only admin");
+        redeem.setMaxWindowWithdrawAmount(1 ether, 1 days);
+
+        vm.expectRevert("BTCPlusRedeem: window cannot be 0");
+        redeem.setMaxWindowWithdrawAmount(1 ether, 0);
+
+        uint256 newLimit = 3e17;
+        uint256 newWindow = 2 days;
+        redeem.setMaxWindowWithdrawAmount(newLimit, newWindow);
+        BTCPlusRedeem.RateLimit memory info = redeem.rateLimit();
+        assertEq(info.maxWindowWithdrawAmount, newLimit, "max window withdraw amount not updated");
+        assertEq(info.window, newWindow, "window not updated");
+    }
+
+    function testSetWithdrawFeeRateOnlyAdmin() public {
+        vm.prank(user);
+        vm.expectRevert("only admin");
+        redeem.setWithdrawFeeRate(100);
+
+        uint64 newFeeRate = 250;
+        redeem.setWithdrawFeeRate(newFeeRate);
+        assertEq(redeem.withdrawFeeRate(), newFeeRate, "withdraw fee rate not updated");
+    }
+
+    function testSetFeeRecipientRequiresAdminAndNonZero() public {
+        address newFeeRecipient = makeAddr("newFeeRecipient");
+
+        vm.prank(user);
+        vm.expectRevert("only admin");
+        redeem.setFeeRecipient(newFeeRecipient);
+
+        vm.expectRevert("BTCPlusRedeem: fee recipient cannot be 0 address");
+        redeem.setFeeRecipient(address(0));
+
+        redeem.setWithdrawFeeRate(100); // 1%
+        redeem.setFeeRecipient(newFeeRecipient);
+
+        uint256 feeBalanceBefore = solvBTC.balanceOf(newFeeRecipient);
+        uint256 amount = 5e15;
+        vm.prank(user);
+        redeem.withdrawBTCPlus(amount);
+        assertGt(
+            solvBTC.balanceOf(newFeeRecipient),
+            feeBalanceBefore,
+            "fee recipient should receive withdraw fee"
+        );
+    }
+
+    function testSetRedemptionVaultRequiresAdminAndNonZero() public {
+        address oldVault = redemptionVault;
+        address newVault = makeAddr("newRedemptionVault");
+
+        vm.prank(user);
+        vm.expectRevert("only admin");
+        redeem.setRedemptionVault(newVault);
+
+        vm.expectRevert("BTCPlusRedeem: redemption vault cannot be 0 address");
+        redeem.setRedemptionVault(address(0));
+
+        solvBTC.mint(newVault, 200 ether);
+        vm.prank(newVault);
+        solvBTC.approve(address(redeem), type(uint256).max);
+
+        redeem.setRedemptionVault(newVault);
+
+        uint256 amount = 5e15;
+        uint256 oldVaultBalanceBefore = solvBTC.balanceOf(oldVault);
+        uint256 newVaultBalanceBefore = solvBTC.balanceOf(newVault);
+
+        vm.prank(user);
+        redeem.withdrawBTCPlus(amount);
+
+        assertEq(
+            solvBTC.balanceOf(oldVault),
+            oldVaultBalanceBefore,
+            "old redemption vault should remain untouched"
+        );
+        assertEq(
+            newVaultBalanceBefore - solvBTC.balanceOf(newVault),
+            amount,
+            "new redemption vault should supply solvBTC"
+        );
+    }
 }
