@@ -24,6 +24,8 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
     );
 
     event WithdrawFeeRateUpdated(uint64 oldWithdrawFeeRate, uint64 newWithdrawFeeRate);
+    event SetFeeRecipient(address oldFeeRecipient, address newFeeRecipient);
+    event SetRedemptionVault(address oldRedemptionVault, address newRedemptionVault);
 
     struct RateLimit {
         uint256 amountWithdrawn; // amount withdrawn in the current window
@@ -183,13 +185,17 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
     function setFeeRecipient(address feeRecipient_) external virtual onlyAdmin {
         require(feeRecipient_ != address(0), "BTCPlusRedeem: fee recipient cannot be 0 address");
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        address oldFeeRecipient = $.feeRecipient;
         $.feeRecipient = feeRecipient_;
+        emit SetFeeRecipient(oldFeeRecipient, feeRecipient_);
     }
 
     function setRedemptionVault(address redemptionVault_) external virtual onlyAdmin {
         require(redemptionVault_ != address(0), "BTCPlusRedeem: redemption vault cannot be 0 address");
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        address oldRedemptionVault = $.redemptionVault;
         $.redemptionVault = redemptionVault_;
+        emit SetRedemptionVault(oldRedemptionVault, redemptionVault_);
     }
 
     function rateLimit() external view virtual returns (RateLimit memory) {
@@ -200,6 +206,26 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
     function withdrawFeeRate() external view virtual returns (uint64) {
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
         return $.withdrawFeeRate;
+    }
+
+    function feeRecipient() external view virtual returns (address) {
+        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        return $.feeRecipient;
+    }
+
+    function redemptionVault() external view virtual returns (address) {
+        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        return $.redemptionVault;
+    }
+
+    function btcPlus() external view virtual returns (address) {
+        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        return $.btcPlus;
+    }
+
+    function solvBTC() external view virtual returns (address) {
+        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        return $.solvBTC;
     }
 
     /**
