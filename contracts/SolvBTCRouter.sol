@@ -100,14 +100,6 @@ contract SolvBTCRouter is
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
 
-        require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
-                address(openFundShare), openFundShareSlot
-            ),
-            "SolvBTCRouter: sft slot not allowed"
-        );
-        require(value_ > 0, "SolvBTCRouter: stake amount cannot be 0");
-
         address fromSftIdOwner = openFundShare.ownerOf(fromSftId_);
         if (
             fromSftIdOwner == openFundMarket || fromSftIdOwner == solvBTCMultiAssetPool
@@ -115,6 +107,14 @@ contract SolvBTCRouter is
         ) {
             return IERC3525Receiver.onERC3525Received.selector;
         }
+
+        require(
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
+                address(openFundShare), openFundShareSlot
+            ),
+            "SolvBTCRouter: sft slot not allowed"
+        );
+        require(value_ > 0, "SolvBTCRouter: stake amount cannot be 0");
 
         address toSftIdOwner = openFundShare.ownerOf(toSftId_);
         require(toSftIdOwner == address(this), "SolvBTCRouter: not owned sft id");
@@ -151,16 +151,16 @@ contract SolvBTCRouter is
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
 
+        if (from_ == openFundMarket || from_ == solvBTCMultiAssetPool) {
+            return IERC721Receiver.onERC721Received.selector;
+        }
+
         require(
             ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
                 address(openFundShare), openFundShareSlot
             ),
             "SolvBTCRouter: sft slot not allowed"
         );
-
-        if (from_ == openFundMarket || from_ == solvBTCMultiAssetPool) {
-            return IERC721Receiver.onERC721Received.selector;
-        }
 
         address sftIdOwner = openFundShare.ownerOf(sftId_);
         require(sftIdOwner == address(this), "SolvBTCRouter: not owned sft id");

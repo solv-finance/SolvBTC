@@ -139,7 +139,6 @@ contract XSolvBTCPool is IxSolvBTCPool, ReentrancyGuardUpgradeable, AdminControl
         virtual 
         override 
         nonReentrant 
-        onlyAllowedCaller 
         returns (uint256 solvBtcAmount) 
     {
         require(xSolvBtcAmount_ > 0, "xSolvBTCPool: withdraw amount cannot be 0");
