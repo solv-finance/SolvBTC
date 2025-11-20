@@ -1,4 +1,5 @@
 const transparentUpgrade = require("./utils/transparentUpgrade");
+const { txWait } = require("./utils/deployUtils");
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const { deployer } = await getNamedAccounts();
@@ -919,15 +920,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const proxyName = contractName + "Proxy";
 
   const versions = {
-    dev_sepolia: ["v2.1", "v2.2", "v2.3"],
-    sepolia: ["v2.1", "v2.2", "v2.3"],
-    bsctest: ["v2.1", "v2.2", "v2.3"],
+    dev_sepolia: ["v2.1", "v2.2", "v2.3", "v2.4"],
+    sepolia: ["v2.1", "v2.2", "v2.3", "v2.4"],
+    bsctest: ["v2.1", "v2.2", "v2.3", "v2.4"],
     mainnet: ["v2.1", "v2.3"],
     bsc: ["v2.1", "v2.3"],
     mantle: ["v2.2", "v2.3"],
     bob: ["v2.2", "v2.3"],
     avax: ["v2.3"],
-    bera: ["v2.3"],
+    bera: ["v2.3", "v2.4"],
   };
   const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
 
@@ -1006,6 +1007,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       );
       await setPoolTx.wait(1);
     }
+  }
+
+  // Set FeeManager address
+  const feeManagerAddress = (await deployments.get("FeeManagerProxy")).address;
+  const currentFeeManager = await solvBTCRouterV2.feeManager();
+  if (currentFeeManager != feeManagerAddress) {
+    const tx = await solvBTCRouterV2.setFeeManager(feeManagerAddress);
+    console.log(`* SolvBTCRouterV2: SetFeeManager for ${feeManagerAddress} at tx ${tx.hash}`);
+    await txWait(tx);
   }
 };
 

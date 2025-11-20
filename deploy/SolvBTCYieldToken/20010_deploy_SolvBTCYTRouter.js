@@ -1,10 +1,9 @@
 const transparentUpgrade = require('../utils/transparentUpgrade');
-const gasTracker = require('../utils/gasTracker');
+const { txWait } = require('../utils/deployUtils');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const { deployer } = await getNamedAccounts();
-  const gasPrice = await gasTracker.getGasPrice(network.name);
 
   const governor = deployer;
   const market = require('../SolvBTC/10099_export_SolvBTCInfos').OpenFundMarketAddresses[network.name];
@@ -14,7 +13,12 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const firstImplName = 'SolvBTCYieldTokenRouterImpl';
   const proxyName = 'SolvBTCYieldTokenRouterProxy';
 
-  const versions = {}
+  const versions = {
+    dev_sepolia: ["v1.1"],
+    sepolia: ["v1.1"],
+    bsctest: ["v1.1"],
+    bera: ["v1.1"],
+  }
   const upgrades = versions[network.name]?.map(v => {return firstImplName + '_' + v}) || []
 
   const { proxy, newImpl, newImplName } = await transparentUpgrade.deployOrUpgrade(
@@ -23,7 +27,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     {
       contract: contractName,
       from: deployer,
-      // gasPrice: gasPrice,
       log: true
     },
     {
@@ -34,6 +37,17 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       upgrades: upgrades
     }
   );
+
+  // Set FeeManager address
+  const feeManagerAddress = (await deployments.get("FeeManagerProxy")).address;
+  const SolvBTCYTRouterFactory = await ethers.getContractFactory("SolvBTCRouter", deployer);
+  const solvBTCYTRouter = SolvBTCYTRouterFactory.attach(proxy.address);
+  const currentFeeManager = await solvBTCYTRouter.feeManager();
+  if (currentFeeManager != feeManagerAddress) {
+    const tx = await solvBTCYTRouter.setFeeManager(feeManagerAddress);
+    console.log(`* SolvBTCYieldTokenRouter: SetFeeManager for ${feeManagerAddress} at tx ${tx.hash}`);
+    await txWait(tx);
+  }
 };
 
 module.exports.tags = ['SolvBTCYTRouter']
