@@ -228,6 +228,14 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         return $.solvBTC;
     }
 
+    function remainingWithdrawAmount() external view virtual returns (uint256) {
+        BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        RateLimit storage $$ = $.rateLimit;
+        (, uint256 amountCanBeWithdrawn) =
+            _amountCanBeWithdrawn($$.amountWithdrawn, $$.lastWithdrawnAt, $$.maxWindowWithdrawAmount, $$.window);
+        return amountCanBeWithdrawn;
+    }
+
     /**
      * @notice Checks current amount in flight and amount that can be sent for a given rate limit window.
      * @param _amountWithdrawn The amount in the current window.
