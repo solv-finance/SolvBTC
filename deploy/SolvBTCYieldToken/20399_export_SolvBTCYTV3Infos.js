@@ -292,7 +292,17 @@ const SolvBTCYieldTokenInfos = {
       navOracle: "0x443E5e0434E51db27717Db447aF2631f0355e7f8",
       holdingValueSftId: 0,
     }
-  }
+  },
+  monad: {
+    "xSolvBTC": {
+      erc20: "0xc99F5c922DAE05B6e2ff83463ce705eF7C91F077",
+      sft: "",
+      slot: "",
+      poolId: "",
+      navOracle: "",
+      holdingValueSftId: 0,
+    },
+  },
 };
 
 module.exports = {

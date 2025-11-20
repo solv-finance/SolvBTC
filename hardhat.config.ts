@@ -293,7 +293,11 @@ const config: HardhatUserConfig = {
     tac: {
       url: process.env.TAC_URL || `https://rpc.tac.build`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
-    }
+    },
+    monad: {
+      url: process.env.MONAD_URL || ``,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
   },
 
   etherscan: {
