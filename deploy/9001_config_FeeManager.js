@@ -72,31 +72,31 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",  // targetToken: SolvBTC
         "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",  // currency: WBTC
         0.0025e8,                                      // feeRate = 0.25%
-        "",  // feeReceiver
+        "0x52be8fe8fed6c8d52a9fd94a10dad12f4ffa9526",  // feeReceiver
       ],
       [
         "0xCC0966D8418d412c599A6421b760a847eB169A8c",  // targetToken: xSolvBTC
         "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",  // currency: WBTC
         0.0025e8,                                      // feeRate = 0.25%
-        "",  // feeReceiver
+        "0x52be8fe8fed6c8d52a9fd94a10dad12f4ffa9526",  // feeReceiver
       ],
       [
         "0x0F6f337B09cb5131cF0ce9df3Beb295b8e728F3B",  // targetToken: SolvBTC.BERA
         "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",  // currency: WBTC
         0.0025e8,                                      // feeRate = 0.25%
-        "",  // feeReceiver
+        "0x52be8fe8fed6c8d52a9fd94a10dad12f4ffa9526",  // feeReceiver
       ],
       [
         "0x1B25cA174c158440621Ff96E4B1262cb5cc8942F",  // targetToken: SolvBTC.BNB
         "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",  // currency: WBTC
         0.0025e8,                                      // feeRate = 0.25%
-        "",  // feeReceiver
+        "0x52be8fe8fed6c8d52a9fd94a10dad12f4ffa9526",  // feeReceiver
       ],
       [
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",  // targetToken: BTC+
         "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c",  // currency: WBTC
         0.0025e8,                                      // feeRate = 0.25%
-        "",  // feeReceiver
+        "0x52be8fe8fed6c8d52a9fd94a10dad12f4ffa9526",  // feeReceiver
       ],
     ],
   }
