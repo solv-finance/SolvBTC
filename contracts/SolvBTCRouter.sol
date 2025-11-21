@@ -5,6 +5,7 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./access/AdminControlUpgradeable.sol";
 import "./access/GovernorControlUpgradeable.sol";
+import "./FeeManager.sol";
 import "./utils/ERC20TransferHelper.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./external/IERC3525.sol";
@@ -32,6 +33,9 @@ contract SolvBTCRouter is
         address currency,
         uint256 currencyAmount
     );
+    event CollectDepositFee(
+        address indexed payer, address indexed currency, address indexed feeReceiver, uint256 feeAmount
+    );
     event CreateRedemption(
         bytes32 indexed poolId,
         address indexed redeemer,
@@ -50,12 +54,15 @@ contract SolvBTCRouter is
     event SetSolvBTCMultiAssetPool(
         address indexed previousSolvBTCMultiAssetPool, address indexed newSolvBTCMultiAssetPool
     );
+    event SetFeeManager(address feeManager);
 
     address public openFundMarket;
     address public solvBTCMultiAssetPool;
 
     // sft address => sft slot => holding sft id
     mapping(address => mapping(uint256 => uint256)) public holdingSftIds;
+
+    address public feeManager;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -93,14 +100,6 @@ contract SolvBTCRouter is
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
 
-        require(
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
-                address(openFundShare), openFundShareSlot
-            ),
-            "SolvBTCRouter: sft slot not allowed"
-        );
-        require(value_ > 0, "SolvBTCRouter: stake amount cannot be 0");
-
         address fromSftIdOwner = openFundShare.ownerOf(fromSftId_);
         if (
             fromSftIdOwner == openFundMarket || fromSftIdOwner == solvBTCMultiAssetPool
@@ -108,6 +107,14 @@ contract SolvBTCRouter is
         ) {
             return IERC3525Receiver.onERC3525Received.selector;
         }
+
+        require(
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
+                address(openFundShare), openFundShareSlot
+            ),
+            "SolvBTCRouter: sft slot not allowed"
+        );
+        require(value_ > 0, "SolvBTCRouter: stake amount cannot be 0");
 
         address toSftIdOwner = openFundShare.ownerOf(toSftId_);
         require(toSftIdOwner == address(this), "SolvBTCRouter: not owned sft id");
@@ -144,16 +151,16 @@ contract SolvBTCRouter is
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(sftId_);
 
+        if (from_ == openFundMarket || from_ == solvBTCMultiAssetPool) {
+            return IERC721Receiver.onERC721Received.selector;
+        }
+
         require(
             ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).isSftSlotDepositAllowed(
                 address(openFundShare), openFundShareSlot
             ),
             "SolvBTCRouter: sft slot not allowed"
         );
-
-        if (from_ == openFundMarket || from_ == solvBTCMultiAssetPool) {
-            return IERC721Receiver.onERC721Received.selector;
-        }
 
         address sftIdOwner = openFundShare.ownerOf(sftId_);
         require(sftIdOwner == address(this), "SolvBTCRouter: not owned sft id");
@@ -246,11 +253,27 @@ contract SolvBTCRouter is
         PoolInfo memory poolInfo = IOpenFundMarket(openFundMarket).poolInfos(poolId_);
         IERC3525 openFundShare = IERC3525(poolInfo.poolSFTInfo.openFundShare);
         uint256 openFundShareSlot = poolInfo.poolSFTInfo.openFundShareSlot;
+        address solvBTC =
+            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
 
         ERC20TransferHelper.doTransferIn(poolInfo.currency, msg.sender, currencyAmount_);
-        ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmount_);
+
+        // collect deposit fee
+        uint256 currencyAmountAfterFee = currencyAmount_;
+        {
+            (uint256 feeAmount, address feeReceiver) =
+                FeeManager(feeManager).getDepositFee(solvBTC, poolInfo.currency, currencyAmount_);
+            require(feeAmount <= currencyAmount_, "SolvBTCRouter: fee amount exceeds currency amount");
+            if (feeAmount > 0) {
+                currencyAmountAfterFee -= feeAmount;
+                ERC20TransferHelper.doTransferOut(poolInfo.currency, payable(feeReceiver), feeAmount);
+                emit CollectDepositFee(msg.sender, poolInfo.currency, feeReceiver, feeAmount);
+            }
+        }
+
+        ERC20TransferHelper.doApprove(poolInfo.currency, openFundMarket, currencyAmountAfterFee);
         shareValue_ =
-            IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmount_, 0, uint64(block.timestamp + 300));
+            IOpenFundMarket(openFundMarket).subscribe(poolId_, currencyAmountAfterFee, 0, uint64(block.timestamp + 300));
 
         uint256 shareCount = openFundShare.balanceOf(address(this));
         uint256 shareId = openFundShare.tokenOfOwnerByIndex(address(this), shareCount - 1);
@@ -260,8 +283,6 @@ contract SolvBTCRouter is
         openFundShare.approve(solvBTCMultiAssetPool, shareId);
         ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).deposit(address(openFundShare), shareId, shareValue_);
 
-        address solvBTC =
-            ISolvBTCMultiAssetPool(solvBTCMultiAssetPool).getERC20(address(openFundShare), openFundShareSlot);
         ERC20TransferHelper.doTransferOut(solvBTC, payable(msg.sender), shareValue_);
 
         emit CreateSubscription(poolId_, msg.sender, solvBTC, shareValue_, poolInfo.currency, currencyAmount_);
@@ -357,5 +378,11 @@ contract SolvBTCRouter is
         solvBTCMultiAssetPool = solvBTCMultiAssetPool_;
     }
 
-    uint256[47] private __gap;
+    function setFeeManager(address feeManager_) external virtual onlyAdmin {
+        require(feeManager_ != address(0), "SolvBTCRouter: invalid fee manager");
+        feeManager = feeManager_;
+        emit SetFeeManager(feeManager_);
+    }
+
+    uint256[46] private __gap;
 }

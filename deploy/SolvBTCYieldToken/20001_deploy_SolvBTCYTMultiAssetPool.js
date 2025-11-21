@@ -1,16 +1,19 @@
 const transparentUpgrade = require('../utils/transparentUpgrade');
-const gasTracker = require('../utils/gasTracker');
 
 module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const { deployer } = await getNamedAccounts();
-  const gasPrice = await gasTracker.getGasPrice(network.name);
 
   const contractName = 'SolvBTCMultiAssetPool';
   const firstImplName = 'SolvBTCYieldTokenMultiAssetPoolImpl';
   const proxyName = 'SolvBTCYieldTokenMultiAssetPoolProxy';
 
-  const versions = {}
+  const versions = {
+    dev_sepolia: ["v1.1"],
+    sepolia: ["v1.1"],
+    bsctest: ["v1.1"],
+    bera: ["v1.1"],
+  }
   const upgrades = versions[network.name]?.map(v => {return firstImplName + '_' + v}) || []
 
   const { proxy, newImpl, newImplName } = await transparentUpgrade.deployOrUpgrade(
@@ -19,7 +22,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     {
       contract: contractName,
       from: deployer,
-      // gasPrice: gasPrice,
       log: true
     },
     {
