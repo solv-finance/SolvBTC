@@ -315,7 +315,7 @@ const config: HardhatUserConfig = {
       linea: process.env.LINEASCAN_API_KEY || "",
       sonic: process.env.SONICSCAN_API_KEY || "",
       sei: process.env.SEITRACE_API_KEY || "sei",
-      bera: process.env.BERASCAN_API_KEY || "",
+      bera: process.env.ETHERSCAN_API_KEY || "",
       rootstock: process.env.ROOTSTOCKSCAN_API_KEY || "rootstock",
     },
     customChains: [
@@ -404,7 +404,7 @@ const config: HardhatUserConfig = {
         network: "bera",
         chainId: 80094,
         urls: {
-          apiURL: "https://api.berascan.com/api",
+          apiURL: "https://api.etherscan.io/v2/api?chainid=80094",
           browserURL: "https://berascan.com/",
         },
       },
