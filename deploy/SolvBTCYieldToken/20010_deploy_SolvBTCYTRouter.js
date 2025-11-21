@@ -38,16 +38,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     }
   );
 
-  // Set FeeManager address
-  const feeManagerAddress = (await deployments.get("FeeManagerProxy")).address;
-  const SolvBTCYTRouterFactory = await ethers.getContractFactory("SolvBTCRouter", deployer);
-  const solvBTCYTRouter = SolvBTCYTRouterFactory.attach(proxy.address);
-  const currentFeeManager = await solvBTCYTRouter.feeManager();
-  if (currentFeeManager != feeManagerAddress) {
-    const tx = await solvBTCYTRouter.setFeeManager(feeManagerAddress);
-    console.log(`* SolvBTCYieldTokenRouter: SetFeeManager for ${feeManagerAddress} at tx ${tx.hash}`);
-    await txWait(tx);
-  }
 };
 
 module.exports.tags = ['SolvBTCYTRouter']

@@ -1067,14 +1067,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     }
   }
 
-  // Set FeeManager address
-  const feeManagerAddress = (await deployments.get("FeeManagerProxy")).address;
-  const currentFeeManager = await solvBTCRouterV2.feeManager();
-  if (currentFeeManager != feeManagerAddress) {
-    const tx = await solvBTCRouterV2.setFeeManager(feeManagerAddress);
-    console.log(`* SolvBTCRouterV2: SetFeeManager for ${feeManagerAddress} at tx ${tx.hash}`);
-    await txWait(tx);
-  }
 };
 
 module.exports.tags = ["SolvBTCRouterV2"];
