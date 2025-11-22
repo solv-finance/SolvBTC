@@ -5,7 +5,6 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 import "./access/AdminControlUpgradeable.sol";
 import "./utils/ERC20TransferHelper.sol";
 import "./utils/ERC3525TransferHelper.sol";
-import "./SolvBTCRouterV2.sol";
 import "./SolvBTCYieldToken.sol";
 
 contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
