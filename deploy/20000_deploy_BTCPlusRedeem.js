@@ -29,7 +29,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const proxyName = contractName + "Proxy";
 
   const versions = {
-    dev_sepolia: ["v1.1"],
+    dev_sepolia: ["v1.1", "v1.2"],
   };
   const upgrades =
     versions[network.name]?.map((v) => {

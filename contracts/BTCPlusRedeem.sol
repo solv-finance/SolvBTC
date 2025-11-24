@@ -79,9 +79,9 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         $.feeRecipient = feeRecipient_;
         $.rateLimit.window = 86400; // default 1 day
         $.rateLimit.maxWindowWithdrawAmount = 10 * 10 ** SolvBTCYieldToken(solvBTC_).decimals(); // default 10 BTCPlus
-        $.rateLimit.maxSingleWithdrawAmount = 10 ** SolvBTCYieldToken(solvBTC_).decimals() / 100; // default 0.01 BTCPlus
+        $.rateLimit.maxSingleWithdrawAmount = 10 ** SolvBTCYieldToken(solvBTC_).decimals() / 10; // default 0.1 BTCPlus
         $.rateLimit.amountWithdrawn = 0; // default 0
-        $.rateLimit.lastWithdrawnAt = block.timestamp - 86400; // default 1 day ago
+        $.rateLimit.lastWithdrawnAt = block.timestamp;
         AdminControlUpgradeable.__AdminControl_init(admin_);
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
     }
@@ -103,7 +103,7 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         $$.lastWithdrawnAt = block.timestamp;
 
         //calculate SolvBTC amount by nav
-        solvBTCAmount_ = SolvBTCYieldToken(address($.solvBTC)).getValueByShares(amount_);
+        solvBTCAmount_ = SolvBTCYieldToken(address($.btcPlus)).getValueByShares(amount_);
 
         //check redemption vault allowance
         require(
