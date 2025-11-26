@@ -135,7 +135,15 @@ const SolvBTCYieldTokenInfos = {
       poolId: "0xc00e76915c5091b4ec0d8aeb9626cffa73f20cfe666d5c7108c41e9a34e91532",
       navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
       holdingValueSftId: 0,
-    }
+    },
+    "SolvBTC HYBRID": {  // id = 388
+      erc20: "",
+      sft: "0xB816018E5d421E8b809A4dc01aF179D86056eBDF",
+      slot: "30375782390740978689712613186241583978489152945338097906550289280081931612631",
+      poolId: "0x84c98d5afd1404a78bd067985d1c93aea8d5b182ad5be0a7a367fbe747a3de33",
+      navOracle: "0x9C491539AeC346AAFeb0bee9a1e9D9c02AB50889",
+      holdingValueSftId: 0,
+    },
   },
   avax: {
     "SolvBTC Avalanche": {  // id = 344
