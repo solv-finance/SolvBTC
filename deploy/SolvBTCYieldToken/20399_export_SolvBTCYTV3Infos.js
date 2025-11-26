@@ -137,7 +137,7 @@ const SolvBTCYieldTokenInfos = {
       holdingValueSftId: 0,
     },
     "SolvBTC HYBRID": {  // id = 388
-      erc20: "",
+      erc20: "0x8260c40bedDcB8f63c56B6C73476Ef5e20f156A5",
       sft: "0xB816018E5d421E8b809A4dc01aF179D86056eBDF",
       slot: "30375782390740978689712613186241583978489152945338097906550289280081931612631",
       poolId: "0x84c98d5afd1404a78bd067985d1c93aea8d5b182ad5be0a7a367fbe747a3de33",
