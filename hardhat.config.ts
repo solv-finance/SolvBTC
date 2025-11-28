@@ -189,6 +189,10 @@ const config: HardhatUserConfig = {
       url: process.env.TAC_TEST_RPC_URL || `https://spb.rpc.tac.build`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
     },
+    stable_test: {
+      url: process.env.STABLE_TEST_RPC_URL || `https://rpc.testnet.stable.xyz`,
+      accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
@@ -296,6 +300,10 @@ const config: HardhatUserConfig = {
     },
     monad: {
       url: process.env.MONAD_URL || ``,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    stable: {
+      url: process.env.STABLE_URL || ``,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
   },

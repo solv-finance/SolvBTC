@@ -47,6 +47,12 @@ const SolvBTCInfos = {
     erc20: "0xa0CEbaB0b0918b09a8D39917c3Bd961402B7291A",
     holdingValueSftId: 0,
   },
+  stable_test: {
+    sft: "",
+    slot: "",
+    erc20: "0xa0CEbaB0b0918b09a8D39917c3Bd961402B7291A",
+    holdingValueSftId: 0,
+  },
   polygon: {
     sft: "",
     slot: "",
@@ -72,6 +78,12 @@ const SolvBTCInfos = {
     holdingValueSftId: 0,
   },
   monad: {
+    sft: "",
+    slot: "",
+    erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
+    holdingValueSftId: 0,
+  },
+  stable: {
     sft: "",
     slot: "",
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
