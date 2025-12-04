@@ -8,6 +8,7 @@ const SolvBTCFactoryV3Addresses = {
   hyperevm: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
   tac: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
   monad: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
+  stable: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
 };
 
 const SolvBTCBeaconV3Addresses = {
@@ -20,6 +21,7 @@ const SolvBTCBeaconV3Addresses = {
   hyperevm: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
   tac: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
   monad: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
+  stable: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
 };
 
 const SolvBTCInfos = {
