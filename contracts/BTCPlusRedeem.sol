@@ -80,8 +80,8 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         $.btcPlus = btcPlus_;
         $.feeRecipient = feeRecipient_;
         $.rateLimit.window = DEFAULT_WINDOW;
-        $.rateLimit.maxWindowWithdrawAmount = 10 * 10 ** SolvBTCYieldToken(solvBTC_).decimals(); // default 10 BTCPlus
-        $.rateLimit.maxSingleWithdrawAmount = 10 ** SolvBTCYieldToken(solvBTC_).decimals() / 10; // default 0.1 BTCPlus
+        $.rateLimit.maxWindowWithdrawAmount = 10 * 10 ** SolvBTCYieldToken(btcPlus_).decimals(); // default 10 BTCPlus
+        $.rateLimit.maxSingleWithdrawAmount = 10 ** SolvBTCYieldToken(btcPlus_).decimals() / 10; // default 0.1 BTCPlus
         $.rateLimit.amountWithdrawn = 0; // default 0
         $.rateLimit.lastWithdrawnAt = block.timestamp;
         AdminControlUpgradeable.__AdminControl_init(admin_);
