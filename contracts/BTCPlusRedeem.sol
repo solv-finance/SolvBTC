@@ -174,7 +174,8 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
     }
 
     function setWithdrawFeeRate(uint64 withdrawFeeRate_) external virtual onlyAdmin {
-        //allow to set 0
+        //allow to set 0, but not exceed 10000
+        require(withdrawFeeRate_ < 10000, "BTCPlusRedeem: withdraw fee rate cannot exceed 100%");
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
         uint64 oldWithdrawFeeRate = $.withdrawFeeRate;
         $.withdrawFeeRate = withdrawFeeRate_;
