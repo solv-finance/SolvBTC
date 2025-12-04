@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "./access/AdminControlUpgradeable.sol";
 import "./utils/ERC20TransferHelper.sol";
-import "./utils/ERC3525TransferHelper.sol";
 import "./SolvBTCYieldToken.sol";
 
 contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
@@ -43,6 +42,9 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         RateLimit rateLimit;
     }
 
+    uint64 public constant FEE_RATE_BASE = 10000;
+    uint256 public constant DEFAULT_WINDOW = 86400; // 1 day
+
     // keccak256(abi.encode(uint256(keccak256("solv.storage.BTCPlusRedeem")) - 1)) & ~bytes32(uint256(0xff))
     bytes32 private constant BTCPlusRedeemStorageLocation =
         0x068bcc4b070245a4918cdc3b79265b91693407ad59d9128bddabfb5172d59900;
@@ -77,7 +79,7 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         $.solvBTC = solvBTC_;
         $.btcPlus = btcPlus_;
         $.feeRecipient = feeRecipient_;
-        $.rateLimit.window = 86400; // default 1 day
+        $.rateLimit.window = DEFAULT_WINDOW;
         $.rateLimit.maxWindowWithdrawAmount = 10 * 10 ** SolvBTCYieldToken(solvBTC_).decimals(); // default 10 BTCPlus
         $.rateLimit.maxSingleWithdrawAmount = 10 ** SolvBTCYieldToken(solvBTC_).decimals() / 10; // default 0.1 BTCPlus
         $.rateLimit.amountWithdrawn = 0; // default 0
@@ -128,7 +130,7 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
         ERC20TransferHelper.doTransferIn(address($.solvBTC), address($.redemptionVault), solvBTCAmount_);
 
         //calculate withdraw fee
-        uint256 withdrawFee = (solvBTCAmount_ * $.withdrawFeeRate) / 10000;
+        uint256 withdrawFee = (solvBTCAmount_ * $.withdrawFeeRate) / FEE_RATE_BASE;
         require(withdrawFee <= solvBTCAmount_, "BTCPlusRedeem: withdraw fee exceeds solvBTC amount");
         if (withdrawFee > 0) {
             //transfer solvBTC from redemption vault to fee recipient
@@ -178,8 +180,8 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
     }
 
     function setWithdrawFeeRate(uint64 withdrawFeeRate_) external virtual onlyAdmin {
-        //allow to set 0, but not exceed 10000
-        require(withdrawFeeRate_ < 10000, "BTCPlusRedeem: withdraw fee rate cannot exceed 100%");
+        //allow to set 0, but not exceed 100%
+        require(withdrawFeeRate_ < FEE_RATE_BASE, "BTCPlusRedeem: withdraw fee rate cannot exceed 100%");
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
         uint64 oldWithdrawFeeRate = $.withdrawFeeRate;
         $.withdrawFeeRate = withdrawFeeRate_;
