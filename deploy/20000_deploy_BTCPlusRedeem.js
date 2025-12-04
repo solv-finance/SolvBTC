@@ -18,6 +18,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       feeRecipient: defaultFeeRecipient,
       withdrawFeeRate: defaultWithdrawFeeRate,
     },
+    sepolia: {
+      admin: deployer,
+      redemptionVault: "0x4c18f65f31a305e05b726072ca1676d197eaea27",
+      btcPlus: "0x72B6573FCB8d54522C28689e0aA0B6C77fD245ed",
+      feeRecipient: defaultFeeRecipient,
+      withdrawFeeRate: defaultWithdrawFeeRate,
+    },
     arb: {
       admin: defaultAdmin,
       redemptionVault: "0xb26b467028ae4e14a13ec3f77e2e433b48530cd4",
@@ -39,11 +46,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const versions = {
     dev_sepolia: ["v1.1", "v1.2", "v1.3"],
   };
-
-  const upgrades =
-    versions[network.name]?.map((v) => {
-      return firstImplName + "_" + v;
-    }) || [];
+  const upgrades = versions[network.name]?.map((v) => { return firstImplName + "_" + v; }) || [];
 
   const { proxy, newImpl, newImplName } =
     await transparentUpgrade.deployOrUpgrade(
@@ -69,20 +72,12 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       }
     );
 
-  // set MaxMultiplier in pool if needed
-  const BTCPlusRedeemFactory = await ethers.getContractFactory(
-    "BTCPlusRedeem",
-    deployer
-  );
+  const BTCPlusRedeemFactory = await ethers.getContractFactory("BTCPlusRedeem", deployer);
   const btcPlusRedeem = BTCPlusRedeemFactory.attach(proxy.address);
   const currentWithdrawFeeRate = await btcPlusRedeem.withdrawFeeRate();
   if (currentWithdrawFeeRate != withdrawFeeRate) {
-    const setWithdrawFeeRateTx = await btcPlusRedeem.setWithdrawFeeRate(
-      withdrawFeeRate
-    );
-    console.log(
-      `withdrawFeeRate set to ${withdrawFeeRate} at tx: ${setWithdrawFeeRateTx.hash}`
-    );
+    const setWithdrawFeeRateTx = await btcPlusRedeem.setWithdrawFeeRate(withdrawFeeRate);
+    console.log(`withdrawFeeRate set to ${withdrawFeeRate} at tx: ${setWithdrawFeeRateTx.hash}`);
     await setWithdrawFeeRateTx.wait(1);
   }
 };
