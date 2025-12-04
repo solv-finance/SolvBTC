@@ -312,7 +312,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       mainnet: process.env.ETHERSCAN_API_KEY || "",
       bsc: process.env.BSCSCAN_API_KEY || "",
-      arb: process.env.ARBISCAN_API_KEY || "",
+      arb: process.env.ETHERSCAN_API_KEY || "",
       polygon: process.env.POLYSCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",
       merlin: process.env.MERLINSCAN_API_KEY || "",
@@ -339,7 +339,7 @@ const config: HardhatUserConfig = {
         network: "arb",
         chainId: 42161,
         urls: {
-          apiURL: "https://api.arbiscan.io/api",
+          apiURL: "https://api.etherscan.io/v2/api?chainid=42161",
           browserURL: "https://explorer.arbitrum.io",
         },
       },
