@@ -143,8 +143,12 @@ contract BTCPlusRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable {
     }
 
     function setMaxSingleWithdrawAmount(uint256 maxSingleWithdrawAmount_) external virtual onlyAdmin {
-        //allow to set 0
+        //allow to set 0, but not exceed maxWindowWithdrawAmount
         BTCPlusRedeemStorage storage $ = _getBTCPlusRedeemStorage();
+        require(
+            maxSingleWithdrawAmount_ < $.rateLimit.maxWindowWithdrawAmount,
+            "BTCPlusRedeem: max single withdraw amount cannot exceed max window withdraw amount"
+        );
         uint256 oldMaxSingleWithdrawAmount = $.rateLimit.maxSingleWithdrawAmount;
         $.rateLimit.maxSingleWithdrawAmount = maxSingleWithdrawAmount_;
         emit MaxSingleWithdrawAmountUpdated(oldMaxSingleWithdrawAmount, maxSingleWithdrawAmount_);
