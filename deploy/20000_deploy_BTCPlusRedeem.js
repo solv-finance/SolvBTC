@@ -8,6 +8,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const solvBTCAddress = tokenInfos.SolvBTCInfos[network.name].erc20;
   const defaultFeeRecipient = "0x5ef01B1eFfA34Bdd3A305a968A907108D52FF234";
   const defaultWithdrawFeeRate = 50; // 0.5%
+  const defaultAdmin = "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D";
 
   const customFeeInfos = {
     dev_sepolia: {
@@ -16,6 +17,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       btcPlus: "0xBfE4B499B55084da6a0dA89E0254893B241Dca18",
       feeRecipient: defaultFeeRecipient,
       withdrawFeeRate: defaultWithdrawFeeRate,
+    },
+    arb: {
+      admin: defaultAdmin,
+      redemptionVault: "0xb26b467028ae4e14a13ec3f77e2e433b48530cd4",
+      btcPlus: "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
+      feeRecipient: defaultFeeRecipient,
+      withdrawFeeRate: 25, // 0.25%
     },
   };
 
@@ -29,8 +37,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const proxyName = contractName + "Proxy";
 
   const versions = {
-    dev_sepolia: ["v1.1", "v1.2"],
+    dev_sepolia: ["v1.1", "v1.2", "v1.3"],
   };
+
   const upgrades =
     versions[network.name]?.map((v) => {
       return firstImplName + "_" + v;
