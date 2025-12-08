@@ -37,7 +37,7 @@ abstract contract AdminControlUpgradeable is Initializable {
     }
 
     function acceptAdmin() external virtual onlyPendingAdmin {
-        emit NewAdmin(admin, pendingAdmin);
+        emit NewAdmin(admin, address(0));
         admin = pendingAdmin;
         delete pendingAdmin;
     }
