@@ -32,6 +32,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       feeRecipient: defaultFeeRecipient,
       withdrawFeeRate: 25, // 0.25%
     },
+    bsc: {
+      admin: defaultAdmin,
+      redemptionVault: "0xb26b467028ae4e14a13ec3f77e2e433b48530cd4",
+      btcPlus: "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
+      feeRecipient: defaultFeeRecipient,
+      withdrawFeeRate: 25, // 0.25%
+    }
   };
 
   const feeRecipient =
