@@ -325,6 +325,7 @@ const config: HardhatUserConfig = {
       sei: process.env.SEITRACE_API_KEY || "sei",
       bera: process.env.ETHERSCAN_API_KEY || "",
       rootstock: process.env.ROOTSTOCKSCAN_API_KEY || "rootstock",
+      stable: process.env.ETHERSCAN_API_KEY || "",
     },
     customChains: [
       {
@@ -340,7 +341,7 @@ const config: HardhatUserConfig = {
         chainId: 56,
         urls: {
           apiURL: "https://api.etherscan.io/v2/api?chainid=56",
-          browserURL: "https://etherscan.io/",
+          browserURL: "https://bscscan.com/",
         }
       },
       {
@@ -430,6 +431,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://rootstock.blockscout.com/api/",
           browserURL: "https://rootstock.blockscout.com/",
+        },
+      },
+      {
+        network: "stable",
+        chainId: 988,
+        urls: {
+          apiURL: "https://api.etherscan.io/v2/api?chainid=988",
+          browserURL: "https://stablescan.xyz/",
         },
       },
     ],
