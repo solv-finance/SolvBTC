@@ -311,7 +311,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       mainnet: process.env.ETHERSCAN_API_KEY || "",
-      bsc: process.env.BSCSCAN_API_KEY || "",
+      bsc: process.env.ETHERSCAN_API_KEY || "",
       arb: process.env.ETHERSCAN_API_KEY || "",
       polygon: process.env.POLYSCAN_API_KEY || "",
       goerli: process.env.ETHERSCAN_API_KEY || "",
@@ -332,6 +332,14 @@ const config: HardhatUserConfig = {
         chainId: 1,
         urls: {
           apiURL: "https://api.etherscan.io/v2/api?chainid=1",
+          browserURL: "https://etherscan.io/",
+        }
+      },
+      {
+        network: "bsc",
+        chainId: 56,
+        urls: {
+          apiURL: "https://api.etherscan.io/v2/api?chainid=56",
           browserURL: "https://etherscan.io/",
         }
       },
