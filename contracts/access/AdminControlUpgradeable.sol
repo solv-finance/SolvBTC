@@ -5,7 +5,6 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 abstract contract AdminControlUpgradeable is Initializable {
-
     event NewAdmin(address oldAdmin, address newAdmin);
     event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);
 
@@ -33,11 +32,12 @@ abstract contract AdminControlUpgradeable is Initializable {
 
     function transferAdmin(address newPendingAdmin_) external virtual onlyAdmin {
         emit NewPendingAdmin(pendingAdmin, newPendingAdmin_);
-        pendingAdmin = newPendingAdmin_;        
+        pendingAdmin = newPendingAdmin_;
     }
 
     function acceptAdmin() external virtual onlyPendingAdmin {
-        emit NewAdmin(admin, address(0));
+        emit NewAdmin(admin, pendingAdmin);
+        emit NewPendingAdmin(pendingAdmin, address(0));
         admin = pendingAdmin;
         delete pendingAdmin;
     }
