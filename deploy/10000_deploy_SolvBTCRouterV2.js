@@ -21,6 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     hyperevm: "0x48780A97Cd325B8E03661F17a848159e14aaec8D",
     base: "0xf5a247157656678398B08d3eFa1673358C611A3f",
     rootstock: "0x6c8dA184B019E6C4Baa710113c0d9DE68A693B1f",
+    ink: "0xBa891CE042BdB092C450D242c05DB44d7e5Bb728",
   };
 
   // target token, currency, poolId
