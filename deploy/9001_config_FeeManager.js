@@ -99,6 +99,54 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x52be8fe8fed6c8d52a9fd94a10dad12f4ffa9526",  // feeReceiver
       ],
     ],
+    arb: [
+      [
+        "0x3647c54c4c2C65bC7a2D63c0Da2809B399DBBDC0",  // targetToken: SolvBTC
+        "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",  // currency: WBTC
+        0.0030e8,                                      // feeRate = 0.3%
+        "0x032470aBBb896b1255299d5165c1a5e9ef26bcD2",  // feeReceiver
+      ],
+      [
+        "0x346c574C56e1A4aAa8dc88Cda8F7EB12b39947aB",  // targetToken: xSolvBTC
+        "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",  // currency: WBTC
+        0.0030e8,                                      // feeRate = 0.3%
+        "0x032470aBBb896b1255299d5165c1a5e9ef26bcD2",  // feeReceiver
+      ],
+      [
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",  // targetToken: BTC+
+        "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",  // currency: WBTC
+        0.0030e8,                                      // feeRate = 0.3%
+        "0x032470aBBb896b1255299d5165c1a5e9ef26bcD2",  // feeReceiver
+      ],
+      [
+        "0xaFAfd68AFe3fe65d376eEC9Eab1802616cFacCb8",  // targetToken: SolvBTC.TRADING
+        "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",  // currency: WBTC
+        0.0030e8,                                      // feeRate = 0.3%
+        "0x032470aBBb896b1255299d5165c1a5e9ef26bcD2",  // feeReceiver
+      ],
+    ],
+    base: [
+      [
+        "0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f",  // targetToken: SolvBTC
+        "0x236aa50979D5f3De3Bd1Eeb40E81137F22ab794b",  // currency: tBTC
+        0.0030e8,                                      // feeRate = 0.3%
+        "0xF2416C264Aa4068fF4D1949383366458F295F205",  // feeReceiver
+      ],
+      [
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",  // targetToken: BTC+
+        "0x236aa50979D5f3De3Bd1Eeb40E81137F22ab794b",  // currency: tBTC
+        0.0030e8,                                      // feeRate = 0.3%
+        "0xF2416C264Aa4068fF4D1949383366458F295F205",  // feeReceiver
+      ],
+    ],
+    ink: [
+      [
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",  // targetToken: SolvBTC
+        "0x73E0C0d45E048D25Fc26Fa3159b0aA04BfA4Db98",  // currency: KBTC
+        0.0010e8,                                      // feeRate = 0.1%
+        "0x33b7A7a164B77433A61d4B49bD780a2718812e6e",  // feeReceiver
+      ],
+    ],
   }
 
   const FeeManagerFactory = await ethers.getContractFactory("FeeManager", deployer);
