@@ -22,7 +22,6 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ink: ["v1.1"],
     base: ["v1.1"],
     mainnet: ["v1.1"],
-    bsc: ["v1.1"]
   }
   const upgrades = versions[network.name]?.map(v => {return firstImplName + '_' + v}) || []
 

@@ -318,7 +318,7 @@ const config: HardhatUserConfig = {
       merlin: process.env.MERLINSCAN_API_KEY || "",
       mantle: "mantle",
       avax: "avax",
-      base: process.env.BASESCAN_API_KEY || "",
+      base: process.env.ETHERSCAN_API_KEY || "",
       taiko: process.env.TAIKOSCAN_API_KEY || "",
       linea: process.env.LINEASCAN_API_KEY || "",
       sonic: process.env.SONICSCAN_API_KEY || "",
@@ -381,7 +381,7 @@ const config: HardhatUserConfig = {
         network: "base",
         chainId: 8453,
         urls: {
-          apiURL: "https://api.basescan.org/api",
+          apiURL: "https://api.etherscan.io/v2/api?chainid=8453",
           browserURL: "https://basescan.org/",
         },
       },

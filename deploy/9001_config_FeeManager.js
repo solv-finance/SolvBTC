@@ -67,6 +67,44 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x35256c3e3be3a9f2A95dD20D39fC61dfa08bBE95",  // feeReceiver
       ],
     ],
+    mainnet: [
+      [
+        "0x7A56E1C57C7475CCf742a1832B028F0456652F97",  // targetToken: SolvBTC
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",  // currency: WBTC
+        0.0025e8,                                      // feeRate = 0.25%
+        "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
+      ],
+      [
+        "0xd9D920AA40f578ab794426F5C90F6C731D159DEf",  // targetToken: xSolvBTC
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",  // currency: WBTC
+        0.0025e8,                                      // feeRate = 0.25%
+        "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
+      ],
+      [
+        "0x325DC9EBceC31940C658aCACa45f8293418d811E",  // targetToken: SolvBTC.TRADING
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",  // currency: WBTC
+        0.0025e8,                                      // feeRate = 0.25%
+        "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
+      ],
+      [
+        "0xE7C253EAD50976Caf7b0C2cbca569146A7741B50",  // targetToken: SolvBTC.BERA
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",  // currency: WBTC
+        0.0025e8,                                      // feeRate = 0.25%
+        "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
+      ],
+      [
+        "0x32Bc653dbD08C70f4dDEF2Bab15915193A617D75",  // targetToken: SolvBTC.DLP
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",  // currency: WBTC
+        0.0025e8,                                      // feeRate = 0.25%
+        "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
+      ],
+      [
+        "0xCEa2DAf93617B97504E05AFfc5BCF9b3922D3034",  // targetToken: BTC+
+        "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",  // currency: WBTC
+        0.0025e8,                                      // feeRate = 0.25%
+        "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
+      ],
+    ],
     bera: [
       [
         "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",  // targetToken: SolvBTC

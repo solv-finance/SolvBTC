@@ -991,17 +991,15 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     dev_sepolia: ["v2.1", "v2.2", "v2.3", "v2.4"],
     sepolia: ["v2.1", "v2.2", "v2.3", "v2.4"],
     bsctest: ["v2.1", "v2.2", "v2.3", "v2.4"],
-    mainnet: ["v2.1", "v2.3"],
+    mainnet: ["v2.1", "v2.3", "v2.4"],
     bsc: ["v2.1", "v2.3"],
     mantle: ["v2.2", "v2.3"],
     bob: ["v2.2", "v2.3"],
     avax: ["v2.3"],
     bera: ["v2.3", "v2.4"],
-    arb: ["v1.1"],
-    ink: ["v1.1"],
-    base: ["v1.1"],
-    mainnet: ["v1.1"],
-    bsc: ["v1.1"],
+    arb: ["v2.4"],
+    ink: ["v2.4"],
+    base: ["v2.4"],
   };
   const upgrades = versions[network.name]?.map((v) => {return firstImplName + "_" + v;}) || [];
 
