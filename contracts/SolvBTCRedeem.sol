@@ -19,6 +19,7 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         uint256 currencyAmount,
         uint256 withdrawFeeAmount
     );
+    event SetCurrency(address currency);
     event SetRedemptionVault(address oldRedemptionVault, address newRedemptionVault);
     event SetCallerRestricted(bool isCallerRestricted);
     event SetFeeRecipient(address oldFeeRecipient, address newFeeRecipient);
@@ -135,40 +136,50 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         $$.amountWithdrawn = currentAmountWithdrawn + amount_;
         $$.lastWithdrawnAt = block.timestamp;
 
-        // check redemption vault allowance
-        require(
-            ERC20Upgradeable(address($.currency)).allowance(address($.redemptionVault), address(this)) >= amount_,
-            "SolvBTCRedeem: redemption vault allowance insufficient"
-        );
-
-        //check redemption vault balance
-        require(
-            ERC20Upgradeable(address($.currency)).balanceOf(address($.redemptionVault)) >= amount_,
-            "SolvBTCRedeem: redemption vault balance insufficient"
-        );
-
         // transfer solvBTC from user to this contract
         ERC20TransferHelper.doTransferIn(address($.solvBTC), msg.sender, amount_);
 
         // burn solvBTC
         SolvBTC(address($.solvBTC)).burn(address(this), amount_);
 
+        uint256 totalAmount = amount_ * (10 ** ERC20Upgradeable(address($.currency)).decimals()) / 
+            (10 ** ERC20Upgradeable(address($.solvBTC)).decimals());
+
+        // check redemption vault balance
+        require(
+            ERC20Upgradeable(address($.currency)).balanceOf(address($.redemptionVault)) >= totalAmount,
+            "SolvBTCRedeem: redemption vault balance insufficient"
+        );
+
+        // check redemption vault allowance
+        require(
+            ERC20Upgradeable(address($.currency)).allowance(address($.redemptionVault), address(this)) >= totalAmount,
+            "SolvBTCRedeem: redemption vault allowance insufficient"
+        );
+
         // transfer currency from redemption vault to this contract
-        ERC20TransferHelper.doTransferIn(address($.currency), address($.redemptionVault), amount_);
+        ERC20TransferHelper.doTransferIn(address($.currency), address($.redemptionVault), totalAmount);
 
         // calculate withdraw fee
-        uint256 withdrawFee = (amount_ * $.withdrawFeeRate) / FEE_RATE_BASE;
-        require(withdrawFee <= amount_, "SolvBTCRedeem: withdraw fee exceeds currency amount");
+        uint256 withdrawFee = (totalAmount * $.withdrawFeeRate) / FEE_RATE_BASE;
+        require(withdrawFee <= totalAmount, "SolvBTCRedeem: withdraw fee exceeds currency amount");
         if (withdrawFee > 0) {
             // transfer currency to fee recipient
             ERC20TransferHelper.doTransferOut(address($.currency), payable(address($.feeRecipient)), withdrawFee);
         }
-        currencyAmount_ = amount_ - withdrawFee;
+        currencyAmount_ = totalAmount - withdrawFee;
 
         // transfer currency to user
         ERC20TransferHelper.doTransferOut(address($.currency), payable(to_), currencyAmount_);
 
         emit WithdrawSolvBTC(msg.sender, to_, address($.solvBTC), address($.currency), amount_, currencyAmount_, withdrawFee);
+    }
+
+    function setCurrency(address currency_) external virtual onlyAdmin {
+        require(currency_ != address(0), "SolvBTCRedeem: currency cannot be 0 address");
+        SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
+        $.currency = currency_;
+        emit SetCurrency(currency_);
     }
 
     function setRedemptionVault(address redemptionVault_) external virtual onlyAdmin {
