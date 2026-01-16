@@ -105,6 +105,14 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x9Bc8EF6bb09e3D0F3F3a6CD02D2B9dC3115C7c5C",  // feeReceiver
       ],
     ],
+    bsc: [
+      [
+        "0x38a001e57430f781404ffF7a81DE4Bd67d1f6117",  // targetToken: SolvBTC.JUP
+        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7",  // currency: SolvBTC
+        0.006e8,                                       // feeRate = 0.6%
+        "0xb278D4305401A3BA6e77F72239E6578898FE4E94",  // feeReceiver
+      ],
+    ],
     bera: [
       [
         "0x541FD749419CA806a8bc7da8ac23D346f2dF8B77",  // targetToken: SolvBTC

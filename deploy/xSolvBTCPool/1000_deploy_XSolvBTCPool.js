@@ -47,6 +47,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     sepolia: ["v1.1", "v1.2"],
     bsctest: ["v1.1", "v1.2", "v1.3"],
     mainnet: ["v1.2"],
+    bsc: ["v1.2"],
     mantle: ["v1.1"],
     bob: ["v1.1"],
     bera: ["v1.1", "v1.2"],

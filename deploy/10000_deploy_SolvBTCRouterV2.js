@@ -992,7 +992,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     sepolia: ["v2.1", "v2.2", "v2.3", "v2.4"],
     bsctest: ["v2.1", "v2.2", "v2.3", "v2.4"],
     mainnet: ["v2.1", "v2.3", "v2.4"],
-    bsc: ["v2.1", "v2.3"],
+    bsc: ["v2.1", "v2.3", "v2.4"],
     mantle: ["v2.2", "v2.3"],
     bob: ["v2.2", "v2.3"],
     avax: ["v2.3"],
