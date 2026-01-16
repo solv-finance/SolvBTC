@@ -256,6 +256,10 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit SetCallerRestricted(isCallerRestricted_);
     }
 
+    function setCallerAllowed(address caller_, bool isAllowed_) external virtual onlyAdmin {
+        _setCallerAllowed(caller_, isAllowed_);
+    }
+
     function currency() external view virtual returns (address) {
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
         return $.currency;
