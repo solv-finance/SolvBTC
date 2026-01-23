@@ -2,13 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
-import "./access/AdminControlUpgradeable.sol";
+import "./access/GovernorControlUpgradeable.sol";
+import "./access/PausableControlUpgradeable.sol";
 import "./access/CallerControlUpgradeable.sol";
 import "./utils/ERC20TransferHelper.sol";
 import "./SolvBTC.sol";
 
-contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, PausableUpgradeable, CallerControlUpgradeable {
+contract SolvBTCRedeem is ReentrancyGuardUpgradeable, GovernorControlUpgradeable, PausableControlUpgradeable, CallerControlUpgradeable {
     
     event WithdrawSolvBTC(
         address indexed caller,
@@ -75,7 +75,8 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
     }
 
     function initialize(
-        address admin_,
+        address governor_,
+        address pauseAdmin_,
         address redemptionVault_,
         address currency_,
         address solvBTC_,
@@ -86,9 +87,13 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         virtual 
         initializer 
     {
-        if (admin_ == address(0)) {
-            admin_ = msg.sender;
+        if (governor_ == address(0)) {
+            governor_ = msg.sender;
         }
+        if (pauseAdmin_ == address(0)) {
+            pauseAdmin_ = msg.sender;
+        }
+        
         require(redemptionVault_ != address(0), "SolvBTCRedeem: redemption vault cannot be 0 address");
         require(currency_ != address(0), "SolvBTCRedeem: currency cannot be 0 address");
         require(solvBTC_ != address(0), "SolvBTCRedeem: solvBTC cannot be 0 address");
@@ -108,12 +113,12 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         $.rateLimit.lastWithdrawnAt = block.timestamp;
 
         ReentrancyGuardUpgradeable.__ReentrancyGuard_init();
-        AdminControlUpgradeable.__AdminControl_init(admin_);
-        PausableUpgradeable.__Pausable_init();
+        GovernorControlUpgradeable.__GovernorControl_init(governor_);
+        PausableControlUpgradeable.__PausableControl_init(pauseAdmin_);
         CallerControlUpgradeable.__CallerControl_init();
     }
 
-    function withdrawSolvBTC(address to_, uint256 amount_) 
+    function redeem(address to_, uint256 amount_) 
         external 
         virtual 
         nonReentrant 
@@ -175,14 +180,14 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit WithdrawSolvBTC(msg.sender, to_, address($.solvBTC), address($.currency), amount_, currencyAmount_, withdrawFee);
     }
 
-    function setCurrency(address currency_) external virtual onlyAdmin {
+    function setCurrency(address currency_) external virtual onlyGovernor {
         require(currency_ != address(0), "SolvBTCRedeem: currency cannot be 0 address");
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
         $.currency = currency_;
         emit SetCurrency(currency_);
     }
 
-    function setRedemptionVault(address redemptionVault_) external virtual onlyAdmin {
+    function setRedemptionVault(address redemptionVault_) external virtual onlyGovernor {
         require(redemptionVault_ != address(0), "SolvBTCRedeem: redemption vault cannot be 0 address");
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
         address oldRedemptionVault = $.redemptionVault;
@@ -190,7 +195,7 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit SetRedemptionVault(oldRedemptionVault, redemptionVault_);
     }
 
-    function setFeeRecipient(address feeRecipient_) external virtual onlyAdmin {
+    function setFeeRecipient(address feeRecipient_) external virtual onlyGovernor {
         require(feeRecipient_ != address(0), "SolvBTCRedeem: fee recipient cannot be 0 address");
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
         address oldFeeRecipient = $.feeRecipient;
@@ -198,7 +203,7 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit SetFeeRecipient(oldFeeRecipient, feeRecipient_);
     }
 
-    function setMaxSingleWithdrawAmount(uint256 maxSingleWithdrawAmount_) external virtual onlyAdmin {
+    function setMaxSingleWithdrawAmount(uint256 maxSingleWithdrawAmount_) external virtual onlyGovernor {
         //allow to set 0, but not exceed maxWindowWithdrawAmount
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
         require(
@@ -210,7 +215,7 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit MaxSingleWithdrawAmountUpdated(oldMaxSingleWithdrawAmount, maxSingleWithdrawAmount_);
     }
 
-    function setWithdrawFeeRate(uint64 withdrawFeeRate_) external virtual onlyAdmin {
+    function setWithdrawFeeRate(uint64 withdrawFeeRate_) external virtual onlyGovernor {
         //allow to set 0, but not exceed 100%
         require(withdrawFeeRate_ < FEE_RATE_BASE, "SolvBTCRedeem: withdraw fee rate cannot exceed 100%");
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
@@ -219,7 +224,7 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit SetWithdrawFeeRate(oldWithdrawFeeRate, withdrawFeeRate_);
     }
 
-    function setMaxWindowWithdrawAmount(uint256 maxWindowWithdrawAmount_, uint256 window_) external virtual onlyAdmin {
+    function setMaxWindowWithdrawAmount(uint256 maxWindowWithdrawAmount_, uint256 window_) external virtual onlyGovernor {
         //allow to set 0
         require(window_ > 0, "SolvBTCRedeem: window cannot be 0");
         //update rate limit
@@ -242,21 +247,13 @@ contract SolvBTCRedeem is ReentrancyGuardUpgradeable, AdminControlUpgradeable, P
         emit MaxWindowWithdrawAmountUpdated(oldMaxWindowWithdrawAmount, maxWindowWithdrawAmount_, oldWindow, window_);
     }
 
-    function pause() external onlyAdmin whenNotPaused {
-        _pause();
-    }
-
-    function unpause() external onlyAdmin whenPaused {
-        _unpause();
-    }
-
-    function setCallerRestricted(bool isCallerRestricted_) external virtual onlyAdmin {
+    function setCallerRestricted(bool isCallerRestricted_) external virtual onlyGovernor {
         SolvBTCRedeemStorage storage $ = _getSolvBTCRedeemStorage();
         $.isCallerRestricted = isCallerRestricted_;
         emit SetCallerRestricted(isCallerRestricted_);
     }
 
-    function setCallerAllowed(address caller_, bool isAllowed_) external virtual onlyAdmin {
+    function setCallerAllowed(address caller_, bool isAllowed_) external virtual onlyGovernor {
         _setCallerAllowed(caller_, isAllowed_);
     }
 
