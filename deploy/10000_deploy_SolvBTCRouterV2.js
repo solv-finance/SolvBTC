@@ -223,6 +223,11 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
         "0x84c98d5afd1404a78bd067985d1c93aea8d5b182ad5be0a7a367fbe747a3de33", // 388 fund pool ID
       ],
+      [
+        "", // target token - SolvBTC.Multi-Strategy
+        "0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7", // currency - SolvBTC
+        "0x6317a8c76e0402e8d97a29517888d3048cfa1ac48fb502b7790ea718bf68a4f9", // 399 fund pool ID
+      ],
     ],
     mantle: [
       [
@@ -864,6 +869,10 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x8260c40bedDcB8f63c56B6C73476Ef5e20f156A5",
         "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
       ], // SolvBTC.HYBRID
+      [
+        "",
+        "0x2bE4500C50D99A81C8b4cF8DA10C5EDbaE6A234A",
+      ], // SolvBTC.Multi-Strategy
     ],
     mantle: [
       [
