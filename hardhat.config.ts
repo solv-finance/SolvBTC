@@ -193,6 +193,10 @@ const config: HardhatUserConfig = {
       url: process.env.STABLE_TEST_RPC_URL || `https://rpc.testnet.stable.xyz`,
       accounts: PRIVATE_KEY? [PRIVATE_KEY] : [],
     },
+    xlayer_test: {
+      url: process.env.XLAYER_TEST_RPC_URL || `https://testrpc.xlayer.tech/terigon`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
 
     mainnet: {
       url:
@@ -304,6 +308,10 @@ const config: HardhatUserConfig = {
     },
     stable: {
       url: process.env.STABLE_URL || ``,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+    },
+    xlayer: {
+      url: process.env.XLAYER_URL || `https://rpc.xlayer.tech`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
   },

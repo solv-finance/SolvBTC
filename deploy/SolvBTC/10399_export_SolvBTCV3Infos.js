@@ -9,6 +9,7 @@ const SolvBTCFactoryV3Addresses = {
   tac: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
   monad: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
   stable: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
+  xlayer: "0x0BF98301ABBF7baF6A2Dc59eA8210010988f4Cf3",
 };
 
 const SolvBTCBeaconV3Addresses = {
@@ -22,6 +23,7 @@ const SolvBTCBeaconV3Addresses = {
   tac: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
   monad: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
   stable: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
+  xlayer: "0x7Aab60355507aC3D537ccD5Cf30D31A0bb2e2de9",
 };
 
 const SolvBTCInfos = {
@@ -87,6 +89,12 @@ const SolvBTCInfos = {
   },
   stable: {
     sft: "",
+    slot: "",
+    erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
+    holdingValueSftId: 0,
+  },
+  xlayer: {
+    sft: "0x1f4D23513C3eF0D63B97BBD2cE7C845Ebb1CF1ce",
     slot: "",
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
     holdingValueSftId: 0,

@@ -15,6 +15,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     hyperevm_test: "_tnt" + version,
     tac_test: "_tnt" + version,
     stable_test: "_tnt" + version,
+    xlayer_test: "_tnt" + version,
   };
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;
@@ -29,6 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     tac: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     monad: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
     stable: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    xlayer: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
   }
 
   const instance = await deploy("SolvBTCFactoryV3", {

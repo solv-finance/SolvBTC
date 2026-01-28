@@ -28,6 +28,7 @@ const OpenFundMarketAddresses = {
   ink: "0xBa891CE042BdB092C450D242c05DB44d7e5Bb728",
   bera: "0x56a4d805d7A292f03Ead5Be31E0fFB8f7d0E3B48",
   hyperevm: "0x48780A97Cd325B8E03661F17a848159e14aaec8D",
+  xlayer: "0xB37889068f9Ecaa64bd011c8de66Ae677368C118",
 };
 
 const SolvBTCFactoryAddresses = {

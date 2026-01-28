@@ -22,6 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     base: "0xf5a247157656678398B08d3eFa1673358C611A3f",
     rootstock: "0x6c8dA184B019E6C4Baa710113c0d9DE68A693B1f",
     ink: "0xBa891CE042BdB092C450D242c05DB44d7e5Bb728",
+    xlayer: "",
   };
 
   // target token, currency, poolId
@@ -380,6 +381,18 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         "0x0487e6f7eb5b48ed910a8720b380ba97e89354ab91db4a24b3bd462bed7b21ee", // 386 fund pool ID
       ],
     ],
+    xlayer: [
+      [
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", // target token - SolvBTC
+        "0xb7C00000bcDEeF966b20B3D884B98E64d2b06b4f", // currency - xBTC
+        "", //  fund pool ID
+      ],
+      [
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3", // currency - SolvBTC
+        "", // fund pool ID
+      ],
+    ],
   };
 
   // currency, target token, path
@@ -723,6 +736,13 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         ["0x541FD749419CA806a8bc7da8ac23D346f2dF8B77"], // path: UBTC -> SolvBTC -> BTC+
       ],
     ],
+    xlayer: [
+      [
+        "0xb7C00000bcDEeF966b20B3D884B98E64d2b06b4f", // currency - xBTC
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad", // target token - BTC+
+        ["0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3"], // path: xBTC -> SolvBTC -> BTC+
+      ],
+    ],
   };
 
   const multiAssetPools = {
@@ -988,6 +1008,16 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
       [
         "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
         "0xeC34989BECD59158f3B1A5cdfFDb667fa2e4d957",
+      ], // BTC+
+    ],
+    xlayer: [
+      [
+        "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
+        "",
+      ], // SolvBTC
+      [
+        "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
+        "",
       ], // BTC+
     ],
   };

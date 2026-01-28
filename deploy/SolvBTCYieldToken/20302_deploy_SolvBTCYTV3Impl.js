@@ -30,6 +30,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     ink_test: "_tnt" + version,
     hyperevm_test: "_tnt" + version,
     tac_test: "_tnt" + version,
+    xlayer_test: "_tnt" + version,
   };
 
   const deterministicSuffix = deterministicSuffixes[network.name] || version;

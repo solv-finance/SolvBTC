@@ -21,6 +21,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
     tac: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     monad: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
     stable: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
+    xlayer: "0xDC3a91D2fa7e1d36B1baA0852f5d8734bd209D02",
   };
   const blacklistManager = blacklistManagers[network.name] || deployer;
 
