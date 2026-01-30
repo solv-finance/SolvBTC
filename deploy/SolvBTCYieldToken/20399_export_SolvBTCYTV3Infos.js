@@ -330,11 +330,11 @@ const SolvBTCYieldTokenInfos = {
     },
   },
   xlayer: {
-    "BTC+": {  // id = 
+    "BTC+": {  // id = 403 
       erc20: "0x4Ca70811E831db42072CBa1f0d03496EF126fAad",
       sft: "0x788dC3af7B62708b752d483a6E30d1Cf23c3EaAe",
-      slot: "",
-      poolId: "",
+      slot: "85815562439743413959841562829214573880899647137242510083834873542932367641468",
+      poolId: "0xb5310cb90aaac00be227dda6fd4c91b12ba8b3295bd2a18a48bc0188e2d89541",
       navOracle: "0x45fb21ac62503c0Bb6FfF3513a3D0fFAAA11aCDb",
       holdingValueSftId: 0,
     }
