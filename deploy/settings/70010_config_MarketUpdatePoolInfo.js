@@ -77,4 +77,4 @@ module.exports = async ({ getNamedAccounts, network }) => {
   }
 };
 
-module.exports.tags = ["TransferAdminAndOwnerV3"];
+module.exports.tags = ["MarketUpdatePoolInfo"];

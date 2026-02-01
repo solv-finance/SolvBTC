@@ -93,9 +93,9 @@ const SolvBTCInfos = {
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
     holdingValueSftId: 0,
   },
-  xlayer: {
+  xlayer: {  // id = 400
     sft: "0x1f4D23513C3eF0D63B97BBD2cE7C845Ebb1CF1ce",
-    slot: "",
+    slot: "99899550750125379020220562889022426159099045436213569206634312016827068211889",
     erc20: "0xaE4EFbc7736f963982aACb17EFA37fCBAb924cB3",
     holdingValueSftId: 0,
   },
