@@ -7,6 +7,30 @@ import "./access/PausableControlUpgradeable.sol";
 import "./utils/ERC20TransferHelper.sol";
 import "./SolvBTC.sol";
 
+/**
+ * @title SolvBTCWhitelistedSwap
+ * @notice Execution contract for the SolvBTC Whitelisted Swap model.
+ * @dev
+ * - Provides a single-transaction on-chain path for converting SolvBTC
+ *   into its underlying Reserve Asset for authorized callers.
+ * - Supports two types of whitelisted addresses:
+ *   uncapped addresses and capped addresses that share a global rate limit.
+ * - Enforces both per-transaction and window-based limits for capped
+ *   addresses using a linear-decay rate-limiting model.
+ * - For each swap this contract:
+ *   - Receives a SolvBTC amount from the caller and burns the tokens.
+ *   - Pulls the corresponding Reserve Asset from `currencyVault` using
+ *     a pre-configured allowance granted by governance.
+ *   - Delivers the Reserve Asset to the caller or a designated recipient
+ *     address supplied as `to_`.
+ *   - Calculates a configurable swap fee and routes that fee amount to
+ *     a dedicated fee recipient address.
+ * - The contract does not custody Reserve Assets long term and does not
+ *   perform pricing or market making; the conversion result is defined
+ *   by the SolvBTC ↔ Reserve Asset relationship.
+ * - Governance manages whitelist membership, vault configuration, fee and
+ *   rate-limit parameters, and can pause execution in emergencies.
+ */
 contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUpgradeable, PausableControlUpgradeable {
     
     event SolvBTCSwapped (
