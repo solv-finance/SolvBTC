@@ -178,7 +178,9 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
      * @notice Swap SolvBTC for the underlying reserve currency.
      * @dev
      * - If whitelist is enabled, the caller must have a valid, non-expired whitelist entry.
-     *   When the entry is rate-limited, this function:
+     *   Rate limiting is then applied only to accounts flagged as rate-limited; 
+     *   when whitelist is disabled, the same limits apply to all callers.
+     * - When an entry is rate-limited, this function:
      *   - Enforces a per-transaction cap via `maxSingleSwapAmount`.
      *   - Enforces a rolling-window cap via `maxWindowSwapAmount`,
      *     using linear decay computed by {_amountCanBeSwapped}.
@@ -202,21 +204,19 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
 
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
 
+        (uint64 expiration, bool isRateLimited) = whitelistConfig(msg.sender);
         if ($.isWhitelistEnabled) {
-            (uint64 expiration, bool isRateLimited) = whitelistConfig(msg.sender);
             require(expiration > block.timestamp, "SolvBTCWhitelistedSwap: caller unauthorized");
+        }
 
-            // Enforce per-transaction and window-based limits only when whitelist
-            // is enabled and this account is configured as rate-limited.
-            if (isRateLimited) {
-                RateLimit memory limit = $.rateLimit;
-                require(solvbtcAmount_ <= limit.maxSingleSwapAmount, "SolvBTCWhitelistedSwap: max single swap amount exceeded");
-                (uint256 currentAmountSwapped, uint256 amountCanBeSwapped) =
-                    _amountCanBeSwapped(limit.amountSwapped, limit.lastSwappedAt, limit.maxWindowSwapAmount, limit.window);
-                require(solvbtcAmount_ <= amountCanBeSwapped, "SolvBTCWhitelistedSwap: max daily swap amount exceeded");
-                $.rateLimit.amountSwapped = currentAmountSwapped + solvbtcAmount_;
-                $.rateLimit.lastSwappedAt = block.timestamp;
-            }
+        if (!$.isWhitelistEnabled || isRateLimited) {
+            RateLimit memory limit = $.rateLimit;
+            require(solvbtcAmount_ <= limit.maxSingleSwapAmount, "SolvBTCWhitelistedSwap: max single swap amount exceeded");
+            (uint256 currentAmountSwapped, uint256 amountCanBeSwapped) =
+                _amountCanBeSwapped(limit.amountSwapped, limit.lastSwappedAt, limit.maxWindowSwapAmount, limit.window);
+            require(solvbtcAmount_ <= amountCanBeSwapped, "SolvBTCWhitelistedSwap: max window swap amount exceeded");
+            $.rateLimit.amountSwapped = currentAmountSwapped + solvbtcAmount_;
+            $.rateLimit.lastSwappedAt = block.timestamp;
         }
 
         // receive SolvBTC from msg.sender and burn it
@@ -246,8 +246,8 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
         if (swapFee > 0) {
             // transfer fee to fee recipient
             ERC20TransferHelper.doTransferOut(address($.currency), payable(address($.feeRecipient)), swapFee);
-            currencyAmount_ = totalCurrencyAmount - swapFee;
         }
+        currencyAmount_ = totalCurrencyAmount - swapFee;
 
         // transfer currency to user
         ERC20TransferHelper.doTransferOut(address($.currency), payable(to_), currencyAmount_);
