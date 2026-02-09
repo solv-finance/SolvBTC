@@ -233,6 +233,7 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
 
         uint256 totalCurrencyAmount = solvbtcAmount_ * (10 ** ERC20Upgradeable(address($.currency)).decimals()) / 
             (10 ** ERC20Upgradeable(address($.solvBTC)).decimals());
+        require(totalCurrencyAmount > 0, "SolvBTCWhitelistedSwap: amount too low");
 
         // check currency vault balance
         require(
