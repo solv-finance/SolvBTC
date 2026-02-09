@@ -202,66 +202,75 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
         whenNotPaused 
         returns (uint256 currencyAmount_) 
     {
-        require(solvbtcAmount_ > 0, "SolvBTCWhitelistedSwap: amount cannot be 0");
-        if (currency_ != address(0)) {
-            require(currency_ == currency(), "SolvBTCWhitelistedSwap: unexpected currency");
-        }
-        if (feeRate_ != 0) {
-            require(feeRate_ == feeRate(), "SolvBTCWhitelistedSwap: unexpected fee rate");
-        }
-
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
 
-        (uint64 expiration, bool isRateLimited) = whitelistConfig(msg.sender);
-        if ($.isWhitelistEnabled) {
-            require(expiration > block.timestamp, "SolvBTCWhitelistedSwap: caller unauthorized");
-        }
+        // validate input parameters
+        {
+            require(to_ != address(0), "SolvBTCWhitelistedSwap: recipient cannot be 0");
+            require(solvbtcAmount_ > 0, "SolvBTCWhitelistedSwap: amount cannot be 0");
+            if (currency_ != address(0)) {
+                require(currency_ == currency(), "SolvBTCWhitelistedSwap: unexpected currency");
+            }
+            if (feeRate_ != 0) {
+                require(feeRate_ == feeRate(), "SolvBTCWhitelistedSwap: unexpected fee rate");
+            }
 
-        if (!$.isWhitelistEnabled || isRateLimited) {
-            RateLimit memory limit = $.rateLimit;
-            require(solvbtcAmount_ <= limit.maxSingleSwapAmount, "SolvBTCWhitelistedSwap: max single swap amount exceeded");
-            (uint256 currentAmountSwapped, uint256 amountCanBeSwapped) =
-                _amountCanBeSwapped(limit.amountSwapped, limit.lastSwappedAt, limit.maxWindowSwapAmount, limit.window);
-            require(solvbtcAmount_ <= amountCanBeSwapped, "SolvBTCWhitelistedSwap: max window swap amount exceeded");
-            $.rateLimit.amountSwapped = currentAmountSwapped + solvbtcAmount_;
-            $.rateLimit.lastSwappedAt = block.timestamp;
+
+            (uint64 expiration, bool isRateLimited) = whitelistConfig(msg.sender);
+            if ($.isWhitelistEnabled) {
+                require(expiration > block.timestamp, "SolvBTCWhitelistedSwap: caller unauthorized");
+            }
+
+            if (!$.isWhitelistEnabled || isRateLimited) {
+                RateLimit memory limit = $.rateLimit;
+                require(solvbtcAmount_ <= limit.maxSingleSwapAmount, "SolvBTCWhitelistedSwap: max single swap amount exceeded");
+                (uint256 currentAmountSwapped, uint256 amountCanBeSwapped) =
+                    _amountCanBeSwapped(limit.amountSwapped, limit.lastSwappedAt, limit.maxWindowSwapAmount, limit.window);
+                require(solvbtcAmount_ <= amountCanBeSwapped, "SolvBTCWhitelistedSwap: max window swap amount exceeded");
+                $.rateLimit.amountSwapped = currentAmountSwapped + solvbtcAmount_;
+                $.rateLimit.lastSwappedAt = block.timestamp;
+            }
         }
+        
+        address _solvBTC = $.solvBTC;
+        address _currency = $.currency;
+        address _currencyVault = $.currencyVault;
 
         // receive SolvBTC from msg.sender and burn it
-        ERC20TransferHelper.doTransferIn(address($.solvBTC), msg.sender, solvbtcAmount_);
-        SolvBTC(address($.solvBTC)).burn(address(this), solvbtcAmount_);
+        ERC20TransferHelper.doTransferIn(address(_solvBTC), msg.sender, solvbtcAmount_);
+        SolvBTC(address(_solvBTC)).burn(address(this), solvbtcAmount_);
 
-        uint256 totalCurrencyAmount = solvbtcAmount_ * (10 ** ERC20Upgradeable(address($.currency)).decimals()) / 
-            (10 ** ERC20Upgradeable(address($.solvBTC)).decimals());
+        uint256 totalCurrencyAmount = solvbtcAmount_ * (10 ** ERC20Upgradeable(address(_currency)).decimals()) / 
+            (10 ** ERC20Upgradeable(address(_solvBTC)).decimals());
         require(totalCurrencyAmount > 0, "SolvBTCWhitelistedSwap: amount too low");
 
         // check currency vault balance
         require(
-            totalCurrencyAmount <= ERC20Upgradeable(address($.currency)).balanceOf(address($.currencyVault)),
+            totalCurrencyAmount <= ERC20Upgradeable(address(_currency)).balanceOf(address(_currencyVault)),
             "SolvBTCWhitelistedSwap: vault balance insufficient"
         );
 
         // check currency vault allowance
         require(
-            totalCurrencyAmount <= ERC20Upgradeable(address($.currency)).allowance(address($.currencyVault), address(this)),
+            totalCurrencyAmount <= ERC20Upgradeable(address(_currency)).allowance(address(_currencyVault), address(this)),
             "SolvBTCWhitelistedSwap: vault allowance insufficient"
         );
 
         // receive currency from currency vault
-        ERC20TransferHelper.doTransferIn(address($.currency), address($.currencyVault), totalCurrencyAmount);
+        ERC20TransferHelper.doTransferIn(address(_currency), address(_currencyVault), totalCurrencyAmount);
 
         // calculate swap fee
         uint256 swapFee = (totalCurrencyAmount * $.feeRate) / FEE_RATE_BASE;
         if (swapFee > 0) {
             // transfer fee to fee recipient
-            ERC20TransferHelper.doTransferOut(address($.currency), payable(address($.feeRecipient)), swapFee);
+            ERC20TransferHelper.doTransferOut(address(_currency), payable(address($.feeRecipient)), swapFee);
         }
         currencyAmount_ = totalCurrencyAmount - swapFee;
 
         // transfer currency to user
-        ERC20TransferHelper.doTransferOut(address($.currency), payable(to_), currencyAmount_);
+        ERC20TransferHelper.doTransferOut(address(_currency), payable(to_), currencyAmount_);
 
-        emit SolvBTCSwapped(msg.sender, to_, address($.solvBTC), address($.currency), solvbtcAmount_, currencyAmount_, swapFee);
+        emit SolvBTCSwapped(msg.sender, to_, address(_solvBTC), address(_currency), solvbtcAmount_, currencyAmount_, swapFee);
     }
 
     /**
@@ -473,7 +482,7 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
     function _setMaxSingleSwapAmount(uint256 maxSingleSwapAmount_) internal virtual {
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
         require(
-            maxSingleSwapAmount_ < $.rateLimit.maxWindowSwapAmount,
+            maxSingleSwapAmount_ <= $.rateLimit.maxWindowSwapAmount,
             "SolvBTCWhitelistedSwap: max single swap amount cannot exceed max window swap amount"
         );
         uint256 oldMaxSingleSwapAmount = $.rateLimit.maxSingleSwapAmount;
