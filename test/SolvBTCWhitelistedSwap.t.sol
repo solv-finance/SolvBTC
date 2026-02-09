@@ -60,7 +60,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
 
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        uint256 received = solvbtcWhitelistedSwap.swap(USER, amount);
+        uint256 received = solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 100);
 
         uint256 expectedGross = 0.05e8;
         uint256 expectedFee = expectedGross / 100;
@@ -85,7 +85,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         uint256 initialSwap = 0.08 ether;
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), initialSwap);
-        solvbtcWhitelistedSwap.swap(USER, initialSwap);
+        solvbtcWhitelistedSwap.swap(USER, initialSwap, address(WBTC), 0);
 
         uint256 newLimit = initialSwap / 4;
         uint256 newWindow = 1 hours;
@@ -112,15 +112,15 @@ contract SolvBTCWhitelistedSwapTest is Test {
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), singleLimit * 3);
 
-        solvbtcWhitelistedSwap.swap(USER, singleLimit);
-        solvbtcWhitelistedSwap.swap(USER, singleLimit);
+        solvbtcWhitelistedSwap.swap(USER, singleLimit, address(WBTC), 0);
+        solvbtcWhitelistedSwap.swap(USER, singleLimit, address(WBTC), 0);
 
         vm.expectRevert("SolvBTCWhitelistedSwap: max window swap amount exceeded");
-        solvbtcWhitelistedSwap.swap(USER, 1);
+        solvbtcWhitelistedSwap.swap(USER, 1, address(WBTC), 0);
 
         vm.warp(block.timestamp + newWindow);
 
-        solvbtcWhitelistedSwap.swap(USER, singleLimit);
+        solvbtcWhitelistedSwap.swap(USER, singleLimit, address(WBTC), 0);
     }
 
     function test_SwapAtMaxSingleLimitBoundary() public {
@@ -130,16 +130,16 @@ contract SolvBTCWhitelistedSwapTest is Test {
 
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), limit);
-        solvbtcWhitelistedSwap.swap(USER, limit);
+        solvbtcWhitelistedSwap.swap(USER, limit, address(WBTC), 0);
 
         vm.expectRevert("SolvBTCWhitelistedSwap: max single swap amount exceeded");
-        solvbtcWhitelistedSwap.swap(USER, limit + 1);
+        solvbtcWhitelistedSwap.swap(USER, limit + 1, address(WBTC), 0);
     }
 
     function test_RevertWhenSwapZeroAmount() public {
         vm.prank(CALLER);
         vm.expectRevert("SolvBTCWhitelistedSwap: amount cannot be 0");
-        solvbtcWhitelistedSwap.swap(USER, 0);
+        solvbtcWhitelistedSwap.swap(USER, 0, address(WBTC), 0);
     }
 
     function test_SetMaxSingleSwapAmountLimit() public {
@@ -201,7 +201,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         uint256 amount = 0.05 ether;
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         assertEq(WBTC.balanceOf(newFeeRecipient) - feeBalanceBefore, 0.05e8 / 100, "fee recipient should receive CURRENCY_VAULT fee");
     }
 
@@ -230,7 +230,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
 
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
 
         assertEq(WBTC.balanceOf(oldVault), oldVaultBalanceBefore, "old currency vault should remain untouched");
         assertEq(newVaultBalanceBefore - WBTC.balanceOf(newVault), 0.005e8, "new currency vault should supply solvBTC");
@@ -264,7 +264,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
 
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(tBTC), 0);
 
         assertEq(WBTC.balanceOf(CURRENCY_VAULT), vault_WBTC_before, "vault WBTC balance mismatch");
         assertEq(vault_tBTC_before - ERC20(tBTC).balanceOf(CURRENCY_VAULT), amount, "vault tBTC balance mismatch");
@@ -285,7 +285,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert(abi.encodeWithSignature("EnforcedPause()"));
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         vm.stopPrank();
 
         vm.prank(GOVERNOR);
@@ -298,7 +298,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
 
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
     }
 
     function test_SwapWhenCallerNotRestrictedAndWhitelistNotEmpty() public {
@@ -310,7 +310,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         uint256 user_WBTC_before = WBTC.balanceOf(USER);
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         vm.stopPrank();
         assertEq(WBTC.balanceOf(USER), user_WBTC_before + 0.05e8, "user WBTC balance mismatch");
     }
@@ -323,7 +323,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert("SolvBTCWhitelistedSwap: caller unauthorized");
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         vm.stopPrank();
     }
 
@@ -337,7 +337,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         uint256 user_WBTC_before = WBTC.balanceOf(USER);
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         vm.stopPrank();
         assertEq(WBTC.balanceOf(USER), user_WBTC_before + 0.05e8, "user WBTC balance mismatch");
 
@@ -345,7 +345,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert("SolvBTCWhitelistedSwap: caller unauthorized");
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         vm.stopPrank();
     }
 
@@ -361,24 +361,24 @@ contract SolvBTCWhitelistedSwapTest is Test {
         uint256 user_WBTC_before = WBTC.balanceOf(USER);
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         assertEq(WBTC.balanceOf(USER), user_WBTC_before + 0.05e8, "user WBTC balance mismatch");
 
         amount = 0.11 ether;
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert("SolvBTCWhitelistedSwap: max single swap amount exceeded");
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
 
         amount = 0.08 ether;
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert("SolvBTCWhitelistedSwap: max window swap amount exceeded");
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
 
         amount = 0.01 ether;
         vm.startPrank(USER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert("SolvBTCWhitelistedSwap: caller unauthorized");
-        solvbtcWhitelistedSwap.swap(CALLER, amount);
+        solvbtcWhitelistedSwap.swap(CALLER, amount, address(WBTC), 0);
         vm.stopPrank();
     }
 
@@ -394,7 +394,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         uint256 user_WBTC_before = WBTC.balanceOf(USER);
         vm.startPrank(CALLER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-        solvbtcWhitelistedSwap.swap(USER, amount);
+        solvbtcWhitelistedSwap.swap(USER, amount, address(WBTC), 0);
         vm.stopPrank();
         assertEq(WBTC.balanceOf(USER), user_WBTC_before + 0.2e8, "user WBTC balance mismatch");
 
@@ -402,38 +402,7 @@ contract SolvBTCWhitelistedSwapTest is Test {
         vm.startPrank(USER);
         SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
         vm.expectRevert("SolvBTCWhitelistedSwap: caller unauthorized");
-        solvbtcWhitelistedSwap.swap(CALLER, amount);
+        solvbtcWhitelistedSwap.swap(CALLER, amount, address(WBTC), 0);
         vm.stopPrank();
     }
-
-    // function testSwapWithCallerRestriction() public {
-    //     vm.startPrank(GOVERNOR);
-    //     solvbtcWhitelistedSwap.setWhitelistEnabled(true);
-
-    //     uint256 amount = 0.05 ether;
-    //     vm.startPrank(CALLER);
-    //     SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-    //     vm.expectRevert("SolvBTCWhitelistedSwap: caller not allowed");
-    //     solvbtcWhitelistedSwap.swap(USER, amount);
-    //     vm.stopPrank();
-
-    //     vm.prank(GOVERNOR);
-    //     solvbtcWhitelistedSwap.setCallerAllowed(CALLER, true);
-
-    //     uint256 user_WBTC_before = WBTC.balanceOf(USER);
-    //     vm.startPrank(CALLER);
-    //     SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-    //     solvbtcWhitelistedSwap.swap(USER, amount);
-    //     vm.stopPrank();
-    //     assertEq(WBTC.balanceOf(USER), user_WBTC_before + 0.05e8, "user WBTC balance mismatch");
-
-    //     vm.prank(GOVERNOR);
-    //     solvbtcWhitelistedSwap.setCallerAllowed(CALLER, false);
-
-    //     vm.startPrank(CALLER);
-    //     SOLVBTC.approve(address(solvbtcWhitelistedSwap), amount);
-    //     vm.expectRevert("SolvBTCWhitelistedSwap: caller not allowed");
-    //     solvbtcWhitelistedSwap.swap(USER, amount);
-    //     vm.stopPrank();
-    // }
 }

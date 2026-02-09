@@ -191,9 +191,11 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
      * - Emits {SolvBTCSwapped} on success.
      * @param to_ Recipient address that will receive the reserve currency.
      * @param solvbtcAmount_ Amount of SolvBTC to swap, denominated in SolvBTC decimals.
+     * @param currency_ The address of the underlying reserve asset.
+     * @param feeRate_ The fee rate for each swap transaction.
      * @return currencyAmount_ Net amount of reserve currency sent to `to_` after fees are deducted.
      */
-    function swap(address to_, uint256 solvbtcAmount_) 
+    function swap(address to_, uint256 solvbtcAmount_, address currency_, uint64 feeRate_) 
         external 
         virtual 
         nonReentrant 
@@ -201,6 +203,12 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
         returns (uint256 currencyAmount_) 
     {
         require(solvbtcAmount_ > 0, "SolvBTCWhitelistedSwap: amount cannot be 0");
+        if (currency_ != address(0)) {
+            require(currency_ == currency(), "SolvBTCWhitelistedSwap: unexpected currency");
+        }
+        if (feeRate_ != 0) {
+            require(feeRate_ == feeRate(), "SolvBTCWhitelistedSwap: unexpected fee rate");
+        }
 
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
 
@@ -475,7 +483,7 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
     /**
      * @notice Return the address of the underlying reserve currency token.
      */
-    function currency() external view virtual returns (address) {
+    function currency() public view virtual returns (address) {
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
         return $.currency;
     }
@@ -507,7 +515,7 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
     /**
      * @notice Return the current swap fee rate in basis points (bps).
      */
-    function feeRate() external view virtual returns (uint64) {
+    function feeRate() public view virtual returns (uint64) {
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
         return $.feeRate;
     }
