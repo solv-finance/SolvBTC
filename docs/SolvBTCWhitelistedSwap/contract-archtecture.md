@@ -17,7 +17,7 @@ Whitelisted Swap is designed for **integrated protocols and authorized operators
 * Protocol-controlled executors
 * Designated on-chain adapters
 
-Access can be enforced via a whitelist. When whitelist checks are disabled, any caller can execute swaps, and whitelist rate limits are not applied.
+Access can be enforced via a whitelist. When whitelist checks are disabled, any caller can execute swaps, and the same limits apply to all callers.
 
 #### 2.1  Architecture Overview 
 
