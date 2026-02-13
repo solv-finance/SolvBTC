@@ -7,17 +7,23 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
 
   const proposers = {
     dev_sepolia: [deployer, "0x195a4b5A35D0729394D5603deB9AAb941eC1e7ec"],
+    sepolia: [deployer, "0x88D625294407186Ba50eA90c112528C15360392f"],
     bob: ["0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D"],
+    ink: ["0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D"],
   };
 
   const executors = {
     dev_sepolia: [deployer, "0x195a4b5A35D0729394D5603deB9AAb941eC1e7ec"],
+    sepolia: [deployer, "0x88D625294407186Ba50eA90c112528C15360392f"],
     bob: ["0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D"],
+    ink: ["0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D"],
   };
 
   const minDelay = {
     dev_sepolia: 3600,
+    sepolia: 3600,
     bob: 3 * 24 * 60 * 60,
+    ink: 3 * 24 * 60 * 60,
   };
 
   const defaultMinDelay = 7 * 24 * 60 * 60;
