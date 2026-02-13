@@ -107,6 +107,10 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
     /// Swap fees are calculated as: `fee = amount * feeRate / FEE_RATE_BASE`.
     uint64 public constant FEE_RATE_BASE = 10000;
 
+    /// @notice Maximum recommended fee rate, expressed in basis points.
+    /// A value of 100 corresponds to a 1% upper bound on the swap fee.
+    uint64 public constant MAX_FEE_RATE = 100;
+
     /// @notice Default duration, in seconds, of the rate-limit window.
     /// Used to cap the aggregate swap volume for all capped whitelisted addresses.
     /// 86400 seconds corresponds to a 24-hour (1 day) rolling window.
@@ -191,11 +195,10 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
      * - Emits {SolvBTCSwapped} on success.
      * @param to_ Recipient address that will receive the reserve currency.
      * @param solvbtcAmount_ Amount of SolvBTC to swap, denominated in SolvBTC decimals.
-     * @param currency_ The address of the underlying reserve asset.
      * @param feeRate_ The fee rate for each swap transaction.
      * @return currencyAmount_ Net amount of reserve currency sent to `to_` after fees are deducted.
      */
-    function swap(address to_, uint256 solvbtcAmount_, address currency_, uint64 feeRate_) 
+    function swap(address to_, uint256 solvbtcAmount_, uint64 feeRate_) 
         external 
         virtual 
         nonReentrant 
@@ -208,13 +211,9 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
         {
             require(to_ != address(0), "SolvBTCWhitelistedSwap: recipient cannot be 0");
             require(solvbtcAmount_ > 0, "SolvBTCWhitelistedSwap: amount cannot be 0");
-            if (currency_ != address(0)) {
-                require(currency_ == currency(), "SolvBTCWhitelistedSwap: unexpected currency");
-            }
             if (feeRate_ != 0) {
                 require(feeRate_ == feeRate(), "SolvBTCWhitelistedSwap: unexpected fee rate");
             }
-
 
             (uint64 expiration, bool isRateLimited) = whitelistConfig(msg.sender);
             if ($.isWhitelistEnabled) {
@@ -287,16 +286,6 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
     }
 
     /**
-     * @notice Update the underlying reserve currency token.
-     * @dev Restricted to the governor. Delegates to {_setCurrency}, which
-     *      performs validation and emits {SetCurrency}.
-     * @param currency_ Address of the ERC20 reserve asset.
-     */
-    function setCurrency(address currency_) external virtual onlyGovernor {
-        _setCurrency(currency_);
-    }
-
-    /**
      * @notice Set the underlying reserve currency token.
      * @dev Internal helper that validates the address and emits {SetCurrency}.
      * @param currency_ Address of the ERC20 reserve asset.
@@ -306,16 +295,6 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
         $.currency = currency_;
         emit SetCurrency(currency_);
-    }
-
-    /**
-     * @notice Update the vault that funds the underlying reserve currency.
-     * @dev Restricted to the governor. Delegates to {_setCurrencyVault},
-     *      which performs validation and emits {SetCurrencyVault}.
-     * @param currencyVault_ Address of the vault holding the reserve asset.
-     */
-    function setCurrencyVault(address currencyVault_) external virtual onlyGovernor {
-        _setCurrencyVault(currencyVault_);
     }
 
     /**
@@ -372,7 +351,7 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
      * @param feeRate_ New fee rate expressed in basis points (bps).
      */
     function _setFeeRate(uint64 feeRate_) internal virtual {
-        require(feeRate_ < FEE_RATE_BASE, "SolvBTCWhitelistedSwap: fee rate cannot exceed 100%");
+        require(feeRate_ <= MAX_FEE_RATE, "SolvBTCWhitelistedSwap: fee rate exceeds limit");
         SolvBTCWhitelistedSwapStorage storage $ = _getSolvBTCWhitelistedSwapStorage();
         uint64 oldFeeRate = $.feeRate;
         $.feeRate = feeRate_;
@@ -427,14 +406,13 @@ contract SolvBTCWhitelistedSwap is ReentrancyGuardUpgradeable, GovernorControlUp
     }
 
     /**
-     * @notice Update the maximum aggregate swap amount and window duration.
+     * @notice Update the maximum aggregate swap amount within the default window duration (24h).
      * @dev Restricted to the governor. Delegates to {_setMaxWindowSwapAmount},
      *      which checkpoints existing usage and emits {SetMaxWindowSwapAmount}.
      * @param maxWindowSwapAmount_ New maximum SolvBTC amount that can be swapped in one window.
-     * @param window_ Length of the rate-limit window in seconds.
      */
-    function setMaxWindowSwapAmount(uint256 maxWindowSwapAmount_, uint256 window_) external virtual onlyGovernor {
-        _setMaxWindowSwapAmount(maxWindowSwapAmount_, window_);
+    function setMaxWindowSwapAmount(uint256 maxWindowSwapAmount_) external virtual onlyGovernor {
+        _setMaxWindowSwapAmount(maxWindowSwapAmount_, DEFAULT_WINDOW);
     }
 
     /**
