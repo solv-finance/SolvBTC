@@ -19,7 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
         pauseAdmin: "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
         solvbtc: "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
         currency: "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",  // cbBTC
-        currencyVault: "0xad713bd85e8bff9ce85ca03a8a930e4a38f6893d",
+        currencyVault: "0xAd713bd85E8bff9CE85Ca03a8A930e4a38f6893D",
         feeRecipient: "0x5ef01B1eFfA34Bdd3A305a968A907108D52FF234",
         feeRate: 5,
         isWhitelistEnabled: true,
@@ -39,6 +39,9 @@ module.exports = async ({ getNamedAccounts, deployments, network }) => {
   const contractName = "SolvBTCWhitelistedSwap";
   const firstImplName = contractName + "Impl";
   const proxyName = contractName + "Proxy";
+
+  console.log(network.name);
+  console.log(initParams[network.name]);
 
   const versions = {};
   const upgrades = versions[network.name]?.map((v) => { return firstImplName + "_" + v; }) || [];
