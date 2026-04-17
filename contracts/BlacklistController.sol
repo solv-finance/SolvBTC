@@ -82,7 +82,7 @@ contract BlacklistController is AdminControlUpgradeable {
         _setDefaultMaxBlacklistCount(defaultMaxBlacklistCount_);
     }
 
-    function grantBlacklistSetter(address setter, uint256 maxBlacklistCount, bool resetUsedBlacklistCount) 
+    function grantBlacklistSetter(address setter, uint256 maxBlacklistCount, uint256 usedBlacklistCount) 
         external 
         onlyAdmin 
     {
@@ -95,11 +95,9 @@ contract BlacklistController is AdminControlUpgradeable {
         }
         setterConfig.maxBlacklistCount = maxBlacklistCount;
         
-        if (resetUsedBlacklistCount) {
-            setterConfig.usedBlacklistCount = 0;
-        }
+        setterConfig.usedBlacklistCount = usedBlacklistCount;
 
-        emit BlacklistSetterGranted(setter, maxBlacklistCount, setterConfig.usedBlacklistCount);
+        emit BlacklistSetterGranted(setter, maxBlacklistCount, usedBlacklistCount);
     }
 
     function revokeBlacklistSetter(address setter) external onlyAdmin {
