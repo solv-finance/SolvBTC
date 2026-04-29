@@ -10,11 +10,9 @@ import "./utils/ERC20TransferHelper.sol";
 import "./utils/ERC3525TransferHelper.sol";
 import "./external/IERC3525.sol";
 import "./external/IOpenFundMarket.sol";
-import "./ISftWrapRouter.sol";
 import "./ISolvBTCMultiAssetPool.sol";
 
 contract SolvBTCRouter is
-    ISftWrapRouter,
     ReentrancyGuardUpgradeable,
     AdminControlUpgradeable,
     GovernorControlUpgradeable
@@ -87,12 +85,12 @@ contract SolvBTCRouter is
         _setSolvBTCMultiAssetPool(solvBTCMultiAssetPool_);
     }
 
+    /* deprecated, remove in next version *
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return interfaceId == type(IERC3525Receiver).interfaceId || interfaceId == type(IERC721Receiver).interfaceId
             || interfaceId == type(IERC165).interfaceId;
     }
-
-    /* deprecated, remove in next version *
+    
     function onERC3525Received(
         address, / * operator_ * /
         uint256 fromSftId_,
