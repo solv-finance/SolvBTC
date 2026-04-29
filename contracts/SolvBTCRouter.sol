@@ -19,12 +19,14 @@ contract SolvBTCRouter is
     AdminControlUpgradeable,
     GovernorControlUpgradeable
 {
+    /* deprecated, remove in next version *
     event Stake(
         address indexed solvBTC, address indexed staker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount
     );
     event Unstake(
         address indexed solvBTC, address indexed unstaker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount
     );
+    */
     event CreateSubscription(
         bytes32 indexed poolId,
         address indexed subscriber,
@@ -90,12 +92,13 @@ contract SolvBTCRouter is
             || interfaceId == type(IERC165).interfaceId;
     }
 
+    /* deprecated, remove in next version *
     function onERC3525Received(
-        address, /* operator_ */
+        address, / * operator_ * /
         uint256 fromSftId_,
         uint256 toSftId_,
         uint256 value_,
-        bytes calldata /* data_ */
+        bytes calldata / * data_ * /
     ) external virtual override returns (bytes4) {
         IERC3525 openFundShare = IERC3525(msg.sender);
         uint256 openFundShareSlot = openFundShare.slotOf(toSftId_);
@@ -142,7 +145,7 @@ contract SolvBTCRouter is
         return IERC3525Receiver.onERC3525Received.selector;
     }
 
-    function onERC721Received(address, /* operator_ */ address from_, uint256 sftId_, bytes calldata /* data_ */ )
+    function onERC721Received(address, / * operator_ * / address from_, uint256 sftId_, bytes calldata / * data_ * / )
         external
         virtual
         override
@@ -242,6 +245,7 @@ contract SolvBTCRouter is
 
         emit Unstake(solvBTCAddress_, msg.sender, sft_, slot_, toSftId_, amount_);
     }
+    */
 
     function createSubscription(bytes32 poolId_, uint256 currencyAmount_)
         external
