@@ -19,12 +19,14 @@ contract SolvBTCRouter is
     AdminControlUpgradeable,
     GovernorControlUpgradeable
 {
+    /* deprecated, remove in next version *
     event Stake(
         address indexed solvBTC, address indexed staker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount
     );
     event Unstake(
         address indexed solvBTC, address indexed unstaker, address sft, uint256 sftSlot, uint256 sftId, uint256 amount
     );
+    */
     event CreateSubscription(
         bytes32 indexed poolId,
         address indexed subscriber,
@@ -90,7 +92,7 @@ contract SolvBTCRouter is
             || interfaceId == type(IERC165).interfaceId;
     }
 
-/* No longer in use, deleted for security
+    /* deprecated, remove in next version *
     function onERC3525Received(
         address, / * operator_ * /
         uint256 fromSftId_,
