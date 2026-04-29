@@ -90,7 +90,7 @@ contract BlacklistControllerTest is Test {
         assertEq(address(controller.solvBTC()), address(solvBTC));
 
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
+        controller.grantBlacklistSetter(setter, 2, 0);
         assertEq(controller.isBlacklistSetter(setter), true);
 
         vm.prank(setter);
@@ -105,7 +105,7 @@ contract BlacklistControllerTest is Test {
 
     function test_GrantSetterWithZeroMaxUsesDefaultQuota() public {
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 0, false);
+        controller.grantBlacklistSetter(setter, 0, 0);
 
         (bool enabled, uint256 maxCount, uint256 usedCount) = controller.getBlacklistSetterStatus(setter);
         assertEq(enabled, true);
@@ -115,7 +115,7 @@ contract BlacklistControllerTest is Test {
 
     function test_RevertWhenBlacklistQuotaReached() public {
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 1, false);
+        controller.grantBlacklistSetter(setter, 1, 0);
 
         vm.prank(setter);
         controller.blacklist(target);
@@ -127,7 +127,7 @@ contract BlacklistControllerTest is Test {
 
     function test_BlacklistQuotaHelperTracksLimit() public {
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 1, false);
+        controller.grantBlacklistSetter(setter, 1, 0);
 
         assertEq(controller.isBlacklistQuotaReachedHarness(setter), false);
 
@@ -139,7 +139,7 @@ contract BlacklistControllerTest is Test {
 
     function test_RevertWhenBlacklistingAlreadyBlacklistedDoesNotConsumeQuota() public {
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
+        controller.grantBlacklistSetter(setter, 2, 0);
 
         vm.prank(setter);
         controller.blacklist(target);
@@ -154,7 +154,7 @@ contract BlacklistControllerTest is Test {
 
     function test_RevertWhenBlacklistTargetIsZeroAddress() public {
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
+        controller.grantBlacklistSetter(setter, 2, 0);
 
         vm.prank(setter);
         vm.expectRevert(BlacklistController.InvalidTarget.selector);
@@ -163,7 +163,7 @@ contract BlacklistControllerTest is Test {
 
     function test_UnblacklistDoesNotChangeSetterUsage() public {
         vm.startPrank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
+        controller.grantBlacklistSetter(setter, 2, 0);
         controller.grantBlacklistRemover(remover);
         vm.stopPrank();
 
@@ -185,7 +185,7 @@ contract BlacklistControllerTest is Test {
         controller.setDefaultMaxBlacklistCount(3);
 
         vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 0, false);
+        controller.grantBlacklistSetter(setter, 0, 0);
 
         (bool enabled, uint256 maxCount, uint256 usedCount) = controller.getBlacklistSetterStatus(setter);
         assertEq(enabled, true);
@@ -199,46 +199,9 @@ contract BlacklistControllerTest is Test {
         controller.setDefaultMaxBlacklistCount(0);
     }
 
-    function test_RegrantSetterKeepsUsedCount() public {
-        vm.prank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
-
-        vm.prank(setter);
-        controller.blacklist(target);
-
-        vm.startPrank(admin);
-        controller.revokeBlacklistSetter(setter);
-        controller.grantBlacklistSetter(setter, 3, false);
-        vm.stopPrank();
-
-        (bool enabled, uint256 maxCount, uint256 usedCount) = controller.getBlacklistSetterStatus(setter);
-        assertEq(enabled, true);
-        assertEq(maxCount, 3);
-        assertEq(usedCount, 1);
-    }
-
-    function test_RegrantSetterWithResetClearsUsedCount() public {
-        vm.startPrank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
-        vm.stopPrank();
-
-        vm.prank(setter);
-        controller.blacklist(target);
-
-        vm.startPrank(admin);
-        controller.revokeBlacklistSetter(setter);
-        controller.grantBlacklistSetter(setter, 3, true);
-        vm.stopPrank();
-
-        (bool enabled, uint256 maxCount, uint256 usedCount) = controller.getBlacklistSetterStatus(setter);
-        assertEq(enabled, true);
-        assertEq(maxCount, 3);
-        assertEq(usedCount, 0);
-    }
-
     function test_GetBlacklistSetterStatusReturnsDisabledAfterSetterRevoked() public {
         vm.startPrank(admin);
-        controller.grantBlacklistSetter(setter, 2, false);
+        controller.grantBlacklistSetter(setter, 2, 0);
         controller.revokeBlacklistSetter(setter);
         vm.stopPrank();
 
